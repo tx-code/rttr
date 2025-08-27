@@ -250,7 +250,7 @@ public:
     {
         using declaring_type = T;
         using policy         = Policy;
-        const constructor    ctor_item;
+        const constructor&   ctor_item;
         Acc                  function_ptr;
     };
 
@@ -262,7 +262,7 @@ public:
     {
         using declaring_type = T;
         using policy         = Policy;
-        const method         method_item;
+        const method&        method_item;
         Acc                  function_ptr;
     };
 

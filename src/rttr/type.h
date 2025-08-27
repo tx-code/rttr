@@ -679,7 +679,8 @@ class RTTR_API type
          *
          * \return Returns an instance of the given type.
          */
-        variant create(std::vector<argument> args = std::vector<argument>()) const;
+        variant create() const;
+        variant create(std::vector<argument> args) const;
 
         /*!
          * \brief Returns the corresponding destructor for this type.
@@ -1230,6 +1231,9 @@ class RTTR_API type
 };
 
 } // end namespace rttr
+
+// Include argument.h after class definition to resolve incomplete type in C++20
+#include "rttr/argument.h"
 
 #include "rttr/detail/type/type_impl.h"
 

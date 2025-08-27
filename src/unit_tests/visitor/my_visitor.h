@@ -29,6 +29,9 @@
 #define RTTR_MY_VISITOR_H_
 
 #include <rttr/visitor.h>
+#include <rttr/constructor.h>
+#include <rttr/method.h>
+#include <rttr/property.h>
 #include <catch2/catch_all.hpp>
 
 struct visitor_test_class;

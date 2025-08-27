@@ -38,14 +38,18 @@
 #include "rttr/detail/type/type_name.h"
 #include "rttr/detail/misc/utility.h"
 #include "rttr/destructor.h"
-#include "rttr/method.h"
-#include "rttr/property.h"
-#include "rttr/constructor.h"
-#include "rttr/destructor.h"
 #include "rttr/detail/metadata/metadata.h"
+
+// Forward declarations instead of full includes for Pimpl
+namespace rttr {
+    class method;
+    class property;
+    class constructor;
+}
 
 #include <type_traits>
 #include <bitset>
+#include <memory>
 
 
 namespace rttr
@@ -67,23 +71,37 @@ class enumeration_wrapper_base;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-struct RTTR_LOCAL class_data
+// Forward declaration for pimpl
+struct class_data_impl;
+
+// Type-safe enum for class member access
+enum class class_member_type
 {
-    class_data(get_derived_info_func func, std::vector<type> nested_types)
-    :   m_derived_info_func(func),
-        m_nested_types(nested_types),
-        m_dtor(create_invalid_item<destructor>())
-    {}
+    properties,
+    methods,
+    constructors
+};
+
+struct RTTR_API class_data
+{
+    class_data(get_derived_info_func func, std::vector<type> nested_types);
+    ~class_data();
+    
+    // Move and copy operations
+    class_data(const class_data&) = delete;
+    class_data& operator=(const class_data&) = delete;
+    class_data(class_data&&) = delete;
+    class_data& operator=(class_data&&) = delete;
 
     get_derived_info_func       m_derived_info_func;
     std::vector<type>           m_base_types;
     std::vector<type>           m_derived_types;
     std::vector<rttr_cast_func> m_conversion_list;
-    std::vector<property>       m_properties;
-    std::vector<method>         m_methods;
-    std::vector<constructor>    m_ctors;
     std::vector<type>           m_nested_types;
     destructor                  m_dtor;
+    
+    // Use pimpl pattern for C++20 compatibility with incomplete types
+    std::unique_ptr<class_data_impl> m_impl;
 };
 
 enum class type_trait_infos : std::size_t

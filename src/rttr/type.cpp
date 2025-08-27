@@ -60,6 +60,17 @@ using namespace std;
 namespace rttr
 {
 
+namespace detail
+{
+// Private implementation for class_data using PIMPL pattern
+struct class_data_impl
+{
+    std::vector<property>       m_properties;
+    std::vector<method>         m_methods;
+    std::vector<constructor>    m_ctors;
+};
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -192,9 +203,16 @@ variant type::get_metadata(const variant& key) const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+variant type::create() const
+{
+    return create(vector<argument>());
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 variant type::create(vector<argument> args) const
 {
-    auto& ctors = m_type_data->m_class_data.m_ctors;
+    auto& ctors = m_type_data->m_class_data.m_impl->m_ctors;
     for (const auto& ctor : ctors)
     {
         if (detail::compare_with_arg_list::compare(ctor.get_parameter_infos(), args))
@@ -216,7 +234,7 @@ bool type::destroy(variant& obj) const RTTR_NOEXCEPT
 property type::get_property(string_view name) const RTTR_NOEXCEPT
 {
     const auto raw_t = get_raw_type();
-    const auto& vec = raw_t.m_type_data->m_class_data.m_properties;
+    const auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_properties;
     // properties are ordered from base to derived
     // use reverse iterator to find the most-derived propertie
     // when searching instance registry by name
@@ -266,7 +284,7 @@ bool type::set_property_value(string_view name, argument arg)
 
 array_range<property> type::get_properties() const RTTR_NOEXCEPT
 {
-    auto& vec = get_raw_type().m_type_data->m_class_data.m_properties;
+    auto& vec = get_raw_type().m_type_data->m_class_data.m_impl->m_properties;
     if (!vec.empty())
     {
         return array_range<property>(vec.data(), vec.size(),
@@ -284,7 +302,7 @@ array_range<property> type::get_properties() const RTTR_NOEXCEPT
 array_range<property> type::get_properties(filter_items filter) const RTTR_NOEXCEPT
 {
     const auto raw_t = get_raw_type();
-    auto& vec = raw_t.m_type_data->m_class_data.m_properties;
+    auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_properties;
     if (!vec.empty())
         return array_range<property>(vec.data(), vec.size(), detail::get_filter_predicate<property>(raw_t, filter));
 
@@ -296,7 +314,7 @@ array_range<property> type::get_properties(filter_items filter) const RTTR_NOEXC
 method type::get_method(string_view name) const RTTR_NOEXCEPT
 {
     const auto raw_t = get_raw_type();
-    const auto& vec = raw_t.m_type_data->m_class_data.m_methods;
+    const auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
     // methods appear are ordered from base to derived
     // use reverse iterator to find the most-derived method
     // when searching instance registry by name
@@ -316,7 +334,7 @@ method type::get_method(string_view name) const RTTR_NOEXCEPT
 method type::get_method(string_view name, const std::vector<type>& type_list) const RTTR_NOEXCEPT
 {
     const auto raw_t = get_raw_type();
-    const auto& methvec = raw_t.m_type_data->m_class_data.m_methods;
+    const auto& methvec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
     for (auto mit = methvec.crbegin() ; mit != methvec.crend() ; ++mit)
     {
         const auto& meth = *mit ;
@@ -335,7 +353,7 @@ method type::get_method(string_view name, const std::vector<type>& type_list) co
 array_range<method> type::get_methods() const RTTR_NOEXCEPT
 {
     const auto raw_t = get_raw_type();
-    auto& vec = raw_t.m_type_data->m_class_data.m_methods;
+    auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
     if (!vec.empty())
     {
         return array_range<method>(vec.data(), vec.size(),
@@ -353,7 +371,7 @@ array_range<method> type::get_methods() const RTTR_NOEXCEPT
 array_range<method> type::get_methods(filter_items filter) const RTTR_NOEXCEPT
 {
     const auto raw_t = get_raw_type();
-    auto& vec = raw_t.m_type_data->m_class_data.m_methods;
+    auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
     if (!vec.empty())
         return array_range<method>(vec.data(), vec.size(), detail::get_filter_predicate<method>(raw_t, filter));
 
@@ -436,7 +454,7 @@ enumeration type::get_enumeration() const RTTR_NOEXCEPT
 variant type::invoke(string_view name, instance obj, std::vector<argument> args) const
 {
     const auto raw_t = get_raw_type();
-    const auto& methvec = raw_t.m_type_data->m_class_data.m_methods;
+    const auto& methvec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
     for (auto mit = methvec.crbegin() ; mit != methvec.crend() ; ++mit)
     {
         const auto& meth = *mit ;
@@ -510,7 +528,7 @@ const detail::type_comparator_base* type::get_less_than_comparator() const RTTR_
 
 constructor type::get_constructor(const std::vector<type>& args) const RTTR_NOEXCEPT
 {
-    auto& ctors = m_type_data->m_class_data.m_ctors;
+    auto& ctors = m_type_data->m_class_data.m_impl->m_ctors;
     for (const auto& ctor : ctors)
     {
         if (detail::compare_with_type_list::compare(ctor.get_parameter_infos(), args))
@@ -524,7 +542,7 @@ constructor type::get_constructor(const std::vector<type>& args) const RTTR_NOEX
 
 array_range<constructor> type::get_constructors() const RTTR_NOEXCEPT
 {
-    auto& ctors = m_type_data->m_class_data.m_ctors;
+    auto& ctors = m_type_data->m_class_data.m_impl->m_ctors;
     if (!ctors.empty())
     {
         return array_range<constructor>(ctors.data(), ctors.size(),
@@ -541,7 +559,7 @@ array_range<constructor> type::get_constructors() const RTTR_NOEXCEPT
 
 array_range<constructor> type::get_constructors(filter_items filter) const RTTR_NOEXCEPT
 {
-    auto& ctors = m_type_data->m_class_data.m_ctors;
+    auto& ctors = m_type_data->m_class_data.m_impl->m_ctors;
     if (!ctors.empty())
         return array_range<constructor>(ctors.data(), ctors.size(), detail::get_filter_predicate<constructor>(*this, filter));
 

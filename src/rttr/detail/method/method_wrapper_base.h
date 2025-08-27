@@ -89,7 +89,7 @@ class RTTR_API method_wrapper_base
 
         virtual variant invoke_variadic(const instance& object, std::vector<argument>& args) const;
 
-        virtual void visit(visitor& visitor, method m) const RTTR_NOEXCEPT;
+        virtual void visit(visitor& visitor, const method& m) const RTTR_NOEXCEPT;
     protected:
         void init() RTTR_NOEXCEPT;
     private:

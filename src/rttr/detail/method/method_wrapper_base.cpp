@@ -28,6 +28,7 @@
 #include "rttr/detail/method/method_wrapper_base.h"
 #include "rttr/argument.h"
 #include "rttr/instance.h"
+#include "rttr/method.h"
 
 using namespace std;
 
@@ -230,7 +231,7 @@ variant method_wrapper_base::invoke_variadic(const instance& object, std::vector
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void method_wrapper_base::visit(visitor& visitor, method m) const RTTR_NOEXCEPT
+void method_wrapper_base::visit(visitor& visitor, const method& m) const RTTR_NOEXCEPT
 {
 
 }

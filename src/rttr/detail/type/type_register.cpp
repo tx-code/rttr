@@ -55,6 +55,14 @@ namespace rttr
 namespace detail
 {
 
+// Private implementation for class_data using PIMPL pattern
+struct class_data_impl
+{
+    std::vector<property>       m_properties;
+    std::vector<method>         m_methods;
+    std::vector<constructor>    m_ctors;
+};
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void type_register::register_reg_manager(registration_manager* manager)
@@ -568,8 +576,8 @@ type_data* type_register_private::register_type(type_data* info) RTTR_NOEXCEPT
     // when a base class type has class items, but the derived one not,
     // we update the derived class item list
     const auto t = type(info);
-    update_class_list(t, &class_data::m_properties);
-    update_class_list(t, &class_data::m_methods);
+    update_class_list<property>(t);
+    update_class_list<method>(t);
 
     return info;
 }
@@ -746,7 +754,7 @@ bool type_register_private::register_constructor(const constructor_wrapper_base*
 {
     const auto t = ctor->get_declaring_type();
     auto& class_data = t.m_type_data->m_class_data;
-    class_data.m_ctors.emplace_back(create_item<::rttr::constructor>(ctor));
+    class_data.m_impl->m_ctors.emplace_back(create_item<::rttr::constructor>(ctor));
     return true;
 }
 
@@ -777,14 +785,14 @@ bool type_register_private::register_property(const property_wrapper_base* prop)
     const auto t    = prop->get_declaring_type();
     const auto name = prop->get_name();
 
-    auto& property_list = t.m_type_data->m_class_data.m_properties;
+    auto& property_list = t.m_type_data->m_class_data.m_impl->m_properties;
 
     if (get_type_property(t, name))
         return false;
 
     auto p = detail::create_item<::rttr::property>(prop);
     property_list.emplace_back(p);
-    update_class_list(t, &class_data::m_properties);
+    update_class_list<property>(t);
     return true;
 }
 
@@ -828,9 +836,9 @@ bool type_register_private::register_method(const method_wrapper_base* meth)
     if (get_type_method(t, name, convert_param_list(meth->get_parameter_infos())))
         return false;
 
-    auto& method_list = t.m_type_data->m_class_data.m_methods;
+    auto& method_list = t.m_type_data->m_class_data.m_impl->m_methods;
     method_list.emplace_back(m);
-    update_class_list(t, &class_data::m_methods);
+    update_class_list<method>(t);
     return true;
 }
 
@@ -865,7 +873,7 @@ bool type_register_private::unregister_global_method(const method_wrapper_base* 
 
 property type_register_private::get_type_property(const type& t, string_view name)
 {
-    for (const auto& prop : get_items_for_type(t, t.m_type_data->m_class_data.m_properties))
+    for (const auto& prop : get_items_for_type(t, t.m_type_data->m_class_data.m_impl->m_properties))
     {
         if (prop.get_name() == name)
             return prop;
@@ -879,7 +887,7 @@ property type_register_private::get_type_property(const type& t, string_view nam
 method type_register_private::get_type_method(const type& t, string_view name,
                                               const std::vector<type>& type_list)
 {
-    for (const auto& meth : get_items_for_type(t, t.m_type_data->m_class_data.m_methods))
+    for (const auto& meth : get_items_for_type(t, t.m_type_data->m_class_data.m_impl->m_methods))
     {
         if (meth.get_name() == name &&
             compare_with_type_list::compare(meth.get_parameter_infos(), type_list))
@@ -893,19 +901,45 @@ method type_register_private::get_type_method(const type& t, string_view name,
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-template<typename T>
-void type_register_private::update_class_list(const type& t, T item_ptr)
+// Template-based helper to get the correct vector from class_data
+template<typename ItemType>
+struct class_data_accessor;
+
+template<>
+struct class_data_accessor<property>
 {
-    auto& all_class_items = (t.m_type_data->m_class_data.*item_ptr);
+    static std::vector<property>& get(class_data& data) { return data.m_impl->m_properties; }
+    static const std::vector<property>& get(const class_data& data) { return data.m_impl->m_properties; }
+};
+
+template<>
+struct class_data_accessor<method>
+{
+    static std::vector<method>& get(class_data& data) { return data.m_impl->m_methods; }
+    static const std::vector<method>& get(const class_data& data) { return data.m_impl->m_methods; }
+};
+
+template<>
+struct class_data_accessor<constructor>
+{
+    static std::vector<constructor>& get(class_data& data) { return data.m_impl->m_ctors; }
+    static const std::vector<constructor>& get(const class_data& data) { return data.m_impl->m_ctors; }
+};
+
+template<typename ItemType>
+void type_register_private::update_class_list(const type& t)
+{
+    auto& all_class_items = class_data_accessor<ItemType>::get(t.m_type_data->m_class_data);
 
     // update type "t" with all items from the base classes
     auto item_range = get_items_for_type(t, all_class_items);
-    detail::remove_cv_ref_t<decltype(all_class_items)> item_vec(item_range.begin(), item_range.end());
+    std::vector<ItemType> item_vec(item_range.begin(), item_range.end());
     all_class_items.reserve(all_class_items.size() + 1);
     all_class_items.clear(); // this will not reduce the capacity, i.e. new memory allocation may not necessary
     for (const auto& base_type : t.get_base_classes())
     {
-        auto base_properties = get_items_for_type(base_type, base_type.m_type_data->m_class_data.*item_ptr);
+        auto& base_items = class_data_accessor<ItemType>::get(base_type.m_type_data->m_class_data);
+        auto base_properties = get_items_for_type(base_type, base_items);
         if (base_properties.empty())
             continue;
 
@@ -919,7 +953,7 @@ void type_register_private::update_class_list(const type& t, T item_ptr)
 
     // update derived types
     for (const auto& derived_type : t.get_derived_classes())
-        update_class_list<T>(derived_type, item_ptr);
+        update_class_list<ItemType>(derived_type);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

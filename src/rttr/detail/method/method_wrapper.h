@@ -120,7 +120,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<>, param
             return method_accessor<F, Policy>::invoke_variadic(m_func_acc, object, args);
         }
 
-        void visit(visitor& visitor, method meth) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const method& meth) const RTTR_NOEXCEPT
         {
             auto obj = make_method_info<Declaring_Type, Policy, F>(meth, m_func_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_method_visitor_invoker(obj));
@@ -206,7 +206,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<Default_
                 return variant();
         }
 
-        void visit(visitor& visitor, method meth) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const method& meth) const RTTR_NOEXCEPT
         {
             auto obj = make_method_info<Declaring_Type, Policy, F>(meth, m_func_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_method_visitor_invoker(obj));
@@ -279,7 +279,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<>, param
             return method_accessor<F, Policy>::invoke_variadic(m_func_acc, object, args);
         }
 
-        void visit(visitor& visitor, method meth) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const method& meth) const RTTR_NOEXCEPT
         {
             auto obj = make_method_info<Declaring_Type, Policy, F>(meth, m_func_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_method_visitor_invoker(obj));
@@ -359,7 +359,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<Default_
                 return variant();
         }
 
-        void visit(visitor& visitor, method meth) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const method& meth) const RTTR_NOEXCEPT
         {
             auto obj = make_method_info<Declaring_Type, Policy, F>(meth, m_func_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_method_visitor_invoker(obj));

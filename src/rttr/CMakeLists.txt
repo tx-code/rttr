@@ -57,7 +57,7 @@ if (${BUILD_RTTR_DYNAMIC})
                           VISIBILITY_INLINES_HIDDEN 1)
     
     target_link_libraries(rttr_core PRIVATE ${CMAKE_DL_LIBS})
-    target_compile_features(rttr_core PUBLIC cxx_std_17)
+    target_compile_features(rttr_core PUBLIC cxx_std_20)
                          
     target_include_directories(rttr_core PUBLIC
                                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../>
@@ -92,7 +92,7 @@ if (BUILD_STATIC)
                           DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX})
                           
     target_link_libraries(rttr_core_lib PRIVATE ${CMAKE_DL_LIBS})
-    target_compile_features(rttr_core_lib PUBLIC cxx_std_17)
+    target_compile_features(rttr_core_lib PUBLIC cxx_std_20)
     
     set_target_properties(rttr_core_lib PROPERTIES 
         OUTPUT_NAME $<IF:$<CXX_COMPILER_ID:MSVC>,librttr_core,rttr_core>)
@@ -126,7 +126,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
                                $<INSTALL_INTERFACE:include>)
 
     target_link_libraries(rttr_core_s PRIVATE ${CMAKE_DL_LIBS})
-    target_compile_features(rttr_core_s PUBLIC cxx_std_17)
+    target_compile_features(rttr_core_s PUBLIC cxx_std_20)
                                
     set_target_properties(rttr_core_s PROPERTIES
                           VERSION ${RTTR_VERSION} SOVERSION ${RTTR_VERSION}
@@ -171,7 +171,7 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
                               DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX})
                               
         target_link_libraries(rttr_core_lib_s PRIVATE ${CMAKE_DL_LIBS})
-        target_compile_features(rttr_core_lib_s PUBLIC cxx_std_17)
+        target_compile_features(rttr_core_lib_s PUBLIC cxx_std_20)
         set_compiler_warnings(rttr_core_lib_s)
 
         target_compile_options(rttr_core_lib_s PUBLIC 

@@ -26,6 +26,9 @@
 *************************************************************************************/
 
 #include "rttr/visitor.h"
+#include "rttr/constructor.h"
+#include "rttr/method.h"
+#include "rttr/property.h"
 
 namespace rttr
 {

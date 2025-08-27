@@ -36,7 +36,7 @@
 #include <utility>
 #include <functional>
 #include <algorithm>
-#include <ciso646> // _LIBCPP_VERSION
+// #include <ciso646> // _LIBCPP_VERSION // Removed in C++20
 
 namespace rttr
 {
@@ -161,11 +161,9 @@ class flat_map
             else
                 return (m_value_list.cend());
         }
-#ifdef _LIBCPP_VERSION
-#   if _LIBCPP_VERSION <= 3700
-#       define RTTR_NO_CXX11_CONST_EREASE_SUPPORT_IN_STL 1
-#   endif
-#elif (RTTR_COMPILER == RTTR_COMPILER_GNUC && RTTR_COMP_VER < 490)
+// C++20 and modern compilers support const_iterator in erase()
+// Only old compilers (GCC < 4.9) lack this support
+#if (RTTR_COMPILER == RTTR_COMPILER_GNUC && RTTR_COMP_VER < 490)
 #   define RTTR_NO_CXX11_CONST_EREASE_SUPPORT_IN_STL 1
 #endif
 

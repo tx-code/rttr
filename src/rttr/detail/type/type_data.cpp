@@ -27,11 +27,22 @@
 
 #include "rttr/type.h"
 #include "rttr/detail/type/type_data.h"
+#include "rttr/property.h"
+#include "rttr/method.h"
+#include "rttr/constructor.h"
 
 namespace rttr
 {
 namespace detail
 {
+
+// Private implementation for class_data using PIMPL pattern
+struct class_data_impl
+{
+    std::vector<property>       m_properties;
+    std::vector<method>         m_methods;
+    std::vector<constructor>    m_ctors;
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -66,6 +77,18 @@ type_data* get_invalid_type_data() RTTR_NOEXCEPT
     static auto instance = &get_invalid_type_data_impl();
     return instance;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+class_data::class_data(get_derived_info_func func, std::vector<type> nested_types)
+    : m_derived_info_func(func),
+      m_nested_types(nested_types),
+      m_dtor(create_invalid_item<destructor>()),
+      m_impl(std::make_unique<class_data_impl>())
+{
+}
+
+class_data::~class_data() = default;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

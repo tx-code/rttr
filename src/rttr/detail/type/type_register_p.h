@@ -180,8 +180,8 @@ private:
     static ::rttr::method get_type_method(const type& t, string_view name,
                                           const std::vector<type>& type_list);
 
-    template<typename T>
-    static void update_class_list(const type& t, T item_ptr);
+    template<typename ItemType>
+    static void update_class_list(const type& t);
 
     static std::string derive_name(const type& t);
     //! Returns true, when the name was already registered
