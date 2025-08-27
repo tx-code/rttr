@@ -27,8 +27,6 @@
 
 project(plugin_example LANGUAGES CXX)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
 
 generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
                                 "RTTR Examples: library_loading" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
@@ -52,5 +50,3 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(plugin_example PRIVATE "-fno-gnu-unique")
 endif()
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")

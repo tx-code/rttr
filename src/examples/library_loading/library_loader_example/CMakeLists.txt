@@ -27,8 +27,6 @@
 
 project(library_loader_example LANGUAGES CXX)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
 
 generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
                                 "RTTR Examples: library_loading" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
@@ -50,5 +48,3 @@ set_target_properties(library_loader_example PROPERTIES
 
 add_dependencies(examples library_loader_example)
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")

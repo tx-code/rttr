@@ -27,8 +27,6 @@
 
 project(unit_test_base LANGUAGES CXX)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
 
 set(HPP_FILES "")
 set(SRC_FILES "")
@@ -52,5 +50,3 @@ set_target_properties(unit_test_base PROPERTIES
                                      DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                                      FOLDER "Testing")
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")

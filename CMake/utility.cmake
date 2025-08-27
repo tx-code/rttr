@@ -224,7 +224,6 @@ function(loadFolder FOLDER _HEADER_FILES _SOURCE_FILES)
 
   createSrcGroups(HEADER_LIST_OF_CUR_DIR)
   createSrcGroups(SOURCE_LIST_OF_CUR_DIR)
-  message( STATUS "${FOLDER} directory included" )
 endfunction()
 
 ####################################################################################

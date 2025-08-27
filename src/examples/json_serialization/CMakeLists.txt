@@ -27,8 +27,6 @@
 
 project(json_example LANGUAGES CXX)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
 
 generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
                                 "RTTR Examples: json serialization" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
@@ -53,5 +51,3 @@ set_compiler_warnings(json_example)
 
 add_dependencies(examples json_example)
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")

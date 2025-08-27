@@ -1,0 +1,48 @@
+####################################################################################
+# RTTR CMake Configuration File
+# Modern find_package() support for RTTR library
+####################################################################################
+
+@PACKAGE_INIT@
+
+# Provide compatibility with old variable names
+set(RTTR_VERSION "@PROJECT_VERSION@")
+set(RTTR_VERSION_MAJOR "@PROJECT_VERSION_MAJOR@")
+set(RTTR_VERSION_MINOR "@PROJECT_VERSION_MINOR@")
+set(RTTR_VERSION_PATCH "@PROJECT_VERSION_PATCH@")
+
+# Include the exported targets
+include("${CMAKE_CURRENT_LIST_DIR}/rttr-targets.cmake")
+
+# Set component variables
+set(RTTR_FOUND TRUE)
+
+# Check if specific components were requested
+if(RTTR_FIND_COMPONENTS)
+    foreach(component ${RTTR_FIND_COMPONENTS})
+        if(component STREQUAL "Core")
+            if(TARGET RTTR::Core)
+                set(RTTR_Core_FOUND TRUE)
+            else()
+                set(RTTR_Core_FOUND FALSE)
+                if(RTTR_FIND_REQUIRED_Core)
+                    message(FATAL_ERROR "RTTR: Required component 'Core' not found")
+                endif()
+            endif()
+        else()
+            message(WARNING "RTTR: Unknown component '${component}' requested")
+        endif()
+    endforeach()
+endif()
+
+# Legacy variable compatibility
+if(TARGET RTTR::Core)
+    get_target_property(RTTR_INCLUDE_DIRS RTTR::Core INTERFACE_INCLUDE_DIRECTORIES)
+    set(RTTR_LIBRARIES RTTR::Core)
+endif()
+
+# Provide information about the found installation
+get_filename_component(RTTR_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+message(STATUS "Found RTTR: ${RTTR_CMAKE_DIR} (found version \"${RTTR_VERSION}\")")
+
+check_required_components(RTTR)

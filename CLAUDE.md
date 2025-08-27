@@ -62,13 +62,38 @@ cd build/debug && ctest
 ./build/debug/bin/bench_rttr_cast_d.exe   # Type casting performance
 ```
 
-### CMake Configuration
+### CMake Configuration (Modernized)
 
-Key build options (set in CMakeUserPresets.json):
-- `BUILD_EXAMPLES=ON`: JSON serialization, library loading, scripting examples
-- `BUILD_BENCHMARKS=ON`: nanobench-based performance tests
-- `BUILD_UNIT_TESTS=ON`: Catch2-based test suite (always enabled)
-- `BUILD_DOCUMENTATION=ON`: Doxygen API docs
+RTTR now uses **modern CMake 3.21+ best practices** with target-based configuration:
+
+**Modern Build Options:**
+```cmake
+option(RTTR_BUILD_SHARED "Build shared library" ON)
+option(RTTR_BUILD_STATIC "Build static library" OFF)  
+option(RTTR_BUILD_TESTS "Build unit tests" ON)
+option(RTTR_BUILD_EXAMPLES "Build examples" ON)
+option(RTTR_BUILD_BENCHMARKS "Build benchmarks" ON)
+option(RTTR_USE_PCH "Use precompiled headers" ON)
+```
+
+**Key Modern CMake Features:**
+- **Target-based configuration**: All properties set via `target_*` commands  
+- **Exported targets**: Use `RTTR::Core` for consumption via `find_package(rttr)`
+- **Generator expressions**: Proper build/install interface separation
+- **Component installation**: Runtime, Development, Documentation components
+- **Version management**: Centralized in `project()` command
+- **Clean build output**: Removed verbose scanning messages for better user experience
+
+**Configuration Summary Display:**
+```
+RTTR 0.9.7 Configuration Summary:
+  Build type:       Debug/Release
+  Shared library:   ON/OFF
+  Unit tests:       ON/OFF
+  Examples:         ON/OFF
+  Benchmarks:       ON/OFF
+  C++ Standard:     20
+```
 
 The build system uses:
 - **C++20 standard**: Enforced through CMake configuration
@@ -168,6 +193,21 @@ These ratios are normal for reflection systems due to runtime type lookup and me
 
 ## Development Patterns
 
+### Modern CMake Integration
+RTTR can now be consumed as a modern CMake package:
+
+```cmake
+# In your CMakeLists.txt
+find_package(rttr REQUIRED)
+target_link_libraries(my_app PRIVATE RTTR::Core)
+# C++20 and include directories automatically propagated
+```
+
+**Available Targets:**
+- `RTTR::Core` - Shared library (primary target)
+- `RTTR::Core_Static` - Static library 
+- `RTTR::Core_StaticRuntime` - Static runtime linking
+
 ### Adding New Reflection Features
 1. Implement core functionality in `src/rttr/` 
 2. Add corresponding wrapper class in `detail/` namespace
@@ -188,11 +228,28 @@ These ratios are normal for reflection systems due to runtime type lookup and me
 
 ## Troubleshooting
 
+## Modernization Summary
+
+RTTR has been completely modernized from legacy CMake practices to follow current best practices:
+
+### Completed Modernization Tasks
+- ✅ **CMake 3.21+ Upgrade**: Full migration from CMake 2.8 to modern 3.21+ practices
+- ✅ **Target-Based Configuration**: Eliminated all directory-level commands in favor of target-specific properties
+- ✅ **Modern Option Naming**: Migrated from `BUILD_*` to `RTTR_*` prefix for consistency
+- ✅ **Exported Targets**: Added proper `RTTR::Core` namespace support for `find_package`
+- ✅ **Generator Expressions**: Proper build/install interface separation using `$<BUILD_INTERFACE>` and `$<INSTALL_INTERFACE>`
+- ✅ **Version Management**: Centralized version info in main `project()` command
+- ✅ **Clean Build Output**: Removed verbose "Scanning module" messages for better UX
+- ✅ **Component Installation**: Organized into Runtime, Development, Documentation components
+- ✅ **CMakePackageConfigHelpers**: Modern config file generation for downstream consumption
+- ✅ **Modern CMake Policies**: Added CMP0167 policy to handle Boost module removal warnings
+
 ### Build Issues
-- Ensure vcpkg toolchain path is correct in CMakeUserPresets.json
-- Verify CMake version ≥ 3.21 with `cmake --version`
-- Check Ninja availability with `ninja --version`
-- For C++20 errors: ensure compiler supports C++20 (MSVC 2019+, GCC 10+, Clang 10+)
+- **Modern CMake**: Requires CMake 3.21+ for modern features and policies
+- **vcpkg integration**: Ensure vcpkg toolchain path is correct in CMakeUserPresets.json
+- **Compiler support**: C++20 requires MSVC 2019+, GCC 10+, or Clang 10+
+- **Ninja availability**: Check `ninja --version` - recommended for fast parallel builds
+- **Option names**: Use modern `RTTR_*` options instead of legacy `BUILD_*` names
 
 ### Runtime Issues  
 - **Registration not found**: Ensure `RTTR_REGISTRATION` block is in a compiled .cpp file

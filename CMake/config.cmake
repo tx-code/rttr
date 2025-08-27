@@ -25,21 +25,23 @@
 #                                                                                  #
 ####################################################################################
 
-# setup version numbers
-set(RTTR_VERSION_MAJOR 0)
-set(RTTR_VERSION_MINOR 9)
-set(RTTR_VERSION_PATCH 7)
-set(RTTR_VERSION ${RTTR_VERSION_MAJOR}.${RTTR_VERSION_MINOR}.${RTTR_VERSION_PATCH})
-set(RTTR_VERSION_STR "${RTTR_VERSION_MAJOR}.${RTTR_VERSION_MINOR}.${RTTR_VERSION_PATCH}")
-math(EXPR RTTR_VERSION_CALC "${RTTR_VERSION_MAJOR}*1000 + ${RTTR_VERSION_MINOR}*100 + ${RTTR_VERSION_PATCH}")
+# Version information (now handled by project() command in main CMakeLists.txt)
+# Keep these for backward compatibility and internal calculations
+set(RTTR_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(RTTR_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(RTTR_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(RTTR_VERSION ${PROJECT_VERSION})
+set(RTTR_VERSION_STR "${PROJECT_VERSION}")
+math(EXPR RTTR_VERSION_CALC "${PROJECT_VERSION_MAJOR}*1000 + ${PROJECT_VERSION_MINOR}*100 + ${PROJECT_VERSION_PATCH}")
 set(RTTR_PRODUCT_NAME "RTTR")
-message("Project version: ${RTTR_VERSION_STR}")
+message(STATUS "Project version: ${RTTR_VERSION_STR}")
 
 # files
 set(README_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(LICENSE_FILE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
 
-# dirs where the binaries should be placed, installed
+# Output directories (now handled in main CMakeLists.txt)
+# Keep these for backward compatibility with existing scripts
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")

@@ -25,181 +25,200 @@
 #                                                                                  #
 ####################################################################################
 
-project(rttr LANGUAGES CXX)
+####################################################################################
+# RTTR Core Library - Modern CMake Configuration
+####################################################################################
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
+project(rttr_core LANGUAGES CXX)
 
+# Generate library version variables for backward compatibility
 generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
                                 "RTTR" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
 
+# Load source files using existing function
 loadFolder("rttr" HPP_FILES SRC_FILES BUILD_INSTALLER)
 
-if (USE_PCH)
+####################################################################################
+# Precompiled Headers Setup
+####################################################################################
+
+if(RTTR_USE_PCH)
     activate_precompiled_headers("detail/base/pch.h" SRC_FILES)
 endif()
 
-if (${BUILD_RTTR_DYNAMIC})
+####################################################################################
+# Define common target properties function
+####################################################################################
+
+function(configure_rttr_target target_name)
+    # Set basic properties
+    set_target_properties(${target_name} PROPERTIES
+        VERSION ${RTTR_VERSION}
+        SOVERSION ${RTTR_VERSION_MAJOR}
+        DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED ON
+        CXX_EXTENSIONS OFF
+        CXX_VISIBILITY_PRESET hidden
+        VISIBILITY_INLINES_HIDDEN ON
+    )
+    
+    # Set C++20 as a requirement
+    target_compile_features(${target_name} PUBLIC cxx_std_20)
+    
+    # Set include directories with generator expressions
+    target_include_directories(${target_name} PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
+        $<INSTALL_INTERFACE:include>
+    )
+    
+    # Link system libraries
+    target_link_libraries(${target_name} PRIVATE ${CMAKE_DL_LIBS})
+    
+    # Apply compiler warnings
+    set_compiler_warnings(${target_name})
+    
+    # RTTI configuration - enable RTTI publicly for all consumers
+    if(RTTR_BUILD_WITH_RTTI)
+        if(MSVC)
+            target_compile_options(${target_name} PUBLIC /GR)
+        else()
+            target_compile_options(${target_name} PUBLIC -frtti)
+        endif()
+    else()
+        target_compile_definitions(${target_name} PRIVATE RTTR_NO_RTTI)
+        if(MSVC)
+            target_compile_options(${target_name} PUBLIC /GR-)
+        else()
+            target_compile_options(${target_name} PUBLIC -fno-rtti)
+        endif()
+    endif()
+endfunction()
+
+####################################################################################
+# Shared Library Target
+####################################################################################
+
+if(RTTR_BUILD_SHARED)
     add_library(rttr_core SHARED ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
     add_library(RTTR::Core ALIAS rttr_core)
     
+    # Configure shared library specific properties
     target_compile_definitions(rttr_core PRIVATE RTTR_DLL_EXPORTS)
     target_compile_definitions(rttr_core PUBLIC RTTR_DLL)
-
     
-
-    set_target_properties(rttr_core PROPERTIES
-                          VERSION ${RTTR_VERSION} SOVERSION ${RTTR_VERSION}
-                          EXPORT_NAME Core
-                          DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                          CXX_STANDARD ${MAX_CXX_STANDARD}
-                          CXX_VISIBILITY_PRESET hidden
-                          VISIBILITY_INLINES_HIDDEN 1)
+    # Apply common configuration
+    configure_rttr_target(rttr_core)
     
-    target_link_libraries(rttr_core PRIVATE ${CMAKE_DL_LIBS})
-    target_compile_features(rttr_core PUBLIC cxx_std_20)
-                         
-    target_include_directories(rttr_core PUBLIC
-                               $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../>
-                               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
-                               $<INSTALL_INTERFACE:include>)
-
-    set_compiler_warnings(rttr_core)
+    # Set export name for find_package support
+    set_target_properties(rttr_core PROPERTIES EXPORT_NAME Core)
     
-    if (BUILD_INSTALLER)
-        install(TARGETS rttr_core EXPORT rttr_targets
-                RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
-                LIBRARY       DESTINATION ${RTTR_LIBRARY_INSTALL_DIR}
-                ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
-                FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
-
-        # install also pdb file
+    # Installation
+    if(RTTR_BUILD_INSTALLER)
+        install(TARGETS rttr_core 
+                EXPORT rttr-targets
+                RUNTIME DESTINATION ${RTTR_RUNTIME_INSTALL_DIR} COMPONENT Runtime
+                LIBRARY DESTINATION ${RTTR_LIBRARY_INSTALL_DIR} COMPONENT Runtime  
+                ARCHIVE DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR} COMPONENT Development
+                FRAMEWORK DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR} COMPONENT Runtime
+        )
+        
+        # Install PDB files on Windows
         install_pdb_files(rttr_core)
     endif()
-
 endif()
 
-if (BUILD_STATIC)
-    add_library(rttr_core_lib STATIC ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
-    add_library(RTTR::Core_Lib ALIAS rttr_core_lib)
+####################################################################################
+# Static Library Target  
+####################################################################################
 
+if(RTTR_BUILD_STATIC)
+    add_library(rttr_core_static STATIC ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
+    add_library(RTTR::Core_Static ALIAS rttr_core_static)
     
-
-    set_target_properties(rttr_core_lib PROPERTIES
-                          VERSION ${RTTR_VERSION} SOVERSION ${RTTR_VERSION}
-                          EXPORT_NAME Core_Lib
-                          CXX_STANDARD ${MAX_CXX_STANDARD}
-                          DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX})
-                          
-    target_link_libraries(rttr_core_lib PRIVATE ${CMAKE_DL_LIBS})
-    target_compile_features(rttr_core_lib PUBLIC cxx_std_20)
+    # Apply common configuration
+    configure_rttr_target(rttr_core_static)
     
-    set_target_properties(rttr_core_lib PROPERTIES 
-        OUTPUT_NAME $<IF:$<CXX_COMPILER_ID:MSVC>,librttr_core,rttr_core>)
+    # Set export name and output name
+    set_target_properties(rttr_core_static PROPERTIES 
+        EXPORT_NAME Core_Static
+        OUTPUT_NAME rttr_core
+    )
     
-    target_include_directories(rttr_core_lib PUBLIC
-                                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../>
-                                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
-                                $<INSTALL_INTERFACE:include>)
+    # Static libraries don't need DLL definitions
+    target_compile_definitions(rttr_core_static PUBLIC RTTR_STATIC)
     
-    set_compiler_warnings(rttr_core_lib)
-
-    if (BUILD_INSTALLER)
-        install(TARGETS rttr_core_lib EXPORT rttr_targets
-                RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
-                LIBRARY       DESTINATION ${RTTR_LIBRARY_INSTALL_DIR}
-                ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
-                FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
+    # Installation
+    if(RTTR_BUILD_INSTALLER)
+        install(TARGETS rttr_core_static
+                EXPORT rttr-targets  
+                ARCHIVE DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR} COMPONENT Development
+        )
     endif()
 endif()
 
-if (BUILD_WITH_STATIC_RUNTIME_LIBS)
-    add_library(rttr_core_s SHARED ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
-    add_library(RTTR::Core_STL ALIAS rttr_core_s)
+####################################################################################
+# Static Runtime Library Target (Legacy Support)
+####################################################################################
+
+if(RTTR_BUILD_WITH_STATIC_RUNTIME)
+    add_library(rttr_core_static_runtime SHARED ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
+    add_library(RTTR::Core_StaticRuntime ALIAS rttr_core_static_runtime)
     
-    target_compile_definitions(rttr_core_s PRIVATE RTTR_DLL_EXPORTS)
-    target_compile_definitions(rttr_core_s PUBLIC RTTR_DLL)
-
-    target_include_directories(rttr_core_s PUBLIC
-                               $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../>
-                               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
-                               $<INSTALL_INTERFACE:include>)
-
-    target_link_libraries(rttr_core_s PRIVATE ${CMAKE_DL_LIBS})
-    target_compile_features(rttr_core_s PUBLIC cxx_std_20)
-                               
-    set_target_properties(rttr_core_s PROPERTIES
-                          VERSION ${RTTR_VERSION} SOVERSION ${RTTR_VERSION}
-                          EXPORT_NAME Core_STL
-                          CXX_STANDARD ${MAX_CXX_STANDARD}
-                          DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
-                          CXX_VISIBILITY_PRESET hidden
-                          VISIBILITY_INLINES_HIDDEN 1)
+    # Configure as shared library with static runtime
+    target_compile_definitions(rttr_core_static_runtime PRIVATE RTTR_DLL_EXPORTS)
+    target_compile_definitions(rttr_core_static_runtime PUBLIC RTTR_DLL)
     
-    set_compiler_warnings(rttr_core_s)
-
-    target_compile_options(rttr_core_s PUBLIC 
-        $<$<CXX_COMPILER_ID:MSVC>:/MT$<$<CONFIG:Debug>:d>>)
+    # Apply common configuration
+    configure_rttr_target(rttr_core_static_runtime)
     
-    set_target_properties(rttr_core_s PROPERTIES 
-        LINK_FLAGS "$<$<CXX_COMPILER_ID:GNU>:${GNU_STATIC_LINKER_FLAGS}>$<$<CXX_COMPILER_ID:Clang>:${CLANG_STATIC_LINKER_FLAGS}>")
-
-    if (BUILD_INSTALLER)
-        install_pdb_files(rttr_core_s)
-        install(TARGETS rttr_core_s EXPORT rttr_targets
-                RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
-                LIBRARY       DESTINATION ${RTTR_LIBRARY_INSTALL_DIR}
-                ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
-                FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
+    # Set export name
+    set_target_properties(rttr_core_static_runtime PROPERTIES EXPORT_NAME Core_StaticRuntime)
+    
+    # Configure static runtime linking (compiler-specific)
+    if(MSVC)
+        target_compile_options(rttr_core_static_runtime PRIVATE 
+            $<$<CONFIG:Debug>:/MTd>
+            $<$<CONFIG:Release>:/MT>
+            $<$<CONFIG:RelWithDebInfo>:/MT>
+            $<$<CONFIG:MinSizeRel>:/MT>
+        )
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_link_options(rttr_core_static_runtime PRIVATE ${GNU_STATIC_LINKER_FLAGS})
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_link_options(rttr_core_static_runtime PRIVATE ${CLANG_STATIC_LINKER_FLAGS})
     endif()
     
-    if (BUILD_STATIC)
-        add_library(rttr_core_lib_s STATIC ${UnityBuild} ${SRC_FILES} ${HPP_FILES})
-        add_library(RTTR::Core_Lib_STL ALIAS rttr_core_lib_s)
+    # Installation
+    if(RTTR_BUILD_INSTALLER)
+        install(TARGETS rttr_core_static_runtime
+                EXPORT rttr-targets
+                RUNTIME DESTINATION ${RTTR_RUNTIME_INSTALL_DIR} COMPONENT Runtime
+                LIBRARY DESTINATION ${RTTR_LIBRARY_INSTALL_DIR} COMPONENT Runtime
+                ARCHIVE DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR} COMPONENT Development
+                FRAMEWORK DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR} COMPONENT Runtime
+        )
         
-        
-
-        target_include_directories(rttr_core_lib_s PUBLIC
-                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../>
-                                   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
-                                   $<INSTALL_INTERFACE:include>)
-
-        set_target_properties(rttr_core_lib_s PROPERTIES
-                              VERSION ${RTTR_VERSION} SOVERSION ${RTTR_VERSION}
-                              EXPORT_NAME Core_Lib_STL
-                              CXX_STANDARD ${MAX_CXX_STANDARD}
-                              DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX})
-                              
-        target_link_libraries(rttr_core_lib_s PRIVATE ${CMAKE_DL_LIBS})
-        target_compile_features(rttr_core_lib_s PUBLIC cxx_std_20)
-        set_compiler_warnings(rttr_core_lib_s)
-
-        target_compile_options(rttr_core_lib_s PUBLIC 
-            $<$<CXX_COMPILER_ID:MSVC>:/MT$<$<CONFIG:Debug>:d>>)
-            
-        set_target_properties(rttr_core_lib_s PROPERTIES 
-            OUTPUT_NAME $<IF:$<CXX_COMPILER_ID:MSVC>,librttr_core_s,rttr_core_s>
-            LINK_FLAGS "$<$<CXX_COMPILER_ID:GNU>:${GNU_STATIC_LINKER_FLAGS}>$<$<CXX_COMPILER_ID:Clang>:${CLANG_STATIC_LINKER_FLAGS}>")
-        
-        if (BUILD_INSTALLER)
-            install(TARGETS rttr_core_lib_s EXPORT rttr_targets
-                    RUNTIME       DESTINATION ${RTTR_RUNTIME_INSTALL_DIR}
-                    LIBRARY       DESTINATION ${RTTR_LIBRARY_INSTALL_DIR}
-                    ARCHIVE       DESTINATION ${RTTR_ARCHIVE_INSTALL_DIR}
-                    FRAMEWORK     DESTINATION ${RTTR_FRAMEWORK_INSTALL_DIR})
-        endif()
-
+        install_pdb_files(rttr_core_static_runtime)
     endif()
 endif()
 
+####################################################################################
+# Header Installation
+####################################################################################
 
-if(BUILD_INSTALLER)
-	install(EXPORT rttr_targets
-		DESTINATION ${RTTR_CMAKE_CONFIG_INSTALL_DIR}
-		NAMESPACE RTTR::
-		FILE rttr-config.cmake)
+if(RTTR_BUILD_INSTALLER)
+    # Install headers preserving directory structure
+    foreach(header_file ${HPP_FILES})
+        get_filename_component(header_dir ${header_file} DIRECTORY)
+        install(FILES ${header_file}
+                DESTINATION "include/rttr/${header_dir}"
+                COMPONENT Development
+        )
+    endforeach()
 endif()
 
-
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")
+####################################################################################
+# Summary (only show for main target)
+####################################################################################

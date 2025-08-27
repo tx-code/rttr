@@ -25,22 +25,24 @@
 #                                                                                  #
 ####################################################################################
 
-#############################################
-# Include the core library, unit tests and
-# the benchmarks
-#############################################
+####################################################################################
+# RTTR Source Directories
+# Include core library and optional components
+####################################################################################
 
+# Core RTTR library (always built)
 add_subdirectory(rttr)
 
-if (BUILD_UNIT_TESTS)
+# Optional components
+if(RTTR_BUILD_TESTS)
     add_subdirectory(unit_tests)
 endif()
 
-if (BUILD_BENCHMARKS)
+if(RTTR_BUILD_BENCHMARKS)
     add_subdirectory(benchmarks)
 endif()
 
-if (BUILD_EXAMPLES)
+if(RTTR_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 

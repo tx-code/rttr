@@ -26,67 +26,189 @@
 ####################################################################################
 
 ####################################################################################
-# Welcome to the CMake build system for RTTR( Run Time Type Reflection).           #
-# This is the main file where the general build environment is set-up and the      #
-# the build configuration options are initialized.                                 #
+# Modern CMake build system for RTTR (Run Time Type Reflection)
+# Follows modern CMake best practices with target-based configuration
 ####################################################################################
 
-cmake_minimum_required (VERSION 3.21)
+# Require modern CMake version
+cmake_minimum_required(VERSION 3.21)
 
-project ("rttr" LANGUAGES CXX)
+# Project declaration with version and languages
+project(rttr
+    VERSION 0.9.7
+    LANGUAGES CXX
+    DESCRIPTION "C++ Run Time Type Reflection library"
+    HOMEPAGE_URL "https://github.com/rttrorg/rttr"
+)
 
-# Enable testing if this is the main project
-if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+# Only set policies when we're the main project
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    # Use modern CMake policies
+    cmake_policy(SET CMP0077 NEW)  # option() honors normal variables
+    cmake_policy(SET CMP0079 NEW)  # target_link_libraries() allows use with targets in other directories
+    
+    # Set policy for Boost module removal (CMake 3.30+)
+    if(POLICY CMP0167)
+        cmake_policy(SET CMP0167 NEW)  # The FindBoost module is removed
+    endif()
+    
+    # Enable folder organization in IDEs
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    
+    # Enable testing support
     include(CTest)
+    
+    # Set default build type if not specified
+    if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+        set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING
+            "Choose the type of build: Debug Release RelWithDebInfo MinSizeRel" FORCE)
+        set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+            "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
+    endif()
+    
+    # Use C++20 standard without compiler extensions
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
+# Add CMake module path
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 
-if (CMAKE_BUILD_TYPE STREQUAL "")
-  # CMake defaults to leaving CMAKE_BUILD_TYPE empty. This screws up
-  # differentiation between debug and release builds.
-  set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
-endif ()
+####################################################################################
+# Project Options (use modern option approach)
+####################################################################################
 
-# our little cmake helper functions
-include(utility)
+# Core library options
+option(RTTR_BUILD_SHARED "Build shared/dynamic library" ON)
+option(RTTR_BUILD_STATIC "Build static library" OFF)
+option(RTTR_BUILD_WITH_RTTI "Enable C++ RTTI support" ON)
+option(RTTR_BUILD_WITH_STATIC_RUNTIME "Link against static runtime libraries" OFF)
 
-# set up option variable for cmake
-option(BUILD_RTTR_DYNAMIC "Build the dynamic/shared version of RTTR library" ON)
-option(BUILD_UNIT_TESTS "Build the unit tests of RTTR" ON)
-option(BUILD_STATIC "Build RTTR as static library" OFF)
-option(BUILD_WITH_STATIC_RUNTIME_LIBS "Link against the static runtime libraries" OFF)
-option(BUILD_WITH_RTTI "Enable build with C++ runtime type information for compilation" ON)
-option(BUILD_EXAMPLES "Enable this to build the examples" On)
-option(BUILD_DOCUMENTATION "Enable this to build the documentation" ON)
-option(BUILD_INSTALLER "Enable this to build the installer" ON)
-option(BUILD_PACKAGE "Enable this to build the installer" ON)
-option(USE_PCH "Use precompiled header files for compilation" ON)
-option(CUSTOM_DOXYGEN_STYLE "Enable this option to use a custom doxygen style for HTML documentation; Otherwise the default will be used" ON)
-option(BUILD_WEBSITE_DOCU "Enable this option to create the special docu for the website" OFF)
+# Feature options
+option(RTTR_BUILD_TESTS "Build unit tests" ON)
+option(RTTR_BUILD_EXAMPLES "Build examples" ON)
+option(RTTR_BUILD_BENCHMARKS "Build benchmarks" ON)
+option(RTTR_BUILD_DOCUMENTATION "Build documentation" ON)
 
-# one precompiled headers cannot be used for multiple ninja targets
-# thats why we have to disable this option, when BUILD_STATIC or
-# BUILD_WITH_STATIC_RUNTIME_LIBS is ON (every target will create the same PCH.pch file)
-# to get it working, we need the feature to enable different source properties
-# for different targets
-if (USE_PCH)
-  if (BUILD_STATIC OR BUILD_WITH_STATIC_RUNTIME_LIBS)
-    set(USE_PCH FALSE)
-  endif()
+# Development options
+option(RTTR_USE_PCH "Use precompiled headers" ON)
+option(RTTR_BUILD_INSTALLER "Build installer package" ON)
+option(RTTR_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+
+# Doxygen options
+option(RTTR_CUSTOM_DOXYGEN_STYLE "Use custom doxygen style" ON)
+option(RTTR_BUILD_WEBSITE_DOCS "Build documentation for website" OFF)
+
+####################################################################################
+# Validate options and set derived variables
+####################################################################################
+
+# Disable PCH for multiple target configurations (Ninja limitation)
+if(RTTR_USE_PCH AND (RTTR_BUILD_STATIC OR RTTR_BUILD_WITH_STATIC_RUNTIME))
+    message(STATUS "Disabling PCH due to multiple target build")
+    set(RTTR_USE_PCH OFF)
 endif()
 
-include(config)
-include(3rd_party_libs)
-
-if (BUILD_PACKAGE)
-    include(installer)
+# Ensure at least one library type is built
+if(NOT RTTR_BUILD_SHARED AND NOT RTTR_BUILD_STATIC)
+    message(STATUS "No library type specified, enabling shared library")
+    set(RTTR_BUILD_SHARED ON)
 endif()
 
-# here we add our source code
+####################################################################################
+# Load configuration modules
+####################################################################################
+
+include(utility)        # Helper functions
+include(config)         # Version and paths configuration
+include(3rd_party_libs) # External dependencies
+
+####################################################################################
+# Global compiler settings (avoid directory-level commands when possible)
+####################################################################################
+
+# Set output directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
+
+####################################################################################
+# Add subdirectories
+####################################################################################
+
+# Core library
 add_subdirectory(src)
-# and the documentation
-if (BUILD_DOCUMENTATION)
+
+# Optional components
+if(RTTR_BUILD_DOCUMENTATION AND CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     add_subdirectory(doc)
+endif()
+
+####################################################################################
+# Export and installation (only for main project)
+####################################################################################
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND RTTR_BUILD_INSTALLER)
+    include(installer)
+    
+    # Create and install CMake config files
+    include(CMakePackageConfigHelpers)
+    
+    # Generate version file
+    write_basic_package_version_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/rttr-config-version.cmake"
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+    
+    # Generate config file
+    configure_package_config_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/CMake/rttr-config.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/rttr-config.cmake"
+        INSTALL_DESTINATION "${RTTR_CMAKE_CONFIG_INSTALL_DIR}"
+    )
+    
+    # Install config files
+    install(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/rttr-config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/rttr-config-version.cmake"
+        DESTINATION "${RTTR_CMAKE_CONFIG_INSTALL_DIR}"
+        COMPONENT Development
+    )
+    
+    # Export targets
+    install(EXPORT rttr-targets
+        FILE rttr-targets.cmake
+        NAMESPACE RTTR::
+        DESTINATION "${RTTR_CMAKE_CONFIG_INSTALL_DIR}"
+        COMPONENT Development
+    )
+    
+    # Install license and readme
+    install(FILES
+        "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt"
+        "${CMAKE_CURRENT_SOURCE_DIR}/README.md"
+        DESTINATION "${RTTR_ADDITIONAL_FILES_INSTALL_DIR}"
+        COMPONENT Documentation
+    )
+endif()
+
+####################################################################################
+# Summary
+####################################################################################
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    message(STATUS "")
+    message(STATUS "RTTR ${PROJECT_VERSION} Configuration Summary:")
+    message(STATUS "  Build type:       ${CMAKE_BUILD_TYPE}")
+    message(STATUS "  Shared library:   ${RTTR_BUILD_SHARED}")
+    message(STATUS "  Static library:   ${RTTR_BUILD_STATIC}")
+    message(STATUS "  Unit tests:       ${RTTR_BUILD_TESTS}")
+    message(STATUS "  Examples:         ${RTTR_BUILD_EXAMPLES}")
+    message(STATUS "  Benchmarks:       ${RTTR_BUILD_BENCHMARKS}")
+    message(STATUS "  Documentation:    ${RTTR_BUILD_DOCUMENTATION}")
+    message(STATUS "  C++ Standard:     ${CMAKE_CXX_STANDARD}")
+    message(STATUS "  PCH enabled:      ${RTTR_USE_PCH}")
+    message(STATUS "")
 endif()

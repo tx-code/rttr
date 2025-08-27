@@ -27,8 +27,6 @@
 
 project(bench_rttr_cast LANGUAGES CXX)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
 
 generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
                                 "Benchmark rttr_cast" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
@@ -170,5 +168,3 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
     endif()
 endif()
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")

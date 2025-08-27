@@ -27,8 +27,6 @@
 
 project(unit_test_plugin LANGUAGES CXX)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
 
 set(HPP_FILES "")
 set(SRC_FILES "")
@@ -54,5 +52,3 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(unit_test_plugin PRIVATE "-fno-gnu-unique")
 endif()
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")

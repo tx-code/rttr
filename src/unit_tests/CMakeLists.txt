@@ -32,8 +32,6 @@ set(SRC_FILES "")
 
 project(unit_tests LANGUAGES CXX)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
 
 generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
                                 "RTTR unit_tests" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
@@ -61,7 +59,7 @@ if (MSVC)
 endif()
 
 # Configure CTest integration
-if (CMAKE_PROJECT_NAME STREQUAL "rttr" AND BUILD_UNIT_TESTS)
+if (CMAKE_PROJECT_NAME STREQUAL "rttr" AND RTTR_BUILD_TESTS)
     # Enable testing and include Catch2 test discovery
     enable_testing()
     include(Catch)
@@ -95,5 +93,3 @@ add_subdirectory(plugin)
 
 add_dependencies(unit_tests unit_test_plugin)
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")

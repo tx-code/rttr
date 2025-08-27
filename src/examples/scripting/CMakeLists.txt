@@ -27,8 +27,8 @@
 
 project(scripting_example LANGUAGES CXX)
 
-message(STATUS "Scanning "  ${PROJECT_NAME} " module.")
-message(STATUS "===========================")
+# Find required packages
+find_package(Threads REQUIRED)
 
 generateLibraryVersionVariables(${RTTR_VERSION_MAJOR} ${RTTR_VERSION_MINOR} ${RTTR_VERSION_PATCH}
                                 "RTTR Examples: scripting binding" "Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>" "MIT License")
@@ -47,6 +47,20 @@ target_compile_definitions(scripting_example PRIVATE
     _SILENCE_CXX20_IS_POD_DEPRECATION_WARNING
     _SILENCE_ALL_CXX20_DEPRECATION_WARNINGS)
 
+# Suppress ChaiScript-specific warnings
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(scripting_example PRIVATE 
+        -Wno-defaulted-function-deleted
+    )
+elseif(MSVC)
+    target_compile_options(scripting_example PRIVATE 
+        /wd4624  # destructor was implicitly defined as deleted
+        /wd4625  # copy constructor was implicitly defined as deleted  
+        /wd4626  # assignment operator was implicitly defined as deleted
+        /wd5267  # implicit copy constructor is deprecated
+    )
+endif()
+
 set_target_properties(scripting_example 
                        PROPERTIES DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                                   FOLDER "Examples"
@@ -64,5 +78,3 @@ endif()
 
 add_dependencies(examples scripting_example)
 
-message(STATUS "Scanning " ${PROJECT_NAME} " module finished!")
-message(STATUS "")
