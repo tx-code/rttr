@@ -31,9 +31,15 @@
 # the build configuration options are initialized.                                 #
 ####################################################################################
 
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.21)
 
 project ("rttr" LANGUAGES CXX)
+
+# Enable testing if this is the main project
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    include(CTest)
+endif()
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 

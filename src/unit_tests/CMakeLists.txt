@@ -44,8 +44,10 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
+find_package(Catch2 CONFIG REQUIRED)
+
 add_executable(unit_tests ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(unit_tests RTTR::Core unit_test_base Catch2::Catch)
+target_link_libraries(unit_tests RTTR::Core unit_test_base Catch2::Catch2WithMain)
 add_dependencies(unit_tests RTTR::Core)
 set_target_properties(unit_tests PROPERTIES DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                                             FOLDER "Testing"
@@ -58,14 +60,36 @@ if (MSVC)
     target_compile_options(unit_tests PRIVATE /bigobj)
 endif()
 
-# run tests
-add_custom_target(run_tests ALL
-                  COMMAND ${CMAKE_COMMAND} -E env LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/lib "$<TARGET_FILE:unit_tests>"
-                  DEPENDS unit_tests
-                  COMMENT "Running unit_tests")
+# Configure CTest integration
+if (CMAKE_PROJECT_NAME STREQUAL "rttr" AND BUILD_UNIT_TESTS)
+    # Enable testing and include Catch2 test discovery
+    enable_testing()
+    include(Catch)
+    
+    # Set test properties for better execution
+    set(RTTR_TEST_PROPERTIES
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        ENVIRONMENT "PATH=$<TARGET_FILE_DIR:unit_tests>;$ENV{PATH}"
+    )
+    
+    # Windows DLL handling
+    if(WIN32)
+        list(APPEND RTTR_TEST_PROPERTIES
+            ENVIRONMENT "PATH=$<TARGET_FILE_DIR:unit_test_base>;$<TARGET_FILE_DIR:RTTR::Core>;$ENV{PATH}")
+    endif()
+    
+    # Create test results directory
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/test_results")
+    
+    # Discover Catch2 tests automatically
+    catch_discover_tests(unit_tests
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        PROPERTIES ${RTTR_TEST_PROPERTIES}
+    )
+    
+    message(STATUS "CTest integration enabled for unit_tests")
+endif()
 
-set_target_properties(run_tests PROPERTIES
-                                FOLDER "Testing")
 
 add_subdirectory(plugin)
 

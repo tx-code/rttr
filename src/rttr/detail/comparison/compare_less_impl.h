@@ -32,6 +32,12 @@
 #include "rttr/detail/comparison/compare_array_less.h"
 #include <type_traits>
 
+// Suppress function pointer comparison warnings
+#if RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wordered-compare-function-pointers"
+#endif
+
 namespace rttr
 {
 namespace detail
@@ -70,5 +76,9 @@ compare_less_than(const T& lhs, const T& rhs, int& result)
 
 } // end namespace detail
 } // end namespace rttr
+
+#if RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
+#   pragma clang diagnostic pop
+#endif
 
 #endif // RTTR_COMPARE_LESS_IMPL_H_

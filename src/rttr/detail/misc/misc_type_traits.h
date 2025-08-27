@@ -612,6 +612,10 @@ namespace detail
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////
     // checks whether the given type T has a less than operator
+#if RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wordered-compare-function-pointers"
+#endif
     template<typename T, typename = decltype(std::declval<T>() < std::declval<T>() )>
     std::true_type  supports_less_than_test(const T&);
     std::false_type supports_less_than_test(...);
@@ -619,6 +623,9 @@ namespace detail
     template<typename T>
     struct has_less_than_operator : std::integral_constant<bool, std::is_same<std::true_type,
                                                                              decltype(supports_less_than_test(std::declval<T>()))>::value> {};
+#if RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
+#   pragma clang diagnostic pop
+#endif
 
     /////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////

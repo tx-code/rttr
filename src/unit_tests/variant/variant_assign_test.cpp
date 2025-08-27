@@ -25,7 +25,7 @@
 *                                                                                   *
 *************************************************************************************/
 
-#include <catch/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <rttr/type>
 
@@ -153,7 +153,10 @@ TEST_CASE("variant::operator=() - self assignment", "[variant]")
     SECTION("self assign - empty")
     {
         variant a;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wself-assign-overloaded"
         a = a;
+#pragma clang diagnostic pop
 
         CHECK(a.is_valid() == false);
     }
@@ -161,7 +164,10 @@ TEST_CASE("variant::operator=() - self assignment", "[variant]")
     SECTION("self assign - full")
     {
         variant a = 1;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wself-assign-overloaded"
         a = a;
+#pragma clang diagnostic pop
 
         CHECK(a.is_valid() == true);
     }

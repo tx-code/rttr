@@ -31,6 +31,12 @@
 #include "rttr/detail/base/core_prerequisites.h"
 #include <limits>
 
+// Suppress precision loss warnings for intentional conversions
+#if RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
+#   pragma clang diagnostic push
+#   pragma clang diagnostic ignored "-Wimplicit-const-int-float-conversion"
+#endif
+
 namespace rttr
 {
 namespace detail
@@ -177,5 +183,9 @@ convert_to(const F& from, T& to)
 
 } // end namespace detail
 } // end namespace rttr
+
+#if RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
+#   pragma clang diagnostic pop
+#endif
 
 #endif // RTTR_NUMBER_CONVERSION_H_

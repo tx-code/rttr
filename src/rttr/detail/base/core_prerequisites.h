@@ -126,6 +126,10 @@ namespace rttr
 #       define RTTR_HELPER_DLL_EXPORT
 #       define RTTR_HELPER_DLL_LOCAL
 #   endif
+#elif (RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG) && defined(_WIN32)
+#     define RTTR_HELPER_DLL_IMPORT __declspec( dllimport )
+#     define RTTR_HELPER_DLL_EXPORT __declspec( dllexport )
+#     define RTTR_HELPER_DLL_LOCAL
 #elif RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
 #       define RTTR_HELPER_DLL_IMPORT __attribute__ ((visibility ("default")))
 #       define RTTR_HELPER_DLL_EXPORT __attribute__ ((visibility ("default")))
