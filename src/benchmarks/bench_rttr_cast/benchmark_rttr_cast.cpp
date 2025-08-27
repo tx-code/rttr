@@ -29,8 +29,7 @@
 
 #include <rttr/type>
 
-#include <nonius/nonius.h++>
-#include <nonius/html_group_reporter.h>
+#include <nanobench.h>
 
 #include <iostream>
 #include <memory>
@@ -215,235 +214,205 @@ bench_data<ClassMultiple6A> setup_cross_cast_class_hierachy_2()
 /////////////////////////////////////////////////////////////////////////////////////////
 
 
-nonius::benchmark bench_level_1_dynamic_cast()
+void bench_level_1_dynamic_cast()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        const bench_data_single_base bench_data = setup_level_1();
+    const bench_data_single_base bench_data = setup_level_1();
+    ankerl::nanobench::Bench().run("level 1 dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (dynamic_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_level_1_rttr_cast()
+void bench_level_1_rttr_cast()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        bench_data_single_base bench_data = setup_level_1();
+    bench_data_single_base bench_data = setup_level_1();
+    ankerl::nanobench::Bench().run("level 1 rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (rttr_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_level_3_dynamic_cast()
+void bench_level_3_dynamic_cast()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        bench_data_single_base bench_data = setup_level_3();
+    bench_data_single_base bench_data = setup_level_3();
+    ankerl::nanobench::Bench().run("level 3 dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassSingle3A*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<ClassSingle3A*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle3B*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle3C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle3D*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle3E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (dynamic_cast<ClassSingle3B*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle3C*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle3D*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle3E*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_level_3_rttr_cast()
+void bench_level_3_rttr_cast()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        bench_data_single_base bench_data = setup_level_3();
+    bench_data_single_base bench_data = setup_level_3();
+    ankerl::nanobench::Bench().run("level 3 rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassSingle3A*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassSingle3A*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle3B*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle3C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle3D*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle3E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (rttr_cast<ClassSingle3B*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle3C*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle3D*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle3E*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_level_6_dynamic_cast()
+void bench_level_6_dynamic_cast()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        bench_data_single_base bench_data = setup_level_6();
+    bench_data_single_base bench_data = setup_level_6();
+    ankerl::nanobench::Bench().run("level 6 dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassSingle6A*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<ClassSingle6A*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle6B*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle6C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle6D*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle6E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (dynamic_cast<ClassSingle6B*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle6C*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle6D*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle6E*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_level_6_rttr_cast()
+void bench_level_6_rttr_cast()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        bench_data_single_base bench_data = setup_level_6();
+    bench_data_single_base bench_data = setup_level_6();
+    ankerl::nanobench::Bench().run("level 6 rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassSingle6A*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassSingle6A*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle6B*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle6C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle6D*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle6E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (rttr_cast<ClassSingle6B*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle6C*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle6D*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle6E*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
@@ -451,188 +420,158 @@ nonius::benchmark bench_level_6_rttr_cast()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_virtual_inheritance_level_1_dynamic_cast()
+void bench_virtual_inheritance_level_1_dynamic_cast()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        bench_data_virtual bench_data = setup_virtual_inheritance_level_1();
+    bench_data_virtual bench_data = setup_virtual_inheritance_level_1();
+    ankerl::nanobench::Bench().run("virtual inheritance level 1 dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassDiamondLeft1*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<ClassDiamondLeft1*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassDiamondMiddle1*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassDiamondRight1*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (dynamic_cast<ClassDiamondMiddle1*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassDiamondRight1*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_virtual_inheritance_level_1_rttr_cast()
+void bench_virtual_inheritance_level_1_rttr_cast()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        bench_data_virtual bench_data = setup_virtual_inheritance_level_1();
+    bench_data_virtual bench_data = setup_virtual_inheritance_level_1();
+    ankerl::nanobench::Bench().run("virtual inheritance level 1 rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassDiamondLeft1*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassDiamondLeft1*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassDiamondMiddle1*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassDiamondRight1*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (rttr_cast<ClassDiamondMiddle1*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassDiamondRight1*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_virtual_inheritance_level_3_dynamic_cast()
+void bench_virtual_inheritance_level_3_dynamic_cast()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        bench_data_virtual bench_data = setup_virtual_inheritance_level_3();
+    bench_data_virtual bench_data = setup_virtual_inheritance_level_3();
+    ankerl::nanobench::Bench().run("virtual inheritance level 3 dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassDiamondLeft3*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<ClassDiamondLeft3*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassDiamondMiddle3*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassDiamondRight3*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (dynamic_cast<ClassDiamondMiddle3*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassDiamondRight3*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_virtual_inheritance_level_3_rttr_cast()
+void bench_virtual_inheritance_level_3_rttr_cast()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        bench_data_virtual bench_data = setup_virtual_inheritance_level_3();
+    bench_data_virtual bench_data = setup_virtual_inheritance_level_3();
+    ankerl::nanobench::Bench().run("virtual inheritance level 3 rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassDiamondLeft3*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassDiamondLeft3*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassDiamondMiddle3*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassDiamondRight3*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (rttr_cast<ClassDiamondMiddle3*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassDiamondRight3*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_virtual_inheritance_level_6_dynamic_cast()
+void bench_virtual_inheritance_level_6_dynamic_cast()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        bench_data_virtual bench_data = setup_virtual_inheritance_level_6();
+    bench_data_virtual bench_data = setup_virtual_inheritance_level_6();
+    ankerl::nanobench::Bench().run("virtual inheritance level 6 dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassDiamondLeft6*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<ClassDiamondLeft6*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassDiamondMiddle6*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassDiamondRight6*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (dynamic_cast<ClassDiamondMiddle6*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassDiamondRight6*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_virtual_inheritance_level_6_rttr_cast()
+void bench_virtual_inheritance_level_6_rttr_cast()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        bench_data_virtual bench_data = setup_virtual_inheritance_level_6();
+    bench_data_virtual bench_data = setup_virtual_inheritance_level_6();
+    ankerl::nanobench::Bench().run("virtual inheritance level 6 rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassDiamondLeft6*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassDiamondLeft6*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassDiamondMiddle6*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassDiamondRight6*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (rttr_cast<ClassDiamondMiddle6*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassDiamondRight6*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
@@ -640,47 +579,37 @@ nonius::benchmark bench_virtual_inheritance_level_6_rttr_cast()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_multiple_inheritance_dynamic_cast()
+void bench_multiple_inheritance_dynamic_cast()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        auto bench_data = setup_multiple_class_hierachy();
+    auto bench_data = setup_multiple_class_hierachy();
+    ankerl::nanobench::Bench().run("multiple inheritance dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<FinalClass*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<FinalClass*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_multiple_inheritance_rttr_cast()
+void bench_multiple_inheritance_rttr_cast()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        auto bench_data = setup_multiple_class_hierachy();
+    auto bench_data = setup_multiple_class_hierachy();
+    ankerl::nanobench::Bench().run("multiple inheritance rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<FinalClass*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<FinalClass*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
@@ -688,93 +617,73 @@ nonius::benchmark bench_multiple_inheritance_rttr_cast()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_cross_cast_dynamic_cast_1()
+void bench_cross_cast_dynamic_cast_1()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        auto bench_data = setup_cross_cast_class_hierachy_1();
+    auto bench_data = setup_cross_cast_class_hierachy_1();
+    ankerl::nanobench::Bench().run("cross cast 1 dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassMultiple3C*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<ClassMultiple3C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_cross_cast_rttr_cast_1()
+void bench_cross_cast_rttr_cast_1()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        auto bench_data = setup_cross_cast_class_hierachy_1();
+    auto bench_data = setup_cross_cast_class_hierachy_1();
+    ankerl::nanobench::Bench().run("cross cast 1 rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassMultiple3C*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassMultiple3C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_cross_cast_dynamic_cast_2()
+void bench_cross_cast_dynamic_cast_2()
 {
-    return nonius::benchmark("dynamic_cast", [](nonius::chronometer meter)
-    {
-        auto bench_data = setup_cross_cast_class_hierachy_2();
+    auto bench_data = setup_cross_cast_class_hierachy_2();
+    ankerl::nanobench::Bench().run("cross cast 2 dynamic_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassMultiple6E*>(bench_data.m_vec[i].get()))
             {
-                if (dynamic_cast<ClassMultiple6E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_cross_cast_rttr_cast_2()
+void bench_cross_cast_rttr_cast_2()
 {
-    return nonius::benchmark("rttr_cast", [](nonius::chronometer meter)
-    {
-        auto bench_data = setup_cross_cast_class_hierachy_2();
+    auto bench_data = setup_cross_cast_class_hierachy_2();
+    ankerl::nanobench::Bench().run("cross cast 2 rttr_cast", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassMultiple6E*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassMultiple6E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
@@ -783,79 +692,69 @@ nonius::benchmark bench_cross_cast_rttr_cast_2()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_level_6_typeid()
+void bench_level_6_typeid()
 {
-    return nonius::benchmark("typeid", [](nonius::chronometer meter)
-    {
-        bench_data_single_base bench_data = setup_level_6();
+    bench_data_single_base bench_data = setup_level_6();
+    ankerl::nanobench::Bench().run("level 6 typeid", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (dynamic_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
             {
-                if ( dynamic_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (dynamic_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (dynamic_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (dynamic_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_level_6_type()
+void bench_level_6_type()
 {
-    return nonius::benchmark("type", [](nonius::chronometer meter)
-    {
-        bench_data_single_base bench_data = setup_level_6();
+    bench_data_single_base bench_data = setup_level_6();
+    ankerl::nanobench::Bench().run("level 6 type", [&]() {
         volatile std::size_t value = 0;
-        meter.measure([&]()
+        for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
         {
-            for (std::size_t i = 0; i < bench_data.m_vec.size(); ++i)
+            if (rttr_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
             {
-                if (rttr_cast<ClassSingle1A*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
-                else if (rttr_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
-                {
-                    value += 1;
-                }
+                value += 1;
             }
-
-            return value;
-        });
+            else if (rttr_cast<ClassSingle1B*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle1C*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle1D*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+            else if (rttr_cast<ClassSingle1E*>(bench_data.m_vec[i].get()))
+            {
+                value += 1;
+            }
+        }
+        ankerl::nanobench::doNotOptimizeAway(static_cast<std::size_t>(value));
     });
 }
 
@@ -867,58 +766,51 @@ nonius::benchmark bench_level_6_type()
 
 void start_rttr_cast_benchmark()
 {
-    nonius::configuration cfg;
-    cfg.title = "dynamic_cast vs. rttr_cast";
+    std::cout << "dynamic_cast vs. rttr_cast Benchmark" << std::endl;
+    std::cout << "====================================" << std::endl;
 
-    nonius::html_group_reporter reporter;
-    reporter.set_output_file("benchmark_dynamic_cast_vs_rttr_cast.html");
+    std::cout << "\nDowncast to level 1 - A cast from the base class one hierarchy level down:" << std::endl;
+    bench_level_1_dynamic_cast();
+    bench_level_1_rttr_cast();
 
-    reporter.set_current_group_name("downcast to level 1", "A cast from the base class one hierarchy level down.");
-    nonius::benchmark benchmarks_group_1[] = { bench_level_1_dynamic_cast(), bench_level_1_rttr_cast() };
-    nonius::go(cfg, std::begin(benchmarks_group_1), std::end(benchmarks_group_1), reporter);
+    std::cout << "\nDowncast to level 3 - A cast from the base class three hierarchy levels down:" << std::endl;
+    bench_level_3_dynamic_cast();
+    bench_level_3_rttr_cast();
 
-    reporter.set_current_group_name("downcast to level 3", "A cast from the base class three hierarchy levels down.");
-    nonius::benchmark benchmarks_group_2[] = { bench_level_3_dynamic_cast(), bench_level_3_rttr_cast() };
-    nonius::go(cfg, std::begin(benchmarks_group_2), std::end(benchmarks_group_2), reporter);
+    std::cout << "\nDowncast to level 6 - A cast from the base class six hierarchy levels down:" << std::endl;
+    bench_level_6_dynamic_cast();
+    bench_level_6_rttr_cast();
 
-    reporter.set_current_group_name("downcast to level 6", "A cast from the base class six hierarchy levels down.");
-    nonius::benchmark benchmarks_group_3[] = { bench_level_6_dynamic_cast(), bench_level_6_rttr_cast() };
-    nonius::go(cfg, std::begin(benchmarks_group_3), std::end(benchmarks_group_3), reporter);
+    std::cout << "\nVirtual inheritance level 1 - A cast from virtual base class one hierarchy level down:" << std::endl;
+    bench_virtual_inheritance_level_1_dynamic_cast();
+    bench_virtual_inheritance_level_1_rttr_cast();
 
-    ///////////////////////////////////////////////////////////////////////////////
+    std::cout << "\nVirtual inheritance level 3 - A cast from virtual base class three hierarchy levels down:" << std::endl;
+    bench_virtual_inheritance_level_3_dynamic_cast();
+    bench_virtual_inheritance_level_3_rttr_cast();
 
-    reporter.set_current_group_name("virtual inheritance level 1", "A cast from virtual base class one hierarchy levels down.");
-    nonius::benchmark benchmarks_group_4[] = { bench_virtual_inheritance_level_1_dynamic_cast(), bench_virtual_inheritance_level_1_rttr_cast() };
-    nonius::go(cfg, std::begin(benchmarks_group_4), std::end(benchmarks_group_4), reporter);
+    std::cout << "\nVirtual inheritance level 6 - A cast from virtual base class six hierarchy levels down:" << std::endl;
+    bench_virtual_inheritance_level_6_dynamic_cast();
+    bench_virtual_inheritance_level_6_rttr_cast();
 
-    reporter.set_current_group_name("virtual inheritance level 3", "A cast from virtual base class three hierarchy levels down.");
-    nonius::benchmark benchmarks_group_5[] = { bench_virtual_inheritance_level_3_dynamic_cast(), bench_virtual_inheritance_level_3_rttr_cast() };
-    nonius::go(cfg, std::begin(benchmarks_group_5), std::end(benchmarks_group_5), reporter);
+    std::cout << "\nMultiple inheritance - A cast from virtual base class to the most derived class:" << std::endl;
+    bench_multiple_inheritance_dynamic_cast();
+    bench_multiple_inheritance_rttr_cast();
 
-    reporter.set_current_group_name("virtual inheritance level 6", "A cast from virtual base class six hierarchy levels down.");
-    nonius::benchmark benchmarks_group_6[] = { bench_virtual_inheritance_level_6_dynamic_cast(), bench_virtual_inheritance_level_6_rttr_cast() };
-    nonius::go(cfg, std::begin(benchmarks_group_6), std::end(benchmarks_group_6), reporter);
+    std::cout << "\nCross cast 1 - A cross cast in the 4th hierarchy level to the third class:" << std::endl;
+    bench_cross_cast_dynamic_cast_1();
+    bench_cross_cast_rttr_cast_1();
 
-    ///////////////////////////////////////////////////////////////////////////////
+    std::cout << "\nCross cast 2 - A cross cast in the 7th hierarchy level to the fifth class:" << std::endl;
+    bench_cross_cast_dynamic_cast_2();
+    bench_cross_cast_rttr_cast_2();
 
-    reporter.set_current_group_name("multiple inheritance", "A cast from virtual base class to the most derived class,<br>which itself is derived from 5 other classes (all 7 hierarchy levels deep).");
-    nonius::benchmark benchmarks_group_7[] = { bench_multiple_inheritance_dynamic_cast(), bench_multiple_inheritance_rttr_cast() };
-    nonius::go(cfg, std::begin(benchmarks_group_7), std::end(benchmarks_group_7), reporter);
+    std::cout << "\nAdditional benchmarks:" << std::endl;
+    bench_level_6_typeid();
+    bench_level_6_type();
 
-    ///////////////////////////////////////////////////////////////////////////////
-
-    reporter.set_current_group_name("cross cast 1", "A cross cast in the 4th hierarchy level (out of 8)<br>to the third (out of 5 class wide hierarchy).");
-    nonius::benchmark benchmarks_group_8[] = { bench_cross_cast_dynamic_cast_1(), bench_cross_cast_rttr_cast_1() };
-    nonius::go(cfg, std::begin(benchmarks_group_8), std::end(benchmarks_group_8), reporter);
-
-
-    reporter.set_current_group_name("cross cast 2", "A cross cast in the 7th hierarchy level (out of 8)<br>to the fifth (out of 5 class wide hierarchy).");
-    nonius::benchmark benchmarks_group_9[] = { bench_cross_cast_dynamic_cast_2(), bench_cross_cast_rttr_cast_2() };
-    nonius::go(cfg, std::begin(benchmarks_group_9), std::end(benchmarks_group_9), reporter);
-
-    reporter.generate_report();
+    std::cout << "\nBenchmarks completed!" << std::endl;
 }
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////

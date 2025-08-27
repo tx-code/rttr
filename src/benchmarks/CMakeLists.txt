@@ -25,10 +25,12 @@
 #                                                                                  #
 ####################################################################################
 
-if (Boost_FOUND)
+find_package(nanobench CONFIG REQUIRED)
+if(nanobench_FOUND)
     add_subdirectory (bench_method)
     add_subdirectory (bench_rttr_cast)
     add_subdirectory (bench_variant)
+    message(STATUS "Found nanobench - benchmark projects created.")
 else()
-    message(STATUS "Boost was not found - NO benchmark projectes created.")
+    message(STATUS "nanobench was not found - NO benchmark projects created.")
 endif()

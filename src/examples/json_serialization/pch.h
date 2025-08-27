@@ -45,8 +45,6 @@
 #include <type_traits>
 
 #include <rttr/registration>
-#define RAPIDJSON_HAS_STDSTRING 1
-#include <rapidjson/prettywriter.h>
-#include <rapidjson/document.h>
+#include <nlohmann/json.hpp>
 
 #include <chrono>

@@ -23,7 +23,7 @@
 *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE   *
 *   SOFTWARE.                                                                       *
 *                                                                                   *
-*************************************************************************************/
+************************************************************************************/
 
 #include <cstdio>
 #include <string>
@@ -32,79 +32,53 @@
 
 #include <iostream>
 
-#define RAPIDJSON_HAS_STDSTRING 1
-#include <rapidjson/prettywriter.h> // for stringify JSON
-#include <rapidjson/document.h>     // rapidjson's DOM-style API
+#include <nlohmann/json.hpp>
 #include <rttr/type>
 
-using namespace rapidjson;
+using json = nlohmann::json;
 using namespace rttr;
-
 
 namespace
 {
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void fromjson_recursively(instance obj, Value& json_object);
+void fromjson_recursively(instance obj, const json& json_object);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant extract_basic_types(Value& json_value)
+variant extract_basic_types(const json& json_value)
 {
-    switch(json_value.GetType())
-    {
-        case kStringType:
-        {
-            return std::string(json_value.GetString());
-            break;
-        }
-        case kNullType:     break;
-        case kFalseType:
-        case kTrueType:
-        {
-            return json_value.GetBool();
-            break;
-        }
-        case kNumberType:
-        {
-            if (json_value.IsInt())
-                return json_value.GetInt();
-            else if (json_value.IsDouble())
-                return json_value.GetDouble();
-            else if (json_value.IsUint())
-                return json_value.GetUint();
-            else if (json_value.IsInt64())
-                return json_value.GetInt64();
-            else if (json_value.IsUint64())
-                return json_value.GetUint64();
-            break;
-        }
-        // we handle only the basic types here
-        case kObjectType:
-        case kArrayType: return variant();
-    }
-
+    if (json_value.is_boolean())
+        return json_value.get<bool>();
+    else if (json_value.is_number_integer())
+        return json_value.get<int64_t>();
+    else if (json_value.is_number_unsigned()) 
+        return json_value.get<uint64_t>();
+    else if (json_value.is_number_float())
+        return json_value.get<double>();
+    else if (json_value.is_string())
+        return json_value.get<std::string>();
+    
     return variant();
 }
 
-
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static void write_array_recursively(variant_sequential_view& view, Value& json_array_value)
+static void write_array_recursively(variant_sequential_view& view, const json& json_array_value)
 {
-    view.set_size(json_array_value.Size());
-    const type array_value_type = view.get_rank_type(1);
+    view.set_size(json_array_value.size());
+    const type array_value_type = view.get_value_type();
 
-    for (SizeType i = 0; i < json_array_value.Size(); ++i)
+    for (size_t i = 0; i < json_array_value.size(); ++i)
     {
         auto& json_index_value = json_array_value[i];
-        if (json_index_value.IsArray())
+        if (json_index_value.is_array())
         {
             auto sub_array_view = view.get_value(i).create_sequential_view();
             write_array_recursively(sub_array_view, json_index_value);
         }
-        else if (json_index_value.IsObject())
+        else if (json_index_value.is_object())
         {
             variant var_tmp = view.get_value(i);
             variant wrapped_var = var_tmp.extract_wrapped_value();
@@ -120,107 +94,102 @@ static void write_array_recursively(variant_sequential_view& view, Value& json_a
     }
 }
 
-variant extract_value(Value::MemberIterator& itr, const type& t)
+/////////////////////////////////////////////////////////////////////////////////////////
+
+variant extract_value(const json& json_value, const type& t)
 {
-    auto& json_value = itr->value;
-    variant extracted_value = extract_basic_types(json_value);
-    const bool could_convert = extracted_value.convert(t);
-    if (!could_convert)
+    if (t.is_arithmetic())
     {
-        if (json_value.IsObject())
+        if (t == type::get<bool>())
+            return json_value.get<bool>();
+        else if (t == type::get<char>())
+            return static_cast<char>(json_value.get<int>());
+        else if (t == type::get<int8_t>())
+            return json_value.get<int8_t>();
+        else if (t == type::get<int16_t>())
+            return json_value.get<int16_t>();
+        else if (t == type::get<int32_t>())
+            return json_value.get<int32_t>();
+        else if (t == type::get<int64_t>())
+            return json_value.get<int64_t>();
+        else if (t == type::get<uint8_t>())
+            return json_value.get<uint8_t>();
+        else if (t == type::get<uint16_t>())
+            return json_value.get<uint16_t>();
+        else if (t == type::get<uint32_t>())
+            return json_value.get<uint32_t>();
+        else if (t == type::get<uint64_t>())
+            return json_value.get<uint64_t>();
+        else if (t == type::get<float>())
+            return json_value.get<float>();
+        else if (t == type::get<double>())
+            return json_value.get<double>();
+    }
+    else if (t.is_enumeration())
+    {
+        if (json_value.is_string())
         {
-            constructor ctor = t.get_constructor();
-            for (auto& item : t.get_constructors())
-            {
-                if (item.get_instantiated_type() == t)
-                    ctor = item;
-            }
-            extracted_value = ctor.invoke();
-            fromjson_recursively(extracted_value, json_value);
+            return t.get_enumeration().name_to_value(json_value.get<std::string>());
+        }
+        else if (json_value.is_number_integer())
+        {
+            return t.get_enumeration().value_to_name(json_value.get<int64_t>());
         }
     }
-
-    return extracted_value;
-}
-
-static void write_associative_view_recursively(variant_associative_view& view, Value& json_array_value)
-{
-    for (SizeType i = 0; i < json_array_value.Size(); ++i)
+    else if (t == type::get<std::string>())
     {
-        auto& json_index_value = json_array_value[i];
-        if (json_index_value.IsObject()) // a key-value associative view
-        {
-            Value::MemberIterator key_itr = json_index_value.FindMember("key");
-            Value::MemberIterator value_itr = json_index_value.FindMember("value");
-
-            if (key_itr != json_index_value.MemberEnd() &&
-                value_itr != json_index_value.MemberEnd())
-            {
-                auto key_var = extract_value(key_itr, view.get_key_type());
-                auto value_var = extract_value(value_itr, view.get_value_type());
-                if (key_var && value_var)
-                {
-                    view.insert(key_var, value_var);
-                }
-            }
-        }
-        else // a key-only associative view
-        {
-            variant extracted_value = extract_basic_types(json_index_value);
-            if (extracted_value && extracted_value.convert(view.get_key_type()))
-                view.insert(extracted_value);
-        }
+        return json_value.get<std::string>();
     }
+
+    return variant();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void fromjson_recursively(instance obj2, Value& json_object)
+void fromjson_recursively(instance obj, const json& json_object)
 {
-    instance obj = obj2.get_type().get_raw_type().is_wrapper() ? obj2.get_wrapped_instance() : obj2;
-    const auto prop_list = obj.get_derived_type().get_properties();
+    instance wrapped_obj = obj.get_type().get_raw_type().is_wrapper() ? obj.get_wrapped_instance() : obj;
+    const auto prop_list = wrapped_obj.get_derived_type().get_properties();
 
     for (auto prop : prop_list)
     {
-        Value::MemberIterator ret = json_object.FindMember(prop.get_name().data());
-        if (ret == json_object.MemberEnd())
+        if (prop.get_metadata("NO_SERIALIZE"))
             continue;
+
+        const auto name = prop.get_name();
+        if (!json_object.contains(name.data()))
+            continue;
+
+        const json& json_value = json_object[name.data()];
         const type value_t = prop.get_type();
 
-        auto& json_value = ret->value;
-        switch(json_value.GetType())
+        switch (json_value.type())
         {
-            case kArrayType:
+            case json::value_t::array:
             {
                 variant var;
                 if (value_t.is_sequential_container())
                 {
-                    var = prop.get_value(obj);
+                    var = prop.get_value(wrapped_obj);
                     auto view = var.create_sequential_view();
                     write_array_recursively(view, json_value);
                 }
-                else if (value_t.is_associative_container())
-                {
-                    var = prop.get_value(obj);
-                    auto associative_view = var.create_associative_view();
-                    write_associative_view_recursively(associative_view, json_value);
-                }
-
-                prop.set_value(obj, var);
                 break;
             }
-            case kObjectType:
+            case json::value_t::object:
             {
-                variant var = prop.get_value(obj);
+                variant var = prop.get_value(wrapped_obj);
                 fromjson_recursively(var, json_value);
-                prop.set_value(obj, var);
+                prop.set_value(wrapped_obj, var);
                 break;
             }
             default:
             {
-                variant extracted_value = extract_basic_types(json_value);
-                if (extracted_value.convert(value_t)) // REMARK: CONVERSION WORKS ONLY WITH "const type", check whether this is correct or not!
-                    prop.set_value(obj, extracted_value);
+                variant extracted_value = extract_value(json_value, value_t.is_wrapper() ? value_t.get_wrapped_type() : value_t);
+                if (extracted_value.convert(value_t))
+                {
+                    prop.set_value(wrapped_obj, extracted_value);
+                }
             }
         }
     }
@@ -235,17 +204,21 @@ void fromjson_recursively(instance obj2, Value& json_object)
 namespace io
 {
 
-bool from_json(const std::string& json, rttr::instance obj)
+/////////////////////////////////////////////////////////////////////////////////////////
+
+bool from_json(const std::string& json_str, rttr::instance obj)
 {
-    Document document;  // Default template parameter uses UTF8 and MemoryPoolAllocator.
-
-    // "normal" parsing, decode strings to new buffers. Can use other input stream via ParseStream().
-    if (document.Parse(json.c_str()).HasParseError())
-        return 1;
-
-    fromjson_recursively(obj, document);
-
-    return true;
+    try 
+    {
+        json json_object = json::parse(json_str);
+        fromjson_recursively(obj, json_object);
+        return true;
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "JSON parsing error: " << e.what() << std::endl;
+        return false;
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

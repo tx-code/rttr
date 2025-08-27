@@ -32,12 +32,10 @@
 
 #include <iostream>
 
-#define RAPIDJSON_HAS_STDSTRING 1
-#include <rapidjson/prettywriter.h> // for stringify JSON
-#include <rapidjson/document.h>     // rapidjson's DOM-style API
+#include <nlohmann/json.hpp>
 #include <rttr/type>
 
-using namespace rapidjson;
+using json = nlohmann::json;
 using namespace rttr;
 
 
@@ -46,42 +44,42 @@ namespace
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void to_json_recursively(const instance& obj, PrettyWriter<StringBuffer>& writer);
+json to_json_recursively(const instance& obj);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool write_variant(const variant& var, PrettyWriter<StringBuffer>& writer);
+json write_variant(const variant& var);
 
-bool write_atomic_types_to_json(const type& t, const variant& var, PrettyWriter<StringBuffer>& writer)
+json write_atomic_types_to_json(const type& t, const variant& var)
 {
     if (t.is_arithmetic())
     {
         if (t == type::get<bool>())
-            writer.Bool(var.to_bool());
+            return var.to_bool();
         else if (t == type::get<char>())
-            writer.Bool(var.to_bool());
+            return var.to_bool();
         else if (t == type::get<int8_t>())
-            writer.Int(var.to_int8());
+            return var.to_int8();
         else if (t == type::get<int16_t>())
-            writer.Int(var.to_int16());
+            return var.to_int16();
         else if (t == type::get<int32_t>())
-            writer.Int(var.to_int32());
+            return var.to_int32();
         else if (t == type::get<int64_t>())
-            writer.Int64(var.to_int64());
+            return var.to_int64();
         else if (t == type::get<uint8_t>())
-            writer.Uint(var.to_uint8());
+            return var.to_uint8();
         else if (t == type::get<uint16_t>())
-            writer.Uint(var.to_uint16());
+            return var.to_uint16();
         else if (t == type::get<uint32_t>())
-            writer.Uint(var.to_uint32());
+            return var.to_uint32();
         else if (t == type::get<uint64_t>())
-            writer.Uint64(var.to_uint64());
+            return var.to_uint64();
         else if (t == type::get<float>())
-            writer.Double(var.to_double());
+            return var.to_double();
         else if (t == type::get<double>())
-            writer.Double(var.to_double());
+            return var.to_double();
 
-        return true;
+        return json{};
     }
     else if (t.is_enumeration())
     {
@@ -89,39 +87,36 @@ bool write_atomic_types_to_json(const type& t, const variant& var, PrettyWriter<
         auto result = var.to_string(&ok);
         if (ok)
         {
-            writer.String(var.to_string());
+            return var.to_string();
         }
         else
         {
             ok = false;
             auto value = var.to_uint64(&ok);
             if (ok)
-                writer.Uint64(value);
+                return value;
             else
-                writer.Null();
+                return nullptr;
         }
-
-        return true;
     }
     else if (t == type::get<std::string>())
     {
-        writer.String(var.to_string());
-        return true;
+        return var.to_string();
     }
 
-    return false;
+    return json{};
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static void write_array(const variant_sequential_view& view, PrettyWriter<StringBuffer>& writer)
+static json write_array(const variant_sequential_view& view)
 {
-    writer.StartArray();
+    json array_json = json::array();
     for (const auto& item : view)
     {
         if (item.is_sequential_container())
         {
-            write_array(item.create_sequential_view(), writer);
+            array_json.push_back(write_array(item.create_sequential_view()));
         }
         else
         {
@@ -129,103 +124,96 @@ static void write_array(const variant_sequential_view& view, PrettyWriter<String
             type value_type = wrapped_var.get_type();
             if (value_type.is_arithmetic() || value_type == type::get<std::string>() || value_type.is_enumeration())
             {
-                write_atomic_types_to_json(value_type, wrapped_var, writer);
+                array_json.push_back(write_atomic_types_to_json(value_type, wrapped_var));
             }
             else // object
             {
-                to_json_recursively(wrapped_var, writer);
+                array_json.push_back(to_json_recursively(wrapped_var));
             }
         }
     }
-    writer.EndArray();
+    return array_json;
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static void write_associative_container(const variant_associative_view& view, PrettyWriter<StringBuffer>& writer)
+static json write_associative_container(const variant_associative_view& view)
 {
     static const string_view key_name("key");
     static const string_view value_name("value");
 
-    writer.StartArray();
+    json array_json = json::array();
 
     if (view.is_key_only_type())
     {
         for (auto& item : view)
         {
-            write_variant(item.first, writer);
+            array_json.push_back(write_variant(item.first));
         }
     }
     else
     {
         for (auto& item : view)
         {
-            writer.StartObject();
-            writer.String(key_name.data(), static_cast<rapidjson::SizeType>(key_name.length()), false);
-
-            write_variant(item.first, writer);
-
-            writer.String(value_name.data(), static_cast<rapidjson::SizeType>(value_name.length()), false);
-
-            write_variant(item.second, writer);
-
-            writer.EndObject();
+            json obj_json = json::object();
+            obj_json[key_name.data()] = write_variant(item.first);
+            obj_json[value_name.data()] = write_variant(item.second);
+            array_json.push_back(obj_json);
         }
     }
 
-    writer.EndArray();
+    return array_json;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool write_variant(const variant& var, PrettyWriter<StringBuffer>& writer)
+json write_variant(const variant& var)
 {
     auto value_type = var.get_type();
     auto wrapped_type = value_type.is_wrapper() ? value_type.get_wrapped_type() : value_type;
     bool is_wrapper = wrapped_type != value_type;
 
-    if (write_atomic_types_to_json(is_wrapper ? wrapped_type : value_type,
-                                   is_wrapper ? var.extract_wrapped_value() : var, writer))
+    // Try atomic types first
+    auto atomic_result = write_atomic_types_to_json(is_wrapper ? wrapped_type : value_type,
+                                                   is_wrapper ? var.extract_wrapped_value() : var);
+    if (atomic_result.is_string() || atomic_result.is_number() || atomic_result.is_boolean() || atomic_result.is_null())
     {
+        return atomic_result;
     }
     else if (var.is_sequential_container())
     {
-        write_array(var.create_sequential_view(), writer);
+        return write_array(var.create_sequential_view());
     }
     else if (var.is_associative_container())
     {
-        write_associative_container(var.create_associative_view(), writer);
+        return write_associative_container(var.create_associative_view());
     }
     else
     {
         auto child_props = is_wrapper ? wrapped_type.get_properties() : value_type.get_properties();
         if (!child_props.empty())
         {
-            to_json_recursively(var, writer);
+            return to_json_recursively(var);
         }
         else
         {
             bool ok = false;
             auto text = var.to_string(&ok);
-            if (!ok)
+            if (ok)
             {
-                writer.String(text);
-                return false;
+                return text;
             }
-
-            writer.String(text);
+            return nullptr;
         }
     }
-
-    return true;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void to_json_recursively(const instance& obj2, PrettyWriter<StringBuffer>& writer)
+json to_json_recursively(const instance& obj2)
 {
-    writer.StartObject();
+    json obj_json = json::object();
     instance obj = obj2.get_type().get_raw_type().is_wrapper() ? obj2.get_wrapped_instance() : obj2;
 
     auto prop_list = obj.get_derived_type().get_properties();
@@ -239,14 +227,17 @@ void to_json_recursively(const instance& obj2, PrettyWriter<StringBuffer>& write
             continue; // cannot serialize, because we cannot retrieve the value
 
         const auto name = prop.get_name();
-        writer.String(name.data(), static_cast<rapidjson::SizeType>(name.length()), false);
-        if (!write_variant(prop_value, writer))
+        try 
         {
-            std::cerr << "cannot serialize property: " << name << std::endl;
+            obj_json[name.data()] = write_variant(prop_value);
+        }
+        catch (const std::exception& e)
+        {
+            std::cerr << "cannot serialize property: " << name << " - " << e.what() << std::endl;
         }
     }
 
-    writer.EndObject();
+    return obj_json;
 }
 
 } // end namespace anonymous
@@ -265,12 +256,8 @@ std::string to_json(rttr::instance obj)
     if (!obj.is_valid())
         return std::string();
 
-    StringBuffer sb;
-    PrettyWriter<StringBuffer> writer(sb);
-
-    to_json_recursively(obj, writer);
-
-    return sb.GetString();
+    json result = to_json_recursively(obj);
+    return result.dump(4); // Pretty print with 4 space indentation
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

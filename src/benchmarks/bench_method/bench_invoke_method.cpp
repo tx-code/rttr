@@ -29,39 +29,32 @@
 
 #include <rttr/type>
 
-#include <nonius/nonius.h++>
-#include <nonius/html_group_reporter.h>
+#include <nanobench.h>
+#include <iostream>
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_native_invoke_method_void_return_value()
+void bench_native_invoke_method_void_return_value()
 {
-    return nonius::benchmark("native", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        meter.measure([&]()
-        {
-            obj.method_0();
-        });
+    ns_foo::method_class obj;
+    ankerl::nanobench::Bench().run("native method invoke (void return)", [&]() {
+        obj.method_0();
+        ankerl::nanobench::doNotOptimizeAway(obj);
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_rttr_invoke_method_void_return_value()
+void bench_rttr_invoke_method_void_return_value()
 {
-    return nonius::benchmark("rttr", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        rttr::method m = rttr::type::get(obj).get_method("method_0");
-
-        meter.measure([&]()
-        {
-            return m.invoke(obj);
-        });
+    ns_foo::method_class obj;
+    rttr::method m = rttr::type::get(obj).get_method("method_0");
+    ankerl::nanobench::Bench().run("rttr method invoke (void return)", [&]() {
+        auto result = m.invoke(obj);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -69,32 +62,24 @@ nonius::benchmark bench_rttr_invoke_method_void_return_value()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_native_invoke_method_int_return_value()
+void bench_native_invoke_method_int_return_value()
 {
-    return nonius::benchmark("native", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-
-        meter.measure([&]()
-        {
-            return obj.method_0();
-        });
+    ns_foo::method_class obj;
+    ankerl::nanobench::Bench().run("native method invoke (int return)", [&]() {
+        auto result = obj.int_method();
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_rttr_invoke_method_int_return_value()
+void bench_rttr_invoke_method_int_return_value()
 {
-    return nonius::benchmark("rttr", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        rttr::method m = rttr::type::get(obj).get_method("int_method");
-
-        meter.measure([&]()
-        {
-            return m.invoke(obj);
-        });
+    ns_foo::method_class obj;
+    rttr::method m = rttr::type::get(obj).get_method("int_method");
+    ankerl::nanobench::Bench().run("rttr method invoke (int return)", [&]() {
+        auto result = m.invoke(obj);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -102,32 +87,24 @@ nonius::benchmark bench_rttr_invoke_method_int_return_value()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_native_invoke_method_string_return_value()
+void bench_native_invoke_method_string_return_value()
 {
-    return nonius::benchmark("native", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-
-        meter.measure([&]()
-        {
-            return obj.string_method();
-        });
+    ns_foo::method_class obj;
+    ankerl::nanobench::Bench().run("native method invoke (string return)", [&]() {
+        auto result = obj.string_method();
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_rttr_invoke_method_string_return_value()
+void bench_rttr_invoke_method_string_return_value()
 {
-    return nonius::benchmark("rttr", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        rttr::method m = rttr::type::get(obj).get_method("string_method");
-
-        meter.measure([&]()
-        {
-            return m.invoke(obj);
-        });
+    ns_foo::method_class obj;
+    rttr::method m = rttr::type::get(obj).get_method("string_method");
+    ankerl::nanobench::Bench().run("rttr method invoke (string return)", [&]() {
+        auto result = m.invoke(obj);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -135,32 +112,24 @@ nonius::benchmark bench_rttr_invoke_method_string_return_value()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_native_invoke_method_arg_1()
+void bench_native_invoke_method_arg_1()
 {
-    return nonius::benchmark("native", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-
-        meter.measure([&]()
-        {
-            return obj.void_method_arg_1(23);
-        });
+    ns_foo::method_class obj;
+    ankerl::nanobench::Bench().run("native method invoke (1 arg)", [&]() {
+        obj.void_method_arg_1(23);
+        ankerl::nanobench::doNotOptimizeAway(obj);
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_rttr_invoke_method_arg_1()
+void bench_rttr_invoke_method_arg_1()
 {
-    return nonius::benchmark("rttr", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        rttr::method m = rttr::type::get(obj).get_method("void_method_arg_1");
-
-        meter.measure([&]()
-        {
-            return m.invoke(obj, 23);
-        });
+    ns_foo::method_class obj;
+    rttr::method m = rttr::type::get(obj).get_method("void_method_arg_1");
+    ankerl::nanobench::Bench().run("rttr method invoke (1 arg)", [&]() {
+        auto result = m.invoke(obj, 23);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -168,32 +137,24 @@ nonius::benchmark bench_rttr_invoke_method_arg_1()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_native_invoke_method_arg_2()
+void bench_native_invoke_method_arg_2()
 {
-    return nonius::benchmark("native", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-
-        meter.measure([&]()
-        {
-            return obj.void_method_arg_2(23, 42);
-        });
+    ns_foo::method_class obj;
+    ankerl::nanobench::Bench().run("native method invoke (2 args)", [&]() {
+        obj.void_method_arg_2(23, 42);
+        ankerl::nanobench::doNotOptimizeAway(obj);
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_rttr_invoke_method_arg_2()
+void bench_rttr_invoke_method_arg_2()
 {
-    return nonius::benchmark("rttr", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        rttr::method m = rttr::type::get(obj).get_method("void_method_arg_2");
-
-        meter.measure([&]()
-        {
-            return m.invoke(obj, 23, 42);
-        });
+    ns_foo::method_class obj;
+    rttr::method m = rttr::type::get(obj).get_method("void_method_arg_2");
+    ankerl::nanobench::Bench().run("rttr method invoke (2 args)", [&]() {
+        auto result = m.invoke(obj, 23, 42);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -201,32 +162,24 @@ nonius::benchmark bench_rttr_invoke_method_arg_2()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_native_invoke_method_arg_3()
+void bench_native_invoke_method_arg_3()
 {
-    return nonius::benchmark("native", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-
-        meter.measure([&]()
-        {
-            return obj.void_method_arg_3(23, 42, 5);
-        });
+    ns_foo::method_class obj;
+    ankerl::nanobench::Bench().run("native method invoke (3 args)", [&]() {
+        obj.void_method_arg_3(23, 42, 5);
+        ankerl::nanobench::doNotOptimizeAway(obj);
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_rttr_invoke_method_arg_3()
+void bench_rttr_invoke_method_arg_3()
 {
-    return nonius::benchmark("rttr", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        rttr::method m = rttr::type::get(obj).get_method("void_method_arg_3");
-
-        meter.measure([&]()
-        {
-            return m.invoke(obj, 23, 42, 5);
-        });
+    ns_foo::method_class obj;
+    rttr::method m = rttr::type::get(obj).get_method("void_method_arg_3");
+    ankerl::nanobench::Bench().run("rttr method invoke (3 args)", [&]() {
+        auto result = m.invoke(obj, 23, 42, 5);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -234,32 +187,25 @@ nonius::benchmark bench_rttr_invoke_method_arg_3()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_native_invoke_method_arg_8()
+void bench_native_invoke_method_arg_8()
 {
-    return nonius::benchmark("native", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-
-        meter.measure([&]()
-        {
-            return obj.void_method_arg_8(1, 2, 3, 4, 5, 6, 7, 8);
-        });
+    ns_foo::method_class obj;
+    ankerl::nanobench::Bench().run("native method invoke (8 args)", [&]() {
+        obj.void_method_arg_8(1, 2, 3, 4, 5, 6, 7, 8);
+        ankerl::nanobench::doNotOptimizeAway(obj);
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_rttr_invoke_method_arg_8()
+void bench_rttr_invoke_method_arg_8()
 {
-    return nonius::benchmark("rttr", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        rttr::method m = rttr::type::get(obj).get_method("void_method_arg_8");
-        std::vector<rttr::argument> args = {1, 2, 3, 4, 5, 6, 7, 8};
-        meter.measure([&]()
-        {
-            return m.invoke_variadic(obj, args);
-        });
+    ns_foo::method_class obj;
+    rttr::method m = rttr::type::get(obj).get_method("void_method_arg_8");
+    std::vector<rttr::argument> args = {1, 2, 3, 4, 5, 6, 7, 8};
+    ankerl::nanobench::Bench().run("rttr method invoke (8 args)", [&]() {
+        auto result = m.invoke_variadic(obj, args);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -267,32 +213,26 @@ nonius::benchmark bench_rttr_invoke_method_arg_8()
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_native_invoke_method_ptr_arg()
+void bench_native_invoke_method_ptr_arg()
 {
-    return nonius::benchmark("native", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-       int* ptr = nullptr;
-        meter.measure([&]()
-        {
-            return obj.method_ptr_arg(ptr);
-        });
+    ns_foo::method_class obj;
+    int* ptr = nullptr;
+    ankerl::nanobench::Bench().run("native method invoke (ptr arg)", [&]() {
+        obj.method_ptr_arg(ptr);
+        ankerl::nanobench::doNotOptimizeAway(obj);
     });
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-nonius::benchmark bench_rttr_invoke_method_ptr_arg()
+void bench_rttr_invoke_method_ptr_arg()
 {
-    return nonius::benchmark("rttr", [](nonius::chronometer meter)
-    {
-        ns_foo::method_class obj;
-        rttr::method m = rttr::type::get(obj).get_method("method_ptr_arg");
-        int* ptr = nullptr;
-        meter.measure([&]()
-        {
-            return m.invoke(obj, ptr);
-        });
+    ns_foo::method_class obj;
+    rttr::method m = rttr::type::get(obj).get_method("method_ptr_arg");
+    int* ptr = nullptr;
+    ankerl::nanobench::Bench().run("rttr method invoke (ptr arg)", [&]() {
+        auto result = m.invoke(obj, ptr);
+        ankerl::nanobench::doNotOptimizeAway(result);
     });
 }
 
@@ -302,240 +242,48 @@ nonius::benchmark bench_rttr_invoke_method_ptr_arg()
 
 void bench_invoke_method()
 {
-    nonius::configuration cfg;
-    cfg.title = "invoke member method";
+    std::cout << "=== Method Invocation Benchmark ==="<< std::endl;
+    std::cout << "Running benchmarks for RTTR method invocation vs native method calls..." << std::endl << std::endl;
 
-    nonius::html_group_reporter reporter;
-    reporter.set_output_file("benchmark_invoke_method.html");
+    std::cout << "[Group: void return value]" << std::endl;
+    bench_native_invoke_method_void_return_value();
+    bench_rttr_invoke_method_void_return_value();
+    std::cout << std::endl;
 
-    /////////////////////////////////////
+    std::cout << "[Group: int return value]" << std::endl;
+    bench_native_invoke_method_int_return_value();
+    bench_rttr_invoke_method_int_return_value();
+    std::cout << std::endl;
 
-    reporter.set_current_group_name("void", "benchmark code:"
-                                            "<pre>"
-                                            "// Foo.h\n"
-                                            "struct Foo {\n"
-                                            "    void method();\n"
-                                            "};\n"
-                                            "// Foo.cpp\n"
-                                            "void Foo::method() {}\n"
-                                            "\n"
-                                            "// Setup\n"
-                                            "Foo obj;\n"
-                                            "rttr::method m = rttr::type::get(obj).get_method(\"method\");\n"
-                                            "// Benchmarking:\n\n"
-                                            "// native approach\n"
-                                            "obj.method();\n"
-                                            "\n"
-                                            "// rttr approach\n"
-                                            "m.invoke(obj);\n"
-                                            "</pre>");
-    nonius::benchmark benchmarks_group_1[] = { bench_native_invoke_method_void_return_value(),
-                                               bench_rttr_invoke_method_void_return_value()};
-    // for unknown reason we have the run a pre-benchmark, otherwise we get wrong result (all samples are at: 0ns)
-    auto dummy_benchmark = nonius::benchmark_registry{bench_rttr_invoke_method_void_return_value()};
-    nonius::go(cfg, dummy_benchmark);
-    nonius::go(cfg, std::begin(benchmarks_group_1), std::end(benchmarks_group_1), reporter);
+    std::cout << "[Group: string return value]" << std::endl;
+    bench_native_invoke_method_string_return_value();
+    bench_rttr_invoke_method_string_return_value();
+    std::cout << std::endl;
 
-    /////////////////////////////////////
+    std::cout << "[Group: 1 argument]" << std::endl;
+    bench_native_invoke_method_arg_1();
+    bench_rttr_invoke_method_arg_1();
+    std::cout << std::endl;
 
-    reporter.set_current_group_name("int", "benchmark code:"
-                                            "<pre>"
-                                            "// Foo.h\n"
-                                            "struct Foo {\n"
-                                            "    int method();\n"
-                                            "};\n"
-                                            "// Foo.cpp\n"
-                                            "int Foo::method()\n"
-                                            "{ return 42; }\n"
-                                            "\n"
-                                            "// Setup\n"
-                                            "Foo obj;\n"
-                                            "rttr::method m = rttr::type::get(obj).get_method(\"method\");\n"
-                                            "// Benchmarking:\n\n"
-                                            "// native approach\n"
-                                            "obj.method();\n"
-                                            "\n"
-                                            "// rttr approach\n"
-                                            "m.invoke(obj);\n"
-                                            "</pre>");
-    nonius::benchmark benchmarks_group_2[] = { bench_native_invoke_method_int_return_value(),
-                                               bench_rttr_invoke_method_int_return_value()};
+    std::cout << "[Group: 2 arguments]" << std::endl;
+    bench_native_invoke_method_arg_2();
+    bench_rttr_invoke_method_arg_2();
+    std::cout << std::endl;
 
-    nonius::go(cfg, std::begin(benchmarks_group_2), std::end(benchmarks_group_2), reporter);
+    std::cout << "[Group: 3 arguments]" << std::endl;
+    bench_native_invoke_method_arg_3();
+    bench_rttr_invoke_method_arg_3();
+    std::cout << std::endl;
 
-    /////////////////////////////////////
+    std::cout << "[Group: 8 arguments (variadic)]" << std::endl;
+    bench_native_invoke_method_arg_8();
+    bench_rttr_invoke_method_arg_8();
+    std::cout << std::endl;
 
-    reporter.set_current_group_name("std::string", "benchmark code:"
-                                                   "<pre>"
-                                                   "// Foo.h\n"
-                                                   "struct Foo {\n"
-                                                   "    std::string method();\n"
-                                                   "};\n"
-                                                   "// Foo.cpp\n"
-                                                   "std::string Foo::method()\n"
-                                                   "{ return std::string(\"some text\"); }\n"
-                                                   "\n"
-                                                   "// Setup\n"
-                                                   "Foo obj;\n"
-                                                   "rttr::method m = rttr::type::get(obj).get_method(\"method\");\n"
-                                                   "// Benchmarking:\n\n"
-                                                   "// native approach\n"
-                                                   "obj.method();\n"
-                                                   "\n"
-                                                   "// rttr approach\n"
-                                                   "m.invoke(obj);\n"
-                                                   "</pre>");
-    nonius::benchmark benchmarks_group_3[] = { bench_native_invoke_method_string_return_value(),
-                                               bench_rttr_invoke_method_string_return_value()};
+    std::cout << "[Group: pointer argument]" << std::endl;
+    bench_native_invoke_method_ptr_arg();
+    bench_rttr_invoke_method_ptr_arg();
+    std::cout << std::endl;
 
-    nonius::go(cfg, std::begin(benchmarks_group_3), std::end(benchmarks_group_3), reporter);
-
-    /////////////////////////////////////
-
-    reporter.set_current_group_name("arg 1", "benchmark code:"
-                                              "<pre>"
-                                              "// Foo.h\n"
-                                              "struct Foo {\n"
-                                              "    void method(int arg_1);\n"
-                                              "int value_1;\n"
-                                              "};\n"
-                                              "// Foo.cpp\n"
-                                              "void Foo::method(int arg_1)\n"
-                                              "{ value_1 = arg_1; }\n"
-                                              "\n"
-                                              "// Setup\n"
-                                              "Foo obj;\n"
-                                              "rttr::method m = rttr::type::get(obj).get_method(\"method\");\n"
-                                              "// Benchmarking:\n\n"
-                                              "// native approach\n"
-                                              "obj.method(42);\n"
-                                              "\n"
-                                              "// rttr approach\n"
-                                              "m.invoke(obj, 42);\n"
-                                              "</pre>");
-    nonius::benchmark benchmarks_group_4[] = { bench_native_invoke_method_arg_1(),
-                                               bench_rttr_invoke_method_arg_1()};
-
-    nonius::go(cfg, std::begin(benchmarks_group_4), std::end(benchmarks_group_4), reporter);
-
-    /////////////////////////////////////
-
-    reporter.set_current_group_name("arg 2", "benchmark code:"
-                                              "<pre>"
-                                              "// Foo.h\n"
-                                              "struct Foo {\n"
-                                              "    void method(int arg_1, int arg_2);\n"
-                                              "    int value_1; int value_2;\n"
-                                              "};\n"
-                                              "// Foo.cpp\n"
-                                              "void Foo::method(int arg_1, int arg_2)\n"
-                                              "{ value_1 = arg_1; value_2 = arg_2; }\n"
-                                              "\n"
-                                              "// Setup\n"
-                                              "Foo obj;\n"
-                                              "rttr::method m = rttr::type::get(obj).get_method(\"method\");\n"
-                                              "// Benchmarking:\n\n"
-                                              "// native approach\n"
-                                              "obj.method(42, 23);\n"
-                                              "\n"
-                                              "// rttr approach\n"
-                                              "m.invoke(obj, 42, 23);\n"
-                                              "</pre>");
-    nonius::benchmark benchmarks_group_5[] = { bench_native_invoke_method_arg_2(),
-                                               bench_rttr_invoke_method_arg_2()};
-
-    nonius::go(cfg, std::begin(benchmarks_group_5), std::end(benchmarks_group_5), reporter);
-
-    /////////////////////////////////////
-
-    reporter.set_current_group_name("arg 3", "benchmark code:"
-                                              "<pre>"
-                                              "// Foo.h\n"
-                                              "struct Foo {\n"
-                                              "    void method(int arg_1, int arg_2, int arg_3);\n"
-                                              "    int value_1; int value_2; int value_3;\n"
-                                              "};\n"
-                                              "// Foo.cpp\n"
-                                              "void Foo::method(int arg_1, int arg_2, int arg_3)\n"
-                                              "{ value_1 = arg_1; value_2 = arg_2; value_3 = arg_3; }\n"
-                                              "\n"
-                                              "// Setup\n"
-                                              "Foo obj;\n"
-                                              "rttr::method m = rttr::type::get(obj).get_method(\"method\");\n"
-                                              "// Benchmarking:\n\n"
-                                              "// native approach\n"
-                                              "obj.method(42, 23, 5);\n"
-                                              "\n"
-                                              "// rttr approach\n"
-                                              "m.invoke(obj, 42, 23, 5);\n"
-                                              "</pre>");
-    nonius::benchmark benchmarks_group_6[] = { bench_native_invoke_method_arg_3(),
-                                               bench_rttr_invoke_method_arg_3()};
-
-    nonius::go(cfg, std::begin(benchmarks_group_6), std::end(benchmarks_group_6), reporter);
-
-    /////////////////////////////////////
-
-    reporter.set_current_group_name("arg 8", "benchmark code:"
-                                              "<pre>"
-                                              "// Foo.h\n"
-                                              "struct Foo {\n"
-                                              "    void method(int arg_1, int arg_2, int arg_3,\n"
-                                              "                ..., int arg_8);\n"
-                                              "    int value_1; int value_2; int value_3;\n"
-                                              "     ...; int value_8;\n"
-                                              "};\n"
-                                              "// Foo.cpp\n"
-                                              "void Foo::method(int arg_1, int arg_2, int arg_3,\n"
-                                              "                 ..., int arg_8);\n"
-                                              "{ value_1 = arg_1; value_2 = arg_2; value_3 = arg_3;\n"
-                                              "   ... value_8 = arg_8;}\n"
-                                              "\n"
-                                              "// Setup\n"
-                                              "Foo obj;\n"
-                                              "rttr::method m = rttr::type::get(obj).get_method(\"method\");\n"
-                                              "std::vector<argument> args = {1, 2, 3, 4, 5, 6, 7, 8}\n"
-                                              "// Benchmarking:\n\n"
-                                              "// native approach\n"
-                                              "obj.method(1, 2, 3, 4, 5, 6, 7, 8);\n"
-                                              "\n"
-                                              "// rttr approach\n"
-                                              "m.invoke_variadic(obj, args);\n"
-                                              "</pre>");
-    nonius::benchmark benchmarks_group_7[] = { bench_native_invoke_method_arg_8(),
-                                               bench_rttr_invoke_method_arg_8()};
-
-    nonius::go(cfg, std::begin(benchmarks_group_7), std::end(benchmarks_group_7), reporter);
-
-
-    /////////////////////////////////////
-
-    reporter.set_current_group_name("nullptr",  "benchmark code:"
-                                                "<pre>"
-                                                "// Foo.h\n"
-                                                "struct Foo {\n"
-                                                "    void method(int* ptr);\n"
-                                                "};\n"
-                                                "// Foo.cpp\n"
-                                                "void Foo::method(int* ptr) {}\n"
-                                                "\n"
-                                                "// Setup\n"
-                                                "Foo obj;\n"
-                                                "rttr::method m = rttr::type::get(obj).get_method(\"method\");\n"
-                                                "// Benchmarking:\n\n"
-                                                "// native approach\n"
-                                                "obj.method(nullptr);\n"
-                                                "\n"
-                                                "// rttr approach\n"
-                                                "m.invoke(obj, nullptr);\n"
-                                                "</pre>");
-    nonius::benchmark benchmarks_group_8[] = { bench_native_invoke_method_ptr_arg(),
-                                               bench_rttr_invoke_method_ptr_arg()};
-
-    nonius::go(cfg, dummy_benchmark);
-    nonius::go(cfg, std::begin(benchmarks_group_8), std::end(benchmarks_group_8), reporter);
-
-    /////////////////////////////////////
-
-    reporter.generate_report();
+    std::cout << "=== Benchmark Complete ===" << std::endl;
 }

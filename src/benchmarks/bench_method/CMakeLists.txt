@@ -42,14 +42,9 @@ if (USE_PCH)
 endif()
 
 add_executable(bench_method ${SRC_FILES} ${HPP_FILES})
-if (MSVC)
-  target_link_libraries(bench_method RTTR::Core ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY})
-else()
-  target_link_libraries(bench_method RTTR::Core ${CMAKE_THREAD_LIBS_INIT})
-endif()
+target_link_libraries(bench_method RTTR::Core nanobench::nanobench)
 
-target_include_directories(bench_method PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-target_compile_definitions(bench_method PUBLIC BOOST_ALL_NO_LIB)
+# nanobench is header-only, no additional includes needed
 if(MSVC)
     target_compile_options(bench_method PRIVATE /Zm200)
 endif()
@@ -72,14 +67,9 @@ install(TARGETS bench_method
 
 if (BUILD_STATIC)
     add_executable(bench_method_lib ${SRC_FILES} ${HPP_FILES})
-    if (MSVC)
-      target_link_libraries(bench_method_lib RTTR::Core_Lib ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-    else()
-      target_link_libraries(bench_method_lib RTTR::Core_Lib ${CMAKE_THREAD_LIBS_INIT})
-    endif()
+    target_link_libraries(bench_method_lib RTTR::Core_Lib nanobench::nanobench)
 
-    target_include_directories(bench_method_lib PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-    target_compile_definitions(bench_method_lib PUBLIC BOOST_ALL_NO_LIB)
+    # nanobench is header-only, no additional includes needed
     if(MSVC)
         target_compile_options(bench_method_lib PRIVATE /Zm200 /bigobj)
     endif()
@@ -102,14 +92,9 @@ endif()
 
 if (BUILD_WITH_STATIC_RUNTIME_LIBS)
     add_executable(bench_method_s ${SRC_FILES} ${HPP_FILES})
-    if (MSVC)
-      target_link_libraries(bench_method_s RTTR::Core_STL ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-    else()
-      target_link_libraries(bench_method_s RTTR::Core_STL ${CMAKE_THREAD_LIBS_INIT})
-    endif()
+    target_link_libraries(bench_method_s RTTR::Core_STL nanobench::nanobench)
 
-    target_include_directories(bench_method_s PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-    target_compile_definitions(bench_method_s PUBLIC BOOST_ALL_NO_LIB)
+    # nanobench is header-only, no additional includes needed
     if(MSVC)
         target_compile_options(bench_method_s PRIVATE /Zm200 /bigobj)
     endif()
@@ -140,14 +125,9 @@ if (BUILD_WITH_STATIC_RUNTIME_LIBS)
 
     if (BUILD_STATIC)
         add_executable(bench_method_lib_s ${SRC_FILES} ${HPP_FILES})
-        if (MSVC)
-          target_link_libraries(bench_method_lib_s RTTR::Core_Lib_STL ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-        else()
-          target_link_libraries(bench_method_lib_s RTTR::Core_Lib_STL ${CMAKE_THREAD_LIBS_INIT})
-        endif()
+        target_link_libraries(bench_method_lib_s RTTR::Core_Lib_STL nanobench::nanobench)
 
-        target_include_directories(bench_method_lib_s PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-        target_compile_definitions(bench_method_lib_s PUBLIC BOOST_ALL_NO_LIB)
+        # nanobench is header-only, no additional includes needed
         if(MSVC)
             target_compile_options(bench_method_lib_s PRIVATE /Zm200 /bigobj)
         endif()

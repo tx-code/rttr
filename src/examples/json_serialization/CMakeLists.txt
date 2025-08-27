@@ -39,9 +39,10 @@ if (USE_PCH)
   activate_precompiled_headers("pch.h" SRC_FILES)
 endif()
 
+find_package(nlohmann_json CONFIG REQUIRED)
+
 add_executable(json_example ${SRC_FILES} ${HPP_FILES})
-target_link_libraries(json_example RTTR::Core)
-target_include_directories(json_example PUBLIC ${RAPID_JSON_DIR})
+target_link_libraries(json_example RTTR::Core nlohmann_json::nlohmann_json)
 set_target_properties(json_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Examples"

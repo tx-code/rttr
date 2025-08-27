@@ -42,14 +42,9 @@ if (USE_PCH)
 endif()
 
 add_executable(bench_variant ${SRC_FILES} ${HPP_FILES})
-if (MSVC)
-  target_link_libraries(bench_variant RTTR::Core ${Boost_CHRONO_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-else()
-  target_link_libraries(bench_variant RTTR::Core ${CMAKE_THREAD_LIBS_INIT})
-endif()
+target_link_libraries(bench_variant RTTR::Core nanobench::nanobench)
 
-target_include_directories(bench_variant PUBLIC ${NONIUS_DIR} ${Boost_INCLUDE_DIR})
-target_compile_definitions(bench_variant PUBLIC BOOST_ALL_NO_LIB)
+# nanobench is header-only, no additional includes needed
 if(MSVC)
     target_compile_options(bench_variant PRIVATE /Zm200)
 endif()

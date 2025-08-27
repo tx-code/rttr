@@ -29,8 +29,7 @@
 
 #include "benchmarks/bench_method/test_methods.h"
 
-#include <nonius/nonius.h++>
-#include <nonius/html_group_reporter.h>
+#include <nanobench.h>
 
 extern void bench_find_method();
 
