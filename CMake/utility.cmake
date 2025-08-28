@@ -386,20 +386,33 @@ function(activate_precompiled_headers _PRECOMPILED_HEADER _SOURCE_FILES)
 endfunction()
 
 ####################################################################################
-# Adds warnings compiler options to the target depending on the category
-# target Target name
+# Modern compiler warnings for C++20 development with warnings as errors
 ####################################################################################
-function( set_compiler_warnings target)
+function(set_compiler_warnings target)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(WARNINGS "-Wall")
+    # GCC 10+ warnings optimized for C++20
+    set(WARNINGS "-Wall" "-Wextra" "-Wpedantic" "-Wno-unused-parameter")
+    if(RTTR_WARNINGS_AS_ERRORS)
+      list(APPEND WARNINGS "-Werror")
+    endif()
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    # Temporarily disable -Werror for C++20 compatibility testing
-    set(WARNINGS "-Wall")
+    # Clang 10+ warnings optimized for C++20 concepts
+    set(WARNINGS "-Wall" "-Wextra" "-Wpedantic" "-Wno-unused-parameter")
+    if(RTTR_WARNINGS_AS_ERRORS)
+      list(APPEND WARNINGS "-Werror")
+    endif()
   elseif(MSVC)
-    set(WARNINGS "/W4")
+    # MSVC 2019+ warnings optimized for C++20
+    set(WARNINGS "/W4" "/permissive-" "/Zc:__cplusplus")
+    if(RTTR_WARNINGS_AS_ERRORS)
+      list(APPEND WARNINGS "/WX")
+    endif()
   endif()
 
-  target_compile_options(${target} PRIVATE ${WARNINGS}) 
+  target_compile_options(${target} PRIVATE ${WARNINGS})
+  
+  # Enable C++20 specific features
+  target_compile_features(${target} PRIVATE cxx_std_20)
 endfunction()
 
 ####################################################################################
@@ -455,31 +468,33 @@ endmacro()
 # Returns the name of the used compiler.
 # _COMPILER_NAME
 ####################################################################################
+####################################################################################
+# Modern compiler detection - assumes modern C++20 capable compilers only
+####################################################################################
 function(getCompilerName _COMPILER_NAME)
   if(MSVC)
+    # Only support VS2019+ for C++20 features
     if(MSVC_VERSION GREATER_EQUAL 1930)
       set(COMPILER_NAME "vs2022")
     elseif(MSVC_VERSION GREATER_EQUAL 1920)
       set(COMPILER_NAME "vs2019")
-    elseif(MSVC_VERSION GREATER_EQUAL 1910)
-      set(COMPILER_NAME "vs2017")
-    elseif(MSVC_VERSION GREATER_EQUAL 1900)
-      set(COMPILER_NAME "vs2015")
     else()
-      message(FATAL_ERROR "MSVC version ${MSVC_VERSION} is too old. Please use Visual Studio 2015 or newer.")
+      message(FATAL_ERROR "MSVC version ${MSVC_VERSION} is too old. C++20 requires Visual Studio 2019 16.11+ or newer.")
     endif()
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(COMPILER_NAME "gcc")
-    if(WIN32)
-      execute_process(COMMAND "${CMAKE_CXX_COMPILER}" "-dumpversion" OUTPUT_VARIABLE GCC_VERSION_OUTPUT)
-      string(REGEX REPLACE "([0-9]+\\.[0-9]+).*" "\\1" GCC_VERSION "${GCC_VERSION_OUTPUT}")
-      set(COMPILER_NAME ${COMPILER_NAME}${GCC_VERSION})
+    # GCC 10+ required for full C++20 support
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.0")
+      message(FATAL_ERROR "GCC version ${CMAKE_CXX_COMPILER_VERSION} is too old. C++20 requires GCC 10+ or newer.")
     endif()
+    set(COMPILER_NAME "gcc")
   elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-     set(COMPILER_NAME "clang")
+    # Clang 10+ required for C++20 concepts
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.0")
+      message(FATAL_ERROR "Clang version ${CMAKE_CXX_COMPILER_VERSION} is too old. C++20 requires Clang 10+ or newer.")
+    endif()
+    set(COMPILER_NAME "clang")
   else()
-    message(WARNING "Unknown compiler: ${CMAKE_CXX_COMPILER_ID}")
-    set(COMPILER_NAME "unknown")
+    message(FATAL_ERROR "Unsupported compiler: ${CMAKE_CXX_COMPILER_ID}. Only modern C++20 compilers are supported.")
   endif()
 
   set(${_COMPILER_NAME} ${COMPILER_NAME} PARENT_SCOPE)
@@ -521,8 +536,11 @@ macro(generateLibraryVersionVariables MAJOR MINOR PATCH PRODUCT_NAME PRODUCT_CPY
   set(LIBRARY_LICENSE ${PRODUCT_LICENSE})
 endmacro()
 
+####################################################################################
+# C++20 is the only supported standard - no version detection needed
+####################################################################################
 function(get_latest_supported_cxx CXX_STANDARD)
-    # Force C++20 for IMOSCore integration
     set(${CXX_STANDARD} 20 PARENT_SCOPE)
+    message(STATUS "Using C++20 standard (only supported version)")
 endfunction()
 

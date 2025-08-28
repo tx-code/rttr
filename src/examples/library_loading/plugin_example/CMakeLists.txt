@@ -42,7 +42,7 @@ target_link_libraries(plugin_example RTTR::Core)
 set_target_properties(plugin_example PROPERTIES 
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Examples/library_loading"
-                      CXX_STANDARD ${MAX_CXX_STANDARD})
+                      CXX_STANDARD 20)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     # we have to use this flag, otherwise dlclose does not call the destructor function

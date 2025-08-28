@@ -495,7 +495,7 @@ private:
     void visit_impl(const type& t);
 
 private:
-    RTTR_ENABLE();
+    RTTR_ENABLE()
 };
 
 } // end namespace rttr

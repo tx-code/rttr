@@ -42,7 +42,7 @@ struct property_wrapper_test_base
     virtual ~property_wrapper_test_base() {}
     int p1;
 
-    RTTR_ENABLE();
+    RTTR_ENABLE()
 };
 
 struct property_wrapper_test : property_wrapper_test_base

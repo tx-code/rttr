@@ -123,7 +123,7 @@ public:
 
             array_iterator();
             array_iterator(const array_iterator<DataType>& other);
-
+            array_iterator& operator=(const array_iterator<DataType>& other) = default;
 
             reference operator*() const;
             pointer operator->();

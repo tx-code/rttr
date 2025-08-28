@@ -115,49 +115,42 @@ else()
     message(STATUS "Architecture: x86")
 endif()
 
-# use standard c++ insteaf of extented (-std=c++17 vs. std=gnu++17)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
+# Use standard C++20 (enforced in main CMakeLists.txt)
+# No version detection needed - C++20 is the only supported standard
 enable_rtti(BUILD_WITH_RTTI)
 
-get_latest_supported_cxx(CXX_STANDARD)
-set(MAX_CXX_STANDARD ${CXX_STANDARD})
+####################################################################################
+# Modern compiler-specific flags (C++20 compilers only)
+####################################################################################
 
-message(STATUS "using C++: ${MAX_CXX_STANDARD}")
-
-# RelWithDepInfo should have the same option like the Release build
-# but of course with Debug informations
+# RelWithDebInfo configuration for supported compilers
 if(MSVC)
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE}")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /Zi /DEBUG")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE}")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -g")
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE}")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -g")
-else()
-  message(WARNING "Please adjust CMAKE_CXX_FLAGS_RELWITHDEBINFO flags for this compiler!")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} /Zi /DEBUG")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} -g")
 endif()
 
+####################################################################################
+# Compiler-specific optimizations for modern compilers
+####################################################################################
+
 if(MSVC)
-    # we have to remove the default warning level,
-    # otherwise we get ugly compiler warnings, because of later replacing 
-    # option /W3 with /W4 (which will be later added)
+    # Remove default warning level for custom warning configuration
     replace_compiler_option("/W3" " ") 
     if (BUILD_WITH_STATIC_RUNTIME_LIBS)
         replace_compiler_option("/MD" " ")
         replace_compiler_option("/MDd" " ")
     endif()
-   
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # GCC-specific linker flags
     if(MINGW)
         set(GNU_STATIC_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
     else()
         set(GNU_STATIC_LINKER_FLAGS "-static-libgcc -static-libstdc++")
     endif()
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(CLANG_STATIC_LINKER_FLAGS "-stdlib=libc++ -static-libstdc++")
+    # Modern Clang uses libc++ by default for C++20
+    set(CLANG_STATIC_LINKER_FLAGS "-static-libstdc++")
 endif()
 
 include(CMakePackageConfigHelpers)

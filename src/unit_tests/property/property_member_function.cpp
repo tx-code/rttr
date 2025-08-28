@@ -59,7 +59,7 @@ struct property_member_func_test
     int             m_int_value;
     func_ptr        m_funcPtr;
 
-    RTTR_REGISTRATION_FRIEND;
+    RTTR_REGISTRATION_FRIEND
 };
 
 static void my_callback(int)

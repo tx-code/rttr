@@ -37,7 +37,7 @@ cmake_minimum_required(VERSION 3.21)
 project(rttr
     VERSION 0.9.7
     LANGUAGES CXX
-    DESCRIPTION "C++ Run Time Type Reflection library"
+    DESCRIPTION "Modern C++20 Run Time Type Reflection library"
     HOMEPAGE_URL "https://github.com/rttrorg/rttr"
 )
 
@@ -66,10 +66,23 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
             "Debug" "Release" "RelWithDebInfo" "MinSizeRel")
     endif()
     
-    # Use C++20 standard without compiler extensions
+    # Enforce C++20 standard for modern reflection features
     set(CMAKE_CXX_STANDARD 20)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
+    
+    # Verify C++20 concepts support
+    include(CheckCXXSourceCompiles)
+    check_cxx_source_compiles("
+        #include <concepts>
+        template<typename T> concept Integral = std::integral<T>;
+        template<Integral T> void test(T) {}
+        int main() { test(42); return 0; }
+    " CXX20_CONCEPTS_SUPPORTED)
+    
+    if(NOT CXX20_CONCEPTS_SUPPORTED)
+        message(FATAL_ERROR "C++20 concepts are required but not supported by this compiler.")
+    endif()
 endif()
 
 # Add CMake module path
@@ -91,10 +104,10 @@ option(RTTR_BUILD_EXAMPLES "Build examples" ON)
 option(RTTR_BUILD_BENCHMARKS "Build benchmarks" ON)
 option(RTTR_BUILD_DOCUMENTATION "Build documentation" ON)
 
-# Development options
+# Development options  
 option(RTTR_USE_PCH "Use precompiled headers" ON)
 option(RTTR_BUILD_INSTALLER "Build installer package" ON)
-option(RTTR_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+option(RTTR_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
 # Doxygen options
 option(RTTR_CUSTOM_DOXYGEN_STYLE "Use custom doxygen style" ON)
@@ -208,7 +221,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     message(STATUS "  Examples:         ${RTTR_BUILD_EXAMPLES}")
     message(STATUS "  Benchmarks:       ${RTTR_BUILD_BENCHMARKS}")
     message(STATUS "  Documentation:    ${RTTR_BUILD_DOCUMENTATION}")
-    message(STATUS "  C++ Standard:     ${CMAKE_CXX_STANDARD}")
+    message(STATUS "  C++ Standard:     ${CMAKE_CXX_STANDARD} (concepts enabled)")
     message(STATUS "  PCH enabled:      ${RTTR_USE_PCH}")
+    message(STATUS "  Warnings as errors: ${RTTR_WARNINGS_AS_ERRORS}")
+    message(STATUS "  Compiler:         ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
     message(STATUS "")
 endif()

@@ -45,7 +45,7 @@ set_target_properties(json_example PROPERTIES
                       DEBUG_POSTFIX ${RTTR_DEBUG_POSTFIX}
                       FOLDER "Examples"
                       INSTALL_RPATH "${RTTR_EXECUTABLE_INSTALL_RPATH}"
-                      CXX_STANDARD ${MAX_CXX_STANDARD})
+                      CXX_STANDARD 20)
 
 set_compiler_warnings(json_example)
 

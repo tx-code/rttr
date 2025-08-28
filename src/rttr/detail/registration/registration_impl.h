@@ -112,7 +112,7 @@ registration::class_<Class_Type, Visitor_List>::class_(const std::shared_ptr<det
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename Class_Type, typename Visitor_List>
-registration::class_<Class_Type, Visitor_List>::~class_()
+registration::class_<Class_Type, Visitor_List>::~class_<Class_Type, Visitor_List>()
 {
     // make sure that all base classes are registered
     detail::base_classes<Class_Type>::get_types();
