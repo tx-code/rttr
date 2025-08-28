@@ -117,7 +117,7 @@ endif()
 
 # Use standard C++20 (enforced in main CMakeLists.txt)
 # No version detection needed - C++20 is the only supported standard
-enable_rtti(BUILD_WITH_RTTI)
+enable_rtti(${RTTR_BUILD_WITH_RTTI})
 
 ####################################################################################
 # Modern compiler-specific flags (C++20 compilers only)
