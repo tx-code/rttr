@@ -226,8 +226,8 @@ struct self_aware
     }
     self_aware(const self_aware&) { }
     self_aware& operator=(const self_aware&) { return *this; }
-    self_aware(self_aware&&) RTTR_NOEXCEPT_OR_NOTHROW { }
-    self_aware& operator=(self_aware&&) RTTR_NOEXCEPT_OR_NOTHROW { return *this; }
+    self_aware(self_aware&&) noexcept { }
+    self_aware& operator=(self_aware&&) noexcept { return *this; }
 
     const self_aware* self = this;
 };

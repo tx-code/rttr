@@ -60,28 +60,29 @@ namespace rttr
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////
-// Compiler
+// Compiler - C++20 requires modern compilers
 /////////////////////////////////////////////////////////////////////////////////////////
-#if defined( __clang__ )
+#if defined(__clang__)
+    #if defined(__apple_build_version__)
+        #define RTTR_COMPILER RTTR_COMPILER_APPLECLANG
+    #else
+        #define RTTR_COMPILER RTTR_COMPILER_CLANG
+    #endif
+    #define RTTR_COMP_VER (((__clang_major__)*100) + (__clang_minor__*10) + __clang_patchlevel__)
+    static_assert(__clang_major__ >= 10, "Clang 10+ required for C++20 support");
 
-#if defined __apple_build_version__
-#   define RTTR_COMPILER RTTR_COMPILER_APPLECLANG
+#elif defined(__GNUC__)
+    #define RTTR_COMPILER RTTR_COMPILER_GNUC
+    #define RTTR_COMP_VER (((__GNUC__)*100) + (__GNUC_MINOR__*10) + __GNUC_PATCHLEVEL__)
+    static_assert(__GNUC__ >= 10, "GCC 10+ required for C++20 support");
+
+#elif defined(_MSC_VER)
+    #define RTTR_COMPILER RTTR_COMPILER_MSVC
+    #define RTTR_COMP_VER _MSC_VER
+    static_assert(_MSC_VER >= 1920, "MSVC 2019+ required for C++20 support");
+
 #else
-#   define RTTR_COMPILER RTTR_COMPILER_CLANG
-#endif
-#   define RTTR_COMP_VER (((__clang_major__)*100) + \
-                         (__clang_minor__*10) + \
-                         __clang_patchlevel__)
-#elif defined( __GNUC__ )
-#   define RTTR_COMPILER RTTR_COMPILER_GNUC
-#   define RTTR_COMP_VER (((__GNUC__)*100) + \
-                         (__GNUC_MINOR__*10) + \
-                          __GNUC_PATCHLEVEL__)
-#elif defined( _MSC_VER )
-#   define RTTR_COMPILER RTTR_COMPILER_MSVC
-#   define RTTR_COMP_VER _MSC_VER
-#else
-#   error "No known compiler. Abort! Abort!"
+    #error "Unsupported compiler - C++20 compliant compiler required"
 #endif
 
 
@@ -95,19 +96,8 @@ namespace rttr
 #   define RTTR_ARCH_TYPE RTTR_ARCH_32
 #endif
 
-#if RTTR_COMPILER == RTTR_COMPILER_MSVC
-#   define RTTR_INLINE          inline
-#   define RTTR_FORCE_INLINE    __forceinline
-#elif RTTR_COMPILER == RTTR_COMPILER_GNUC
-#   define RTTR_INLINE          inline
-#   define RTTR_FORCE_INLINE    inline  __attribute__((always_inline))
-#elif RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
-#   define RTTR_INLINE          inline
-#   define RTTR_FORCE_INLINE    inline  __attribute__((always_inline))
-#else
-#   define RTTR_INLINE          inline
-#   define RTTR_FORCE_INLINE    inline // no force inline for other platforms possible
-#endif
+// C++20: Removed RTTR_FORCE_INLINE macro - modern compilers optimize inline effectively
+// Use standard 'inline' keyword directly or [[gnu::always_inline]] attribute if needed
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // Compiler specific cmds for export and import code to DLL
@@ -151,59 +141,12 @@ namespace rttr
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////
-// Macros for some C++11 features, which are not available on every compiler
+// C++20 Modernization: Removed legacy compatibility macros
+// All code now assumes C++20 standard compliance
 /////////////////////////////////////////////////////////////////////////////////////////
 
-
-#if RTTR_COMPILER == RTTR_COMPILER_MSVC
-#   if !defined(__cpp_constexpr) || (__cpp_constexpr < 201304)
-#       define RTTR_NO_CXX11_CONSTEXPR
-#       define RTTR_NO_CXX14_CONSTEXPR
-#   endif
-#   if !defined(_MSVC_LANG) || (_MSVC_LANG < 201703L)
-#       define RTTR_NO_CXX17_NOEXCEPT_FUNC_TYPE
-#   endif
-#endif
-
-#if RTTR_COMPILER == RTTR_COMPILER_GNUC ||  RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
-#   if !defined(__cpp_constexpr) || (__cpp_constexpr < 201304)
-#       define RTTR_NO_CXX14_CONSTEXPR
-#   endif
-#   if !defined(cpp_noexcept)
-#       define RTTR_NO_CXX11_NOEXCEPT
-#   endif
-#   if !defined(__cpp_noexcept_function_type) || (__cpp_noexcept_function_type < 201510)
-#       define RTTR_NO_CXX17_NOEXCEPT_FUNC_TYPE
-#   endif
-#endif
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-#if defined(RTTR_NO_CXX11_CONSTEXPR)
-#   define RTTR_CONSTEXPR
-#   define RTTR_CONSTEXPR_OR_CONST const
-#else
-#   define RTTR_CONSTEXPR constexpr
-#   define RTTR_CONSTEXPR_OR_CONST constexpr
-#endif
-
-
-#if defined(RTTR_NO_CXX14_CONSTEXPR)
-#   define RTTR_CXX14_CONSTEXPR
-#else
-#   define RTTR_CXX14_CONSTEXPR constexpr
-#endif
-
-#ifdef RTTR_NO_CXX11_NOEXCEPT
-#   define RTTR_NOEXCEPT
-#   define RTTR_NOEXCEPT_OR_NOTHROW throw()
-#else
-#   define RTTR_NOEXCEPT noexcept
-#   define RTTR_NOEXCEPT_OR_NOTHROW noexcept
-#endif
-
-
-#define RTTR_STATIC_CONSTEXPR static RTTR_CONSTEXPR_OR_CONST
+// Note: Legacy macros constexpr, noexcept, inline removed
+// Use standard C++20 keywords: constexpr, noexcept, inline directly
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // deprecated macro
@@ -257,104 +200,56 @@ namespace rttr
 #   pragma warning (disable : 4100)
 #endif
 
+/////////////////////////////////////////////////////////////////////////////////////////
+// C++20 Modern Compiler Warning Control - Simplified for modern compilers
+/////////////////////////////////////////////////////////////////////////////////////////
 #if RTTR_COMPILER == RTTR_COMPILER_GNUC
-#   define RTTR_BEGIN_DISABLE_DEPRECATED_WARNING        _Pragma ("GCC diagnostic push") \
-                                                        _Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
-#   define RTTR_END_DISABLE_DEPRECATED_WARNING          _Pragma ("GCC diagnostic pop")
-
-#   define RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING
-#   define RTTR_END_DISABLE_CONDITIONAL_EXPR_WARNING
-#if RTTR_COMP_VER >= 700
-    #define RTTR_BEGIN_DISABLE_EXCEPT_TYPE_WARNING      _Pragma ("GCC diagnostic push") \
-                                                        _Pragma ("GCC diagnostic ignored \"-Wnoexcept-type\"")
-    #define RTTR_END_DISABLE_EXCEPT_TYPE_WARNING        _Pragma ("GCC diagnostic pop")
-#else
-    #define RTTR_BEGIN_DISABLE_EXCEPT_TYPE_WARNING
-    #define RTTR_END_DISABLE_EXCEPT_TYPE_WARNING
-#endif
-
-#if RTTR_COMP_VER >= 510
-#   define RTTR_BEGIN_DISABLE_OVERRIDE_WARNING        _Pragma ("GCC diagnostic push") \
-                                                      _Pragma ("GCC diagnostic ignored \"-Wsuggest-override\"")
-#   define RTTR_END_DISABLE_OVERRIDE_WARNING          _Pragma ("GCC diagnostic pop")
-# else
-#   define RTTR_BEGIN_DISABLE_OVERRIDE_WARNING
-#   define RTTR_END_DISABLE_OVERRIDE_WARNING
-#endif
-
-#if RTTR_COMP_VER >= 900
-#   define RTTR_BEGIN_DISABLE_INIT_LIST_WARNING       _Pragma ("GCC diagnostic push") \
-                                                      _Pragma ("GCC diagnostic ignored \"-Winit-list-lifetime\"")
-#   define RTTR_END_DISABLE_INIT_LIST_WARNING         _Pragma ("GCC diagnostic pop")
-# else
-#   define RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
-#   define RTTR_END_DISABLE_INIT_LIST_WARNING
-#endif
-
-#   define RTTR_DECLARE_PLUGIN_CTOR       __attribute__((constructor))
-#   define RTTR_DECLARE_PLUGIN_DTOR       __attribute__((destructor))
+    #define RTTR_BEGIN_DISABLE_DEPRECATED_WARNING    _Pragma("GCC diagnostic push") \
+                                                      _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+    #define RTTR_END_DISABLE_DEPRECATED_WARNING      _Pragma("GCC diagnostic pop")
+    #define RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING
+    #define RTTR_END_DISABLE_CONDITIONAL_EXPR_WARNING
+    #define RTTR_BEGIN_DISABLE_OVERRIDE_WARNING      _Pragma("GCC diagnostic push") \
+                                                      _Pragma("GCC diagnostic ignored \"-Wsuggest-override\"")
+    #define RTTR_END_DISABLE_OVERRIDE_WARNING        _Pragma("GCC diagnostic pop")
+    #define RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
+    #define RTTR_END_DISABLE_INIT_LIST_WARNING
+    #define RTTR_DECLARE_PLUGIN_CTOR                 __attribute__((constructor))
+    #define RTTR_DECLARE_PLUGIN_DTOR                 __attribute__((destructor))
 
 #elif RTTR_COMPILER == RTTR_COMPILER_CLANG || RTTR_COMPILER == RTTR_COMPILER_APPLECLANG
-
-#if defined(__has_warning) && __has_warning("-Wdeprecated-declarations")
-#   define RTTR_BEGIN_DISABLE_DEPRECATED_WARNING        _Pragma ("clang diagnostic push") \
-                                                        _Pragma ("clang diagnostic ignored \"-Wdeprecated-declarations\"")
-#   define RTTR_END_DISABLE_DEPRECATED_WARNING          _Pragma ("clang diagnostic pop")
-#else
-#   define RTTR_BEGIN_DISABLE_DEPRECATED_WARNING
-#   define RTTR_END_DISABLE_DEPRECATED_WARNING
-#endif
-
-#   define RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING
-#   define RTTR_END_DISABLE_CONDITIONAL_EXPR_WARNING
-
-#if defined(__has_warning) && __has_warning("-Wnoexcept-type")
-#       define RTTR_BEGIN_DISABLE_EXCEPT_TYPE_WARNING   _Pragma ("clang diagnostic push") \
-                                                        _Pragma ("clang diagnostic ignored \"-Wnoexcept-type\"")
-#       define RTTR_END_DISABLE_EXCEPT_TYPE_WARNING     _Pragma ("clang diagnostic pop")
-#else
-#       define RTTR_BEGIN_DISABLE_EXCEPT_TYPE_WARNING
-#       define RTTR_END_DISABLE_EXCEPT_TYPE_WARNING
-#endif
-
-#if defined(__has_warning) && __has_warning("-Winconsistent-missing-override")
-#   define RTTR_BEGIN_DISABLE_OVERRIDE_WARNING          _Pragma ("clang diagnostic push") \
-                                                        _Pragma ("clang diagnostic ignored \"-Winconsistent-missing-override\"")
-#   define RTTR_END_DISABLE_OVERRIDE_WARNING            _Pragma ("clang diagnostic pop")
-#else
-#   define RTTR_BEGIN_DISABLE_OVERRIDE_WARNING
-#   define RTTR_END_DISABLE_OVERRIDE_WARNING
-#endif
-
-
-#   define RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
-#   define RTTR_END_DISABLE_INIT_LIST_WARNING
-
-#   define RTTR_DECLARE_PLUGIN_CTOR        __attribute__((__constructor__))
-#   define RTTR_DECLARE_PLUGIN_DTOR        __attribute__((__destructor__))
+    #define RTTR_BEGIN_DISABLE_DEPRECATED_WARNING    _Pragma("clang diagnostic push") \
+                                                      _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+    #define RTTR_END_DISABLE_DEPRECATED_WARNING      _Pragma("clang diagnostic pop")
+    #define RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING
+    #define RTTR_END_DISABLE_CONDITIONAL_EXPR_WARNING
+    #define RTTR_BEGIN_DISABLE_OVERRIDE_WARNING      _Pragma("clang diagnostic push") \
+                                                      _Pragma("clang diagnostic ignored \"-Winconsistent-missing-override\"")
+    #define RTTR_END_DISABLE_OVERRIDE_WARNING        _Pragma("clang diagnostic pop")
+    #define RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
+    #define RTTR_END_DISABLE_INIT_LIST_WARNING
+    #define RTTR_DECLARE_PLUGIN_CTOR                 __attribute__((__constructor__))
+    #define RTTR_DECLARE_PLUGIN_DTOR                 __attribute__((__destructor__))
 
 #elif RTTR_COMPILER == RTTR_COMPILER_MSVC
-#   define RTTR_BEGIN_DISABLE_DEPRECATED_WARNING        __pragma( warning( push )) \
-                                                        __pragma( warning( disable: 4996))
-#   define RTTR_END_DISABLE_DEPRECATED_WARNING          __pragma( warning( pop ))
-
-
-#   define RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING  __pragma( warning( push )) \
-                                                        __pragma( warning( disable: 4127))
-#   define RTTR_END_DISABLE_CONDITIONAL_EXPR_WARNING    __pragma( warning( pop ))
-
-#   define RTTR_BEGIN_DISABLE_EXCEPT_TYPE_WARNING
-#   define RTTR_END_DISABLE_EXCEPT_TYPE_WARNING
-#   define RTTR_DECLARE_PLUGIN_CTOR
-#   define RTTR_DECLARE_PLUGIN_DTOR
-#   define RTTR_BEGIN_DISABLE_OVERRIDE_WARNING
-#   define RTTR_END_DISABLE_OVERRIDE_WARNING
-#   define RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
-#   define RTTR_END_DISABLE_INIT_LIST_WARNING
-
-#else
-#   pragma message("WARNING: unknown compiler, don't know how to disable deprecated warnings")
+    #define RTTR_BEGIN_DISABLE_DEPRECATED_WARNING    __pragma(warning(push)) \
+                                                      __pragma(warning(disable: 4996))
+    #define RTTR_END_DISABLE_DEPRECATED_WARNING      __pragma(warning(pop))
+    #define RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING  __pragma(warning(push)) \
+                                                          __pragma(warning(disable: 4127))
+    #define RTTR_END_DISABLE_CONDITIONAL_EXPR_WARNING    __pragma(warning(pop))
+    #define RTTR_BEGIN_DISABLE_OVERRIDE_WARNING
+    #define RTTR_END_DISABLE_OVERRIDE_WARNING
+    #define RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
+    #define RTTR_END_DISABLE_INIT_LIST_WARNING
+    #define RTTR_DECLARE_PLUGIN_CTOR
+    #define RTTR_DECLARE_PLUGIN_DTOR
 #endif
+
+// Simplified warning controls for C++20:
+// - RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING: Empty for GCC/Clang (C++20 constexpr if is standard)
+// - RTTR_BEGIN_DISABLE_INIT_LIST_WARNING: Empty for GCC/Clang (C++20 initializer lists are stable)
+// - RTTR_BEGIN_DISABLE_EXCEPT_TYPE_WARNING: Removed (C++20 noexcept handling is stable)
 
 } // end namespace rttr
 

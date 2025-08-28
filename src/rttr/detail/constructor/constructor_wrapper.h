@@ -81,34 +81,34 @@ class constructor_wrapper<Class_Type, class_ctor, Acc_Level, Policy,
 
     public:
         constructor_wrapper(std::array<metadata, Metadata_Count> metadata_list,
-                            parameter_infos<Param_Args...> param_infos) RTTR_NOEXCEPT
+                            parameter_infos<Param_Args...> param_infos) noexcept
         :   metadata_handler<Metadata_Count>(std::move(metadata_list)), m_param_infos(std::move(param_infos)),
             m_param_info_list(create_paramter_info_array(m_param_infos))
         {
             init();
         }
 
-        bool is_valid()                     const RTTR_NOEXCEPT { return true; }
-        access_levels get_access_level()    const RTTR_NOEXCEPT { return Acc_Level; }
-        type get_instantiated_type()        const RTTR_NOEXCEPT { return type::get<instanciated_type>(); }
-        type get_declaring_type()           const RTTR_NOEXCEPT { return type::get<typename raw_type<Class_Type>::type>(); }
+        bool is_valid()                     const noexcept { return true; }
+        access_levels get_access_level()    const noexcept { return Acc_Level; }
+        type get_instantiated_type()        const noexcept { return type::get<instanciated_type>(); }
+        type get_declaring_type()           const noexcept { return type::get<typename raw_type<Class_Type>::type>(); }
 
-        RTTR_INLINE std::vector<bool> get_is_reference_impl(std::true_type)     const RTTR_NOEXCEPT { return {std::is_reference<Ctor_Args>::value...}; }
-        RTTR_INLINE std::vector<bool> get_is_reference_impl(std::false_type)    const RTTR_NOEXCEPT { return {}; }
+        inline std::vector<bool> get_is_reference_impl(std::true_type)     const noexcept { return {std::is_reference<Ctor_Args>::value...}; }
+        inline std::vector<bool> get_is_reference_impl(std::false_type)    const noexcept { return {}; }
 
-        RTTR_INLINE std::vector<bool> get_is_const_impl(std::true_type)     const RTTR_NOEXCEPT { return {std::is_const<typename std::remove_reference<Ctor_Args>::type>::value...}; }
-        RTTR_INLINE std::vector<bool> get_is_const_impl(std::false_type)    const RTTR_NOEXCEPT { return {}; }
+        inline std::vector<bool> get_is_const_impl(std::true_type)     const noexcept { return {std::is_const<typename std::remove_reference<Ctor_Args>::type>::value...}; }
+        inline std::vector<bool> get_is_const_impl(std::false_type)    const noexcept { return {}; }
 
-        std::vector<bool> get_is_reference()    const RTTR_NOEXCEPT { return get_is_reference_impl(std::integral_constant<bool, sizeof...(Ctor_Args) != 0>()); }
-        std::vector<bool> get_is_const()        const RTTR_NOEXCEPT { return get_is_const_impl(std::integral_constant<bool, sizeof...(Ctor_Args) != 0>()); }
+        std::vector<bool> get_is_reference()    const noexcept { return get_is_reference_impl(std::integral_constant<bool, sizeof...(Ctor_Args) != 0>()); }
+        std::vector<bool> get_is_const()        const noexcept { return get_is_const_impl(std::integral_constant<bool, sizeof...(Ctor_Args) != 0>()); }
 
-        array_range<parameter_info> get_parameter_infos()   const RTTR_NOEXCEPT { return array_range<parameter_info>(m_param_info_list.data(),
+        array_range<parameter_info> get_parameter_infos()   const noexcept { return array_range<parameter_info>(m_param_info_list.data(),
                                                                                                                      m_param_info_list.size()); }
 
         variant get_metadata(const variant& key)            const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
         template<typename... TArgs>
-        static RTTR_INLINE
+        static inline
         enable_if_t< are_args_in_valid_range<type_list<Ctor_Args...>, type_list<TArgs...>>::value, variant>
         invoke_impl(const TArgs&...args)
         {
@@ -116,7 +116,7 @@ class constructor_wrapper<Class_Type, class_ctor, Acc_Level, Policy,
         }
 
         template<typename... TArgs>
-        static RTTR_INLINE
+        static inline
         enable_if_t< !are_args_in_valid_range<type_list<Ctor_Args...>, type_list<TArgs...>>::value, variant>
         invoke_impl(const TArgs&...args)
         {
@@ -154,7 +154,7 @@ class constructor_wrapper<Class_Type, class_ctor, Acc_Level, Policy,
         }
 
         template<std::size_t ...I>
-        static RTTR_INLINE variant invoke_variadic_impl(const std::vector<argument>& arg_list, index_sequence<I...>)
+        static inline variant invoke_variadic_impl(const std::vector<argument>& arg_list, index_sequence<I...>)
         {
             if (arg_list.size() == sizeof...(I))
                 return invoker_class::invoke(arg_list[I]...);
@@ -167,7 +167,7 @@ class constructor_wrapper<Class_Type, class_ctor, Acc_Level, Policy,
             return invoke_variadic_impl(arg_list, make_index_sequence<sizeof...(Ctor_Args)>());
         }
 
-        void visit(visitor& visitor, const constructor& ctor) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const constructor& ctor) const noexcept
         {
             auto obj = make_ctor_info<Class_Type, Policy, Ctor_Args...>(ctor);
             visitor_iterator<Visitor_List>::visit(visitor, make_ctor_visitor_invoker(obj));
@@ -194,7 +194,7 @@ class constructor_wrapper<Class_Type, return_func, Acc_Level, Policy,
     public:
         constructor_wrapper(F creator_func,
                             std::array<metadata, Metadata_Count> metadata_list,
-                            parameter_infos<Param_Args...> param_infos) RTTR_NOEXCEPT
+                            parameter_infos<Param_Args...> param_infos) noexcept
         :   metadata_handler<Metadata_Count>(std::move(metadata_list)),
             m_creator_func(creator_func), m_param_infos(std::move(param_infos)),
             m_param_info_list(create_paramter_info_array(m_param_infos))
@@ -202,13 +202,13 @@ class constructor_wrapper<Class_Type, return_func, Acc_Level, Policy,
             init();
         }
 
-        bool is_valid()                                     const RTTR_NOEXCEPT { return true; }
-        access_levels get_access_level()                    const RTTR_NOEXCEPT { return Acc_Level; }
-        type get_instantiated_type()                        const RTTR_NOEXCEPT { return type::get<instanciated_type>();                  }
-        type get_declaring_type()                           const RTTR_NOEXCEPT { return type::get<typename raw_type<Class_Type>::type>(); }
-        std::vector<bool> get_is_reference()                const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_reference();  }
-        std::vector<bool> get_is_const()                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_const();      }
-        array_range<parameter_info> get_parameter_infos()   const RTTR_NOEXCEPT { return array_range<parameter_info>(m_param_info_list.data(),
+        bool is_valid()                                     const noexcept { return true; }
+        access_levels get_access_level()                    const noexcept { return Acc_Level; }
+        type get_instantiated_type()                        const noexcept { return type::get<instanciated_type>();                  }
+        type get_declaring_type()                           const noexcept { return type::get<typename raw_type<Class_Type>::type>(); }
+        std::vector<bool> get_is_reference()                const noexcept { return method_accessor<F, Policy>::get_is_reference();  }
+        std::vector<bool> get_is_const()                    const noexcept { return method_accessor<F, Policy>::get_is_const();      }
+        array_range<parameter_info> get_parameter_infos()   const noexcept { return array_range<parameter_info>(m_param_info_list.data(),
                                                                                                        m_param_info_list.size()); }
 
         variant get_metadata(const variant& key)            const { return metadata_handler<Metadata_Count>::get_metadata(key); }
@@ -246,7 +246,7 @@ class constructor_wrapper<Class_Type, return_func, Acc_Level, Policy,
             return method_accessor<F, Policy>::invoke_variadic(m_creator_func, instance(), args);
         }
 
-        void visit(visitor& visitor, const constructor& ctor) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const constructor& ctor) const noexcept
         {
             auto obj = make_ctor_info_func<Class_Type, Policy, F>(ctor, m_creator_func);
             visitor_iterator<Visitor_List>::visit(visitor, make_ctor_visitor_invoker_func(obj));
@@ -273,31 +273,31 @@ class constructor_wrapper<Class_Type, class_ctor, Acc_Level, Policy,
 
     public:
         constructor_wrapper(std::array<metadata, Metadata_Count> metadata_list,
-                            parameter_infos<> param_infos) RTTR_NOEXCEPT
+                            parameter_infos<> param_infos) noexcept
         :   metadata_handler<Metadata_Count>(std::move(metadata_list))
         {
             init();
         }
 
-        bool is_valid()                     const RTTR_NOEXCEPT { return true; }
-        access_levels get_access_level()    const RTTR_NOEXCEPT { return Acc_Level; }
-        type get_instantiated_type()        const RTTR_NOEXCEPT { return type::get<instanciated_type>(); }
-        type get_declaring_type()           const RTTR_NOEXCEPT { return type::get<typename raw_type<Class_Type>::type>(); }
+        bool is_valid()                     const noexcept { return true; }
+        access_levels get_access_level()    const noexcept { return Acc_Level; }
+        type get_instantiated_type()        const noexcept { return type::get<instanciated_type>(); }
+        type get_declaring_type()           const noexcept { return type::get<typename raw_type<Class_Type>::type>(); }
 
-        RTTR_INLINE std::vector<bool> get_is_reference_impl(std::true_type)     const RTTR_NOEXCEPT { return {std::is_reference<Ctor_Args>::value...}; }
-        RTTR_INLINE std::vector<bool> get_is_reference_impl(std::false_type)    const RTTR_NOEXCEPT { return {}; }
+        inline std::vector<bool> get_is_reference_impl(std::true_type)     const noexcept { return {std::is_reference<Ctor_Args>::value...}; }
+        inline std::vector<bool> get_is_reference_impl(std::false_type)    const noexcept { return {}; }
 
-        RTTR_INLINE std::vector<bool> get_is_const_impl(std::true_type)     const RTTR_NOEXCEPT { return {std::is_const<typename std::remove_reference<Ctor_Args>::type>::value...}; }
-        RTTR_INLINE std::vector<bool> get_is_const_impl(std::false_type)    const RTTR_NOEXCEPT { return {}; }
+        inline std::vector<bool> get_is_const_impl(std::true_type)     const noexcept { return {std::is_const<typename std::remove_reference<Ctor_Args>::type>::value...}; }
+        inline std::vector<bool> get_is_const_impl(std::false_type)    const noexcept { return {}; }
 
-        std::vector<bool> get_is_reference()    const RTTR_NOEXCEPT { return get_is_reference_impl(std::integral_constant<bool, sizeof...(Ctor_Args) != 0>()); }
-        std::vector<bool> get_is_const()        const RTTR_NOEXCEPT { return get_is_const_impl(std::integral_constant<bool, sizeof...(Ctor_Args) != 0>()); }
+        std::vector<bool> get_is_reference()    const noexcept { return get_is_reference_impl(std::integral_constant<bool, sizeof...(Ctor_Args) != 0>()); }
+        std::vector<bool> get_is_const()        const noexcept { return get_is_const_impl(std::integral_constant<bool, sizeof...(Ctor_Args) != 0>()); }
 
-        array_range<parameter_info> get_parameter_infos()   const RTTR_NOEXCEPT { return array_range<parameter_info>(); }
+        array_range<parameter_info> get_parameter_infos()   const noexcept { return array_range<parameter_info>(); }
         variant get_metadata(const variant& key)            const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
         template<typename... TArgs>
-        static RTTR_INLINE
+        static inline
         enable_if_t< are_args_in_valid_range<type_list<Ctor_Args...>, type_list<TArgs...>>::value, variant>
         invoke_impl(const TArgs&...args)
         {
@@ -305,7 +305,7 @@ class constructor_wrapper<Class_Type, class_ctor, Acc_Level, Policy,
         }
 
         template<typename... TArgs>
-        static RTTR_INLINE
+        static inline
         enable_if_t< !are_args_in_valid_range<type_list<Ctor_Args...>, type_list<TArgs...>>::value, variant>
         invoke_impl(const TArgs&...args)
         {
@@ -343,7 +343,7 @@ class constructor_wrapper<Class_Type, class_ctor, Acc_Level, Policy,
         }
 
         template<std::size_t ...I>
-        static RTTR_INLINE variant invoke_variadic_impl(const std::vector<argument>& arg_list, index_sequence<I...>)
+        static inline variant invoke_variadic_impl(const std::vector<argument>& arg_list, index_sequence<I...>)
         {
             if (arg_list.size() == sizeof...(I))
                 return invoker_class::invoke(arg_list[I]...);
@@ -356,7 +356,7 @@ class constructor_wrapper<Class_Type, class_ctor, Acc_Level, Policy,
             return invoke_variadic_impl(arg_list, make_index_sequence<sizeof...(Ctor_Args)>());
         }
 
-        void visit(visitor& visitor, const constructor& ctor) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const constructor& ctor) const noexcept
         {
             auto obj = make_ctor_info<Class_Type, Policy, Ctor_Args...>(ctor);
             visitor_iterator<Visitor_List>::visit(visitor, make_ctor_visitor_invoker(obj));
@@ -379,21 +379,21 @@ class constructor_wrapper<Class_Type, return_func, Acc_Level, Policy,
     public:
         constructor_wrapper(F creator_func,
                             std::array<metadata, Metadata_Count> metadata_list,
-                            parameter_infos<> param_infos) RTTR_NOEXCEPT
+                            parameter_infos<> param_infos) noexcept
         :   metadata_handler<Metadata_Count>(std::move(metadata_list)),
             m_creator_func(creator_func)
         {
             init();
         }
 
-        bool is_valid()                                     const RTTR_NOEXCEPT { return true; }
-        access_levels get_access_level()                    const RTTR_NOEXCEPT { return Acc_Level; }
-        type get_instantiated_type()                        const RTTR_NOEXCEPT { return type::get<instanciated_type>();                  }
-        type get_declaring_type()                           const RTTR_NOEXCEPT { return type::get<typename raw_type<Class_Type>::type>(); }
-        std::vector<bool> get_is_reference()                const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_reference();  }
-        std::vector<bool> get_is_const()                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_const();      }
-        array_range<parameter_info> get_parameter_infos()   const RTTR_NOEXCEPT { return array_range<parameter_info>(); }
-        variant get_metadata(const variant& key)            const RTTR_NOEXCEPT { return metadata_handler<Metadata_Count>::get_metadata(key); }
+        bool is_valid()                                     const noexcept { return true; }
+        access_levels get_access_level()                    const noexcept { return Acc_Level; }
+        type get_instantiated_type()                        const noexcept { return type::get<instanciated_type>();                  }
+        type get_declaring_type()                           const noexcept { return type::get<typename raw_type<Class_Type>::type>(); }
+        std::vector<bool> get_is_reference()                const noexcept { return method_accessor<F, Policy>::get_is_reference();  }
+        std::vector<bool> get_is_const()                    const noexcept { return method_accessor<F, Policy>::get_is_const();      }
+        array_range<parameter_info> get_parameter_infos()   const noexcept { return array_range<parameter_info>(); }
+        variant get_metadata(const variant& key)            const noexcept { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
         variant invoke() const
         {
@@ -428,7 +428,7 @@ class constructor_wrapper<Class_Type, return_func, Acc_Level, Policy,
             return method_accessor<F, Policy>::invoke_variadic(m_creator_func, instance(), args);
         }
 
-        void visit(visitor& visitor, const constructor& ctor) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const constructor& ctor) const noexcept
         {
             auto obj = make_ctor_info_func<Class_Type, Policy, F>(ctor, m_creator_func);
             visitor_iterator<Visitor_List>::visit(visitor, make_ctor_visitor_invoker_func(obj));

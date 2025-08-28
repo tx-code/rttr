@@ -39,7 +39,7 @@ namespace rttr
 template<typename...T>
 struct type_list
 {
-    static RTTR_CONSTEXPR_OR_CONST auto size = sizeof...(T); //!< The amount of template parameters
+    static constexpr auto size = sizeof...(T); //!< The amount of template parameters
 };
 
 

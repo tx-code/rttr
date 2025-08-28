@@ -97,12 +97,12 @@ class enum_flags
         /*!
          * Creates an enum_flags object with no flags set.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags(zero = nullptr) RTTR_NOEXCEPT;
+        constexpr inline enum_flags(zero = nullptr) noexcept;
 
         /*!
          * Creates a enum_flags object with the given flag \p flag.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags(Enum flag) RTTR_NOEXCEPT;
+        constexpr inline enum_flags(Enum flag) noexcept;
 
         /*!
          * Creates an enum_flags object initialized with the given integer value \p value.
@@ -110,7 +110,7 @@ class enum_flags
          * \remark enum_flag is a wrapper class around an integer to avoid creation
          *          of enum_flags object from enum values.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags(detail::enum_flag v) RTTR_NOEXCEPT;
+        constexpr inline enum_flags(detail::enum_flag v) noexcept;
 
         /////////////////////////////////////////////////////////////////////////////////
 
@@ -120,7 +120,7 @@ class enum_flags
          *
          * \return A reference to this object.
          */
-        RTTR_CXX14_CONSTEXPR RTTR_INLINE enum_flags& operator&=(int mask) RTTR_NOEXCEPT;
+        constexpr inline enum_flags& operator&=(int mask) noexcept;
 
         /*!
          * \brief Performs a bitwise `AND` operation with \p mask
@@ -128,7 +128,7 @@ class enum_flags
          *
          * \return A reference to this object.
          */
-        RTTR_CXX14_CONSTEXPR RTTR_INLINE enum_flags& operator&=(uint32_t mask) RTTR_NOEXCEPT;
+        constexpr inline enum_flags& operator&=(uint32_t mask) noexcept;
 
         /*!
          * \brief Performs a bitwise `AND` operation with \p mask
@@ -136,7 +136,7 @@ class enum_flags
          *
          * \return A reference to this object.
          */
-        RTTR_CXX14_CONSTEXPR RTTR_INLINE enum_flags& operator&=(Enum mask) RTTR_NOEXCEPT;
+        constexpr inline enum_flags& operator&=(Enum mask) noexcept;
 
         /*!
          * \brief Performs a bitwise `OR` operation with \p f
@@ -144,7 +144,7 @@ class enum_flags
          *
          * \return A reference to this object.
          */
-        RTTR_CXX14_CONSTEXPR RTTR_INLINE enum_flags& operator|=(enum_flags f) RTTR_NOEXCEPT;
+        constexpr inline enum_flags& operator|=(enum_flags f) noexcept;
 
         /*!
          * \brief Performs a bitwise `OR` operation with \p f
@@ -152,7 +152,7 @@ class enum_flags
          *
          * \return A reference to this object.
          */
-        RTTR_CXX14_CONSTEXPR RTTR_INLINE enum_flags& operator|=(Enum f) RTTR_NOEXCEPT;
+        constexpr inline enum_flags& operator|=(Enum f) noexcept;
 
         /*!
          * \brief Performs a bitwise `XOR` operation with \p f
@@ -160,7 +160,7 @@ class enum_flags
          *
          * \return A reference to this object.
          */
-        RTTR_CXX14_CONSTEXPR RTTR_INLINE enum_flags& operator^=(enum_flags f) RTTR_NOEXCEPT;
+        constexpr inline enum_flags& operator^=(enum_flags f) noexcept;
 
         /*!
          * \brief Performs a bitwise `XOR` operation with \p f
@@ -168,7 +168,7 @@ class enum_flags
          *
          * \return A reference to this object.
          */
-        RTTR_CXX14_CONSTEXPR RTTR_INLINE enum_flags& operator^=(Enum f) RTTR_NOEXCEPT;
+        constexpr inline enum_flags& operator^=(Enum f) noexcept;
 
         /*!
          * \brief Performs a bitwise `XOR` operation with \p f
@@ -176,7 +176,7 @@ class enum_flags
          *
          * \return A reference to this object.
          */
-        RTTR_CONSTEXPR RTTR_INLINE operator enum_type() const RTTR_NOEXCEPT;
+        constexpr inline operator enum_type() const noexcept;
 
         /////////////////////////////////////////////////////////////////////////////////
 
@@ -186,7 +186,7 @@ class enum_flags
          *
          * \return A enum_flags object containing the result of the bitwise `OR` operation on this object and \p f.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags operator|(Enum f) const RTTR_NOEXCEPT;
+        constexpr inline enum_flags operator|(Enum f) const noexcept;
 
 
         /*!
@@ -195,7 +195,7 @@ class enum_flags
          *
          * \return A enum_flags object containing the result of the bitwise `OR` operation on this object and \p f.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags operator|(enum_flags f) const RTTR_NOEXCEPT;
+        constexpr inline enum_flags operator|(enum_flags f) const noexcept;
 
         /*!
          * \brief Performs a bitwise `XOR` operation on this object and \p f
@@ -203,7 +203,7 @@ class enum_flags
          *
          * \return A enum_flags object containing the result of the bitwise `XOR` operation on this object and \p f.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags operator^(Enum f) const RTTR_NOEXCEPT;
+        constexpr inline enum_flags operator^(Enum f) const noexcept;
 
         /*!
          * \brief Performs a bitwise `XOR` operation on this object and \p f
@@ -211,7 +211,7 @@ class enum_flags
          *
          * \return A enum_flags object containing the result of the bitwise `XOR` operation on this object and \p f.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags operator^(enum_flags f) const RTTR_NOEXCEPT;
+        constexpr inline enum_flags operator^(enum_flags f) const noexcept;
 
         /*!
          * \brief Performs a bitwise `AND` operation on this object and \p f
@@ -219,7 +219,7 @@ class enum_flags
          *
          * \return A enum_flags object containing the result of the bitwise `AND` operation on this object and \p f.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags operator&(Enum f) const RTTR_NOEXCEPT;
+        constexpr inline enum_flags operator&(Enum f) const noexcept;
 
 
         /*!
@@ -228,7 +228,7 @@ class enum_flags
          *
          * \return A enum_flags object containing the result of the bitwise `AND` operation on this object and \p mask.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags operator&(int mask) const RTTR_NOEXCEPT;
+        constexpr inline enum_flags operator&(int mask) const noexcept;
 
         /*!
          * \brief Performs a bitwise `AND` operation on this object and \p mask
@@ -236,7 +236,7 @@ class enum_flags
          *
          * \return A enum_flags object containing the result of the bitwise `AND` operation on this object and \p mask.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags operator&(uint32_t mask) const RTTR_NOEXCEPT;
+        constexpr inline enum_flags operator&(uint32_t mask) const noexcept;
 
         /*!
          * \brief Performs a bitwise negation of the current object
@@ -244,21 +244,21 @@ class enum_flags
          *
          * \return A enum_flags object that contains the bitwise negation of this object.
          */
-        RTTR_CONSTEXPR RTTR_INLINE enum_flags operator~() const RTTR_NOEXCEPT;
+        constexpr inline enum_flags operator~() const noexcept;
 
         /*!
          * \brief This will test whether a flag was set or not.
          *
          * \return `true`, when no flag is set, otherwise `false`.
          */
-        RTTR_CONSTEXPR RTTR_INLINE bool operator!() const RTTR_NOEXCEPT;
+        constexpr inline bool operator!() const noexcept;
 
         /*!
          * \brief This will test whether the given flag \p flag was set.
          *
          * \return `true`, when the flag is set, otherwise `false`.
          */
-        RTTR_CONSTEXPR RTTR_INLINE bool test_flag(Enum flag) const RTTR_NOEXCEPT;
+        constexpr inline bool test_flag(Enum flag) const noexcept;
 
     private:
         enum_type m_value;
@@ -274,7 +274,7 @@ namespace detail
 class invalid_enum_flag
 {
     public:
-        RTTR_CONSTEXPR RTTR_INLINE explicit invalid_enum_flag(int v){}
+        constexpr inline explicit invalid_enum_flag(int v){}
 };
 
 } // end namespace detail
@@ -306,15 +306,15 @@ class invalid_enum_flag
 using Flags = rttr::enum_flags<Enum>;
 
 #define RTTR_DECLARE_ENUM_FLAGS_OPERATORS(Flags)                                                                                        \
-RTTR_CONSTEXPR RTTR_INLINE rttr::enum_flags<Flags::type> operator|(Flags::type lhs, Flags::type rhs) RTTR_NOEXCEPT                      \
+constexpr inline rttr::enum_flags<Flags::type> operator|(Flags::type lhs, Flags::type rhs) noexcept                      \
 {                                                                                                                                       \
     return (rttr::enum_flags<Flags::type>(lhs) | rhs);                                                                                  \
 }                                                                                                                                       \
-RTTR_CONSTEXPR RTTR_INLINE rttr::enum_flags<Flags::type> operator|(Flags::type lhs, rttr::enum_flags<Flags::type> rhs) RTTR_NOEXCEPT    \
+constexpr inline rttr::enum_flags<Flags::type> operator|(Flags::type lhs, rttr::enum_flags<Flags::type> rhs) noexcept    \
 {                                                                                                                                       \
     return (rhs | lhs);                                                                                                                 \
 }                                                                                                                                       \
-RTTR_CONSTEXPR RTTR_INLINE rttr::detail::invalid_enum_flag operator|(Flags::type lhs, int rhs)                                          \
+constexpr inline rttr::detail::invalid_enum_flag operator|(Flags::type lhs, int rhs)                                          \
 {                                                                                                                                       \
     return rttr::detail::invalid_enum_flag(int(lhs) | rhs);                                                                             \
 }

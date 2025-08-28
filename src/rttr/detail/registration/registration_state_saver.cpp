@@ -92,21 +92,21 @@ void registration_state_saver::reset()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<type> registration_state_saver::get_types() const RTTR_NOEXCEPT
+array_range<type> registration_state_saver::get_types() const noexcept
 {
     return {m_types.data(), m_types.size()};
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<property> registration_state_saver::get_global_properties() const RTTR_NOEXCEPT
+array_range<property> registration_state_saver::get_global_properties() const noexcept
 {
     return {m_global_properties.data(), m_global_properties.size()};
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<method> registration_state_saver::get_global_methods() const RTTR_NOEXCEPT
+array_range<method> registration_state_saver::get_global_methods() const noexcept
 {
     return {m_global_methods.data(), m_global_methods.size()};
 }

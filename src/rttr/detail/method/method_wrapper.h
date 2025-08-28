@@ -66,7 +66,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<>, param
         method_wrapper(string_view name,
                        F func_acc,
                        std::array<metadata, Metadata_Count> metadata_list,
-                       parameter_infos<Param_Args...> param_infos) RTTR_NOEXCEPT
+                       parameter_infos<Param_Args...> param_infos) noexcept
         :   method_wrapper_base(name, type::get<Declaring_Type>()),
             metadata_handler<Metadata_Count>(std::move(metadata_list)),
             m_func_acc(func_acc),
@@ -76,13 +76,13 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<>, param
             init();
         }
 
-        bool is_valid()                                     const RTTR_NOEXCEPT { return true;                                            }
-        bool is_static()                                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::is_static();         }
-        type get_return_type()                              const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_return_type();   }
-        std::vector<bool> get_is_reference()                const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_reference();  }
-        std::vector<bool> get_is_const()                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_const();      }
-        access_levels get_access_level()                    const RTTR_NOEXCEPT { return Acc_Level; }
-        array_range<parameter_info> get_parameter_infos()   const RTTR_NOEXCEPT { return array_range<parameter_info>(const_cast<decltype(m_param_info_list)&>(m_param_info_list).data(),
+        bool is_valid()                                     const noexcept { return true;                                            }
+        bool is_static()                                    const noexcept { return method_accessor<F, Policy>::is_static();         }
+        type get_return_type()                              const noexcept { return method_accessor<F, Policy>::get_return_type();   }
+        std::vector<bool> get_is_reference()                const noexcept { return method_accessor<F, Policy>::get_is_reference();  }
+        std::vector<bool> get_is_const()                    const noexcept { return method_accessor<F, Policy>::get_is_const();      }
+        access_levels get_access_level()                    const noexcept { return Acc_Level; }
+        array_range<parameter_info> get_parameter_infos()   const noexcept { return array_range<parameter_info>(const_cast<decltype(m_param_info_list)&>(m_param_info_list).data(),
                                                                                                        m_param_info_list.size()); }
         variant get_metadata(const variant& key)            const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
@@ -120,7 +120,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<>, param
             return method_accessor<F, Policy>::invoke_variadic(m_func_acc, object, args);
         }
 
-        void visit(visitor& visitor, const method& meth) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const method& meth) const noexcept
         {
             auto obj = make_method_info<Declaring_Type, Policy, F>(meth, m_func_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_method_visitor_invoker(obj));
@@ -147,7 +147,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<Default_
                        F func_acc,
                        std::array<metadata, Metadata_Count> metadata_list,
                        default_args<Default_Args...> default_args,
-                       parameter_infos<Param_Args...> param_infos) RTTR_NOEXCEPT
+                       parameter_infos<Param_Args...> param_infos) noexcept
         :   method_wrapper_base(name, type::get<Declaring_Type>()),
             metadata_handler<Metadata_Count>(std::move(metadata_list)),
             m_func_acc(func_acc),
@@ -159,13 +159,13 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<Default_
             init();
         }
 
-        bool is_valid()                                     const RTTR_NOEXCEPT { return true;                                            }
-        bool is_static()                                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::is_static();         }
-        type get_return_type()                              const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_return_type();   }
-        std::vector<bool> get_is_reference()                const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_reference();  }
-        std::vector<bool> get_is_const()                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_const();      }
-        access_levels get_access_level()                    const RTTR_NOEXCEPT { return Acc_Level; }
-        array_range<parameter_info> get_parameter_infos()   const RTTR_NOEXCEPT { return array_range<parameter_info>(const_cast<decltype(m_param_info_list)&>(m_param_info_list).data(),
+        bool is_valid()                                     const noexcept { return true;                                            }
+        bool is_static()                                    const noexcept { return method_accessor<F, Policy>::is_static();         }
+        type get_return_type()                              const noexcept { return method_accessor<F, Policy>::get_return_type();   }
+        std::vector<bool> get_is_reference()                const noexcept { return method_accessor<F, Policy>::get_is_reference();  }
+        std::vector<bool> get_is_const()                    const noexcept { return method_accessor<F, Policy>::get_is_const();      }
+        access_levels get_access_level()                    const noexcept { return Acc_Level; }
+        array_range<parameter_info> get_parameter_infos()   const noexcept { return array_range<parameter_info>(const_cast<decltype(m_param_info_list)&>(m_param_info_list).data(),
                                                                                                        m_param_info_list.size()); }
         variant get_metadata(const variant& key)            const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
@@ -206,7 +206,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<Default_
                 return variant();
         }
 
-        void visit(visitor& visitor, const method& meth) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const method& meth) const noexcept
         {
             auto obj = make_method_info<Declaring_Type, Policy, F>(meth, m_func_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_method_visitor_invoker(obj));
@@ -228,7 +228,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<>, param
         method_wrapper(string_view name,
                        F func_acc,
                        std::array<metadata, Metadata_Count> metadata_list,
-                       parameter_infos<> param_infos) RTTR_NOEXCEPT
+                       parameter_infos<> param_infos) noexcept
         :   method_wrapper_base(name, type::get<Declaring_Type>()),
             metadata_handler<Metadata_Count>(std::move(metadata_list)),
             m_func_acc(func_acc)
@@ -236,13 +236,13 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<>, param
             init();
         }
 
-        bool is_valid()                                     const RTTR_NOEXCEPT { return true;                                            }
-        bool is_static()                                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::is_static();         }
-        type get_return_type()                              const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_return_type();   }
-        std::vector<bool> get_is_reference()                const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_reference();  }
-        std::vector<bool> get_is_const()                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_const();      }
-        access_levels get_access_level()                    const RTTR_NOEXCEPT { return Acc_Level;                                       }
-        array_range<parameter_info> get_parameter_infos()   const RTTR_NOEXCEPT { return array_range<parameter_info>();                   }
+        bool is_valid()                                     const noexcept { return true;                                            }
+        bool is_static()                                    const noexcept { return method_accessor<F, Policy>::is_static();         }
+        type get_return_type()                              const noexcept { return method_accessor<F, Policy>::get_return_type();   }
+        std::vector<bool> get_is_reference()                const noexcept { return method_accessor<F, Policy>::get_is_reference();  }
+        std::vector<bool> get_is_const()                    const noexcept { return method_accessor<F, Policy>::get_is_const();      }
+        access_levels get_access_level()                    const noexcept { return Acc_Level;                                       }
+        array_range<parameter_info> get_parameter_infos()   const noexcept { return array_range<parameter_info>();                   }
         variant get_metadata(const variant& key)            const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
         variant invoke(instance& object) const
@@ -279,7 +279,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<>, param
             return method_accessor<F, Policy>::invoke_variadic(m_func_acc, object, args);
         }
 
-        void visit(visitor& visitor, const method& meth) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const method& meth) const noexcept
         {
             auto obj = make_method_info<Declaring_Type, Policy, F>(meth, m_func_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_method_visitor_invoker(obj));
@@ -313,13 +313,13 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<Default_
             init();
         }
 
-        bool is_valid()                                     const RTTR_NOEXCEPT { return true;                                            }
-        bool is_static()                                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::is_static();         }
-        type get_return_type()                              const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_return_type();   }
-        std::vector<bool> get_is_reference()                const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_reference();  }
-        std::vector<bool> get_is_const()                    const RTTR_NOEXCEPT { return method_accessor<F, Policy>::get_is_const();      }
-        access_levels get_access_level()                    const RTTR_NOEXCEPT { return Acc_Level;                                       }
-        array_range<parameter_info> get_parameter_infos()   const RTTR_NOEXCEPT { return array_range<parameter_info>();                   }
+        bool is_valid()                                     const noexcept { return true;                                            }
+        bool is_static()                                    const noexcept { return method_accessor<F, Policy>::is_static();         }
+        type get_return_type()                              const noexcept { return method_accessor<F, Policy>::get_return_type();   }
+        std::vector<bool> get_is_reference()                const noexcept { return method_accessor<F, Policy>::get_is_reference();  }
+        std::vector<bool> get_is_const()                    const noexcept { return method_accessor<F, Policy>::get_is_const();      }
+        access_levels get_access_level()                    const noexcept { return Acc_Level;                                       }
+        array_range<parameter_info> get_parameter_infos()   const noexcept { return array_range<parameter_info>();                   }
         variant get_metadata(const variant& key)            const { return metadata_handler<Metadata_Count>::get_metadata(key); }
 
         variant invoke(instance& object) const
@@ -359,7 +359,7 @@ class method_wrapper<F, Declaring_Type, Acc_Level, Policy, default_args<Default_
                 return variant();
         }
 
-        void visit(visitor& visitor, const method& meth) const RTTR_NOEXCEPT
+        void visit(visitor& visitor, const method& meth) const noexcept
         {
             auto obj = make_method_info<Declaring_Type, Policy, F>(meth, m_func_acc);
             visitor_iterator<Visitor_List>::visit(visitor, make_method_visitor_invoker(obj));

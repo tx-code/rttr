@@ -58,77 +58,77 @@ property create_invalid_item()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-property::property(const detail::property_wrapper_base* wrapper) RTTR_NOEXCEPT
+property::property(const detail::property_wrapper_base* wrapper) noexcept
 :   m_wrapper(wrapper)
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool property::is_valid() const RTTR_NOEXCEPT
+bool property::is_valid() const noexcept
 {
     return m_wrapper->is_valid();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-property::operator bool() const RTTR_NOEXCEPT
+property::operator bool() const noexcept
 {
     return m_wrapper->is_valid();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-access_levels property::get_access_level() const RTTR_NOEXCEPT
+access_levels property::get_access_level() const noexcept
 {
     return m_wrapper->get_access_level();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool property::is_readonly() const RTTR_NOEXCEPT
+bool property::is_readonly() const noexcept
 {
     return m_wrapper->is_readonly();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool property::is_static() const RTTR_NOEXCEPT
+bool property::is_static() const noexcept
 {
     return m_wrapper->is_static();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool property::is_enumeration() const RTTR_NOEXCEPT
+bool property::is_enumeration() const noexcept
 {
     return m_wrapper->get_type().is_enumeration();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-enumeration property::get_enumeration() const RTTR_NOEXCEPT
+enumeration property::get_enumeration() const noexcept
 {
     return m_wrapper->get_type().get_enumeration();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-string_view property::get_name() const RTTR_NOEXCEPT
+string_view property::get_name() const noexcept
 {
     return m_wrapper->get_name();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type property::get_type() const RTTR_NOEXCEPT
+type property::get_type() const noexcept
 {
     return m_wrapper->get_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type property::get_declaring_type() const RTTR_NOEXCEPT
+type property::get_declaring_type() const noexcept
 {
     return m_wrapper->get_declaring_type();
 }
@@ -156,21 +156,21 @@ variant property::get_metadata(const variant& key) const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool property::operator==(const property& other) const RTTR_NOEXCEPT
+bool property::operator==(const property& other) const noexcept
 {
     return (m_wrapper == other.m_wrapper);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool property::operator!=(const property& other) const RTTR_NOEXCEPT
+bool property::operator!=(const property& other) const noexcept
 {
     return (m_wrapper != other.m_wrapper);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void property::visit(visitor& visitor) const RTTR_NOEXCEPT
+void property::visit(visitor& visitor) const noexcept
 {
     m_wrapper->visit(visitor, property(*this));
 }

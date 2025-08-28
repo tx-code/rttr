@@ -39,14 +39,14 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static RTTR_INLINE bool is_floating_point(const type& type)
+static inline bool is_floating_point(const type& type)
 {
     return (type == type::get<float>() || type == type::get<double>());
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static RTTR_INLINE bool almost_equal(double p1, double p2)
+static inline bool almost_equal(double p1, double p2)
 {
     return (std::abs(p1 - p2) * 1000000000000. <= std::min(std::abs(p1), std::abs(p2)));
 }

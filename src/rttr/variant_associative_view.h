@@ -111,14 +111,14 @@ class RTTR_API variant_associative_view
          *
          * \remark The underlying data is not destroyed.
          */
-        ~variant_associative_view() RTTR_NOEXCEPT;
+        ~variant_associative_view() noexcept;
 
         /*!
          * \brief Assigns the value of the \a other variant_associative_view to this variant_associative_view.
          *
          * \return A reference to the variant_associative_view with the new data.
          */
-        variant_associative_view& operator=(const variant_associative_view& other) RTTR_NOEXCEPT;
+        variant_associative_view& operator=(const variant_associative_view& other) noexcept;
 
         /*!
          * \brief Returns true if this variant_associative_view is valid, that means the object is holding some data.
@@ -126,7 +126,7 @@ class RTTR_API variant_associative_view
          *
          * \return True if this \ref variant_associative_view is valid, otherwise false.
          */
-        bool is_valid() const RTTR_NOEXCEPT;
+        bool is_valid() const noexcept;
 
         /*!
          * \brief Convenience function to check if this \ref variant_associative_view is valid or not.
@@ -135,12 +135,12 @@ class RTTR_API variant_associative_view
          *
          * \return True if this \ref variant_associative_view is valid, otherwise false.
          */
-        explicit operator bool() const RTTR_NOEXCEPT;
+        explicit operator bool() const noexcept;
 
         /*!
          * \brief Swaps this variant_associative_view with the \a other variant_associative_view.
          */
-        void swap(variant_associative_view& other) RTTR_NOEXCEPT;
+        void swap(variant_associative_view& other) noexcept;
 
 
         /*!
@@ -150,7 +150,7 @@ class RTTR_API variant_associative_view
          *
          * \return \ref type "Type" of the associative container.
          */
-        type get_type() const RTTR_NOEXCEPT;
+        type get_type() const noexcept;
 
         /*!
          * \brief Returns the \ref type from the key of this associative container.
@@ -159,7 +159,7 @@ class RTTR_API variant_associative_view
          *
          * \return \ref type "Type" from the key of the associative container.
          */
-        type get_key_type() const RTTR_NOEXCEPT;
+        type get_key_type() const noexcept;
 
         /*!
          * \brief Returns the \ref type object from the value of this associative container.
@@ -168,7 +168,7 @@ class RTTR_API variant_associative_view
          *
          * \return \ref type "Type" from the value of the associative container.
          */
-        type get_value_type() const RTTR_NOEXCEPT;
+        type get_value_type() const noexcept;
 
         /*!
          * \brief Returns `true`, when this associative container stores only keys.
@@ -180,21 +180,21 @@ class RTTR_API variant_associative_view
          *
          * \return `true`, when this associative container stores only keys; otherwise `false`.
          */
-        bool is_key_only_type() const RTTR_NOEXCEPT;
+        bool is_key_only_type() const noexcept;
 
         /*!
          * \brief Checks if the container has no elements.
          *
          * \return `true` if container is empty, otherwise `false`.
          */
-        bool is_empty() const RTTR_NOEXCEPT;
+        bool is_empty() const noexcept;
 
         /*!
          * \brief Returns the number of elements in the associative container.
          *
          * \return The number of elements in the associative container.
          */
-        std::size_t get_size() const RTTR_NOEXCEPT;
+        std::size_t get_size() const noexcept;
 
         /*!
          * \brief Insert a key into the container.
@@ -424,7 +424,7 @@ class RTTR_API variant_associative_view
                 bool operator!=(const const_iterator& other) const;
 
             private:
-                const_iterator(const detail::variant_associative_view_private* view) RTTR_NOEXCEPT;
+                const_iterator(const detail::variant_associative_view_private* view) noexcept;
                 void swap(const_iterator& other);
 
                 friend class variant_associative_view;

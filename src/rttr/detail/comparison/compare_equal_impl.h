@@ -48,7 +48,7 @@ namespace detail
  *         otherwise this function will return false.
  */
 template<typename T>
-RTTR_INLINE typename std::enable_if<is_equal_comparable<T>::value && !std::is_array<T>::value, bool>::type
+inline typename std::enable_if<is_equal_comparable<T>::value && !std::is_array<T>::value, bool>::type
 compare_equal(const T& lhs, const T& rhs, bool& ok)
 {
     ok = true;
@@ -58,7 +58,7 @@ compare_equal(const T& lhs, const T& rhs, bool& ok)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE typename std::enable_if<!is_equal_comparable<T>::value && !std::is_array<T>::value, bool>::type
+inline typename std::enable_if<!is_equal_comparable<T>::value && !std::is_array<T>::value, bool>::type
 compare_equal(const T& lhs, const T& rhs, bool& ok)
 {
     return compare_types_equal(&lhs, &rhs, type::get<T>(), ok);
@@ -67,7 +67,7 @@ compare_equal(const T& lhs, const T& rhs, bool& ok)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE typename std::enable_if<!is_equal_comparable<T>::value && std::is_array<T>::value, bool>::type
+inline typename std::enable_if<!is_equal_comparable<T>::value && std::is_array<T>::value, bool>::type
 compare_equal(const T& lhs, const T& rhs, bool& ok)
 {
     return compare_array_equal(lhs, rhs, ok);

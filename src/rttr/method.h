@@ -126,21 +126,21 @@ class RTTR_API method
          *
          * \return True if this method is valid, otherwise false.
          */
-        bool is_valid() const RTTR_NOEXCEPT;
+        bool is_valid() const noexcept;
 
         /*!
          * \brief Convenience function to check if this method is valid or not.
          *
          * \return True if this method is valid, otherwise false.
          */
-        explicit operator bool() const RTTR_NOEXCEPT;
+        explicit operator bool() const noexcept;
 
         /*!
          * \brief Returns the name of this method.
          *
          * \return Name of the method.
          */
-        string_view get_name() const RTTR_NOEXCEPT;
+        string_view get_name() const noexcept;
 
         /*!
          * \brief Returns the access level with which this method was
@@ -150,7 +150,7 @@ class RTTR_API method
          *
          * \return \ref access_levels of the method.
          */
-        access_levels get_access_level() const RTTR_NOEXCEPT;
+        access_levels get_access_level() const noexcept;
 
         /*!
          * \brief Returns true if this method is static method, otherwise false.
@@ -160,14 +160,14 @@ class RTTR_API method
          *
          * \return True if this is a static method, otherwise false.
          */
-        bool is_static() const RTTR_NOEXCEPT;
+        bool is_static() const noexcept;
 
         /*!
          * Returns the type object of the return type.
          *
          * \return The type of the return type.
          */
-        type get_return_type() const RTTR_NOEXCEPT;
+        type get_return_type() const noexcept;
 
         /*!
          * Returns the class that declares this method.
@@ -177,21 +177,21 @@ class RTTR_API method
          *
          * \return \ref type "Type" of the declaring class/struct for this method.
          */
-        type get_declaring_type() const RTTR_NOEXCEPT;
+        type get_declaring_type() const noexcept;
 
         /*!
          * \brief Returns an ordered range of \ref parameter_info objects, which matches the signature of the method.
          *
          * \return A range of parameter_info objects of the method signature.
          */
-        array_range<parameter_info> get_parameter_infos() const RTTR_NOEXCEPT;
+        array_range<parameter_info> get_parameter_infos() const noexcept;
 
         /*!
          * \brief Returns the signature of this method as readable string.
          *
          * \return The signature as readable string.
          */
-        string_view get_signature() const RTTR_NOEXCEPT;
+        string_view get_signature() const noexcept;
 
         /*!
          * \brief Returns the meta data for the given key \p key.
@@ -328,19 +328,19 @@ class RTTR_API method
          *
          * \return True if both methods are equal, otherwise false.
          */
-        bool operator==(const method& other) const RTTR_NOEXCEPT;
+        bool operator==(const method& other) const noexcept;
 
         /*!
          * Returns true if this method is the not the same like the \p other.
          *
          * \return True if both methods are different, otherwise false.
          */
-        bool operator!=(const method& other) const RTTR_NOEXCEPT;
+        bool operator!=(const method& other) const noexcept;
 
     private:
-        method(const detail::method_wrapper_base* wrapper) RTTR_NOEXCEPT;
+        method(const detail::method_wrapper_base* wrapper) noexcept;
 
-        void visit(visitor& visitor) const RTTR_NOEXCEPT;
+        void visit(visitor& visitor) const noexcept;
 
         template<typename T>
         friend T detail::create_item(const detail::class_item_to_wrapper_t<T>* wrapper);

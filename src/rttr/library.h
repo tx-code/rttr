@@ -154,7 +154,7 @@ public:
       *
       * \see load(), unload()
       */
-     bool is_loaded() const RTTR_NOEXCEPT;
+     bool is_loaded() const noexcept;
 
      /*!
       * \brief When the library was not yet \ref load() "loaded", the file name given in the constructor will be returned.
@@ -171,7 +171,7 @@ public:
       *
       * \see load(), unload()
       */
-     string_view get_file_name() const RTTR_NOEXCEPT;
+     string_view get_file_name() const noexcept;
 
      /*!
       * \brief Returns a text string with the description of the last error that occurred.
@@ -181,7 +181,7 @@ public:
       *
       * \see load(), unload()
       */
-     string_view get_error_string() const RTTR_NOEXCEPT;
+     string_view get_error_string() const noexcept;
 
      /*!
       * \brief A range of all registered type in this library.
@@ -190,7 +190,7 @@ public:
       *
       * \see type
       */
-     array_range<type> get_types() const RTTR_NOEXCEPT;
+     array_range<type> get_types() const noexcept;
 
      /*!
       * \brief A range of all registered global \ref property "properties" in this library.
@@ -199,7 +199,7 @@ public:
       *
       * \see property
       */
-     array_range<property> get_global_properties() const RTTR_NOEXCEPT;
+     array_range<property> get_global_properties() const noexcept;
 
      /*!
       * \brief A range of all registered global \ref method "methods" in this library.
@@ -208,7 +208,7 @@ public:
       *
       * \see method
       */
-     array_range<method> get_global_methods() const RTTR_NOEXCEPT;
+     array_range<method> get_global_methods() const noexcept;
 
 private:
     std::shared_ptr<detail::library_private> m_pimpl;

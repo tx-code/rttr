@@ -42,14 +42,14 @@ namespace rttr
 namespace detail
 {
 
-RTTR_INLINE void remove_whitespaces(std::string& text)
+inline void remove_whitespaces(std::string& text)
 {
     text.erase(std::remove_if(text.begin(), text.end(), static_cast<int(*)(int)>(&std::isspace)), text.end());
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool is_space_after(const std::string& text, const std::string& part)
+inline bool is_space_after(const std::string& text, const std::string& part)
 {
     auto found_pos = text.find(part);
 
@@ -66,7 +66,7 @@ RTTR_INLINE bool is_space_after(const std::string& text, const std::string& part
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool is_space_before(const std::string& text, const std::string& part)
+inline bool is_space_before(const std::string& text, const std::string& part)
 {
     auto found_pos = text.find_last_of(part);
 
@@ -83,7 +83,7 @@ RTTR_INLINE bool is_space_before(const std::string& text, const std::string& par
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE void insert_space_after(std::string& text, const std::string& part)
+inline void insert_space_after(std::string& text, const std::string& part)
 {
     auto found_pos = text.find(part);
 
@@ -100,7 +100,7 @@ RTTR_INLINE void insert_space_after(std::string& text, const std::string& part)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE void insert_space_before(std::string& text, const std::string& part)
+inline void insert_space_before(std::string& text, const std::string& part)
 {
    auto found_pos = text.find_last_of(part);
 

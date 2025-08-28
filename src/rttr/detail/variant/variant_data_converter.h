@@ -102,7 +102,7 @@ struct default_type_converter
 template<typename T>
 struct empty_type_converter
 {
-    static RTTR_INLINE bool convert_to(const T& value, argument& arg)
+    static inline bool convert_to(const T& value, argument& arg)
     {
         return false;
     }
@@ -121,72 +121,72 @@ struct empty_type_converter
 template<typename T>
 struct convert_from
 {
-    static RTTR_INLINE bool to(const T& from, bool& to)
+    static inline bool to(const T& from, bool& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, char& to)
+    static inline bool to(const T& from, char& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, int8_t& to)
+    static inline bool to(const T& from, int8_t& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, int16_t& to)
+    static inline bool to(const T& from, int16_t& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, int32_t& to)
+    static inline bool to(const T& from, int32_t& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, int64_t& to)
+    static inline bool to(const T& from, int64_t& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, uint8_t& to)
+    static inline bool to(const T& from, uint8_t& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, uint16_t& to)
+    static inline bool to(const T& from, uint16_t& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, uint32_t& to)
+    static inline bool to(const T& from, uint32_t& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, uint64_t& to)
+    static inline bool to(const T& from, uint64_t& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, float& to)
+    static inline bool to(const T& from, float& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, double& to)
+    static inline bool to(const T& from, double& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to(const T& from, std::string& to)
+    static inline bool to(const T& from, std::string& to)
     {
         return false;
     }
 
-    static RTTR_INLINE bool to_enum(const T& from, argument& to)
+    static inline bool to_enum(const T& from, argument& to)
     {
         return false;
     }
@@ -200,85 +200,85 @@ struct convert_from
 template<>
 struct RTTR_API convert_from<bool>
 {
-    static RTTR_INLINE bool to(const bool& from, bool& to)
+    static inline bool to(const bool& from, bool& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, char& to)
+    static inline bool to(const bool& from, char& to)
     {
         to = static_cast<char>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, int8_t& to)
+    static inline bool to(const bool& from, int8_t& to)
     {
         to = static_cast<int8_t>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, int16_t& to)
+    static inline bool to(const bool& from, int16_t& to)
     {
         to = static_cast<int16_t>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, int32_t& to)
+    static inline bool to(const bool& from, int32_t& to)
     {
         to = static_cast<int32_t>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, int64_t& to)
+    static inline bool to(const bool& from, int64_t& to)
     {
         to = static_cast<int64_t>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, uint8_t& to)
+    static inline bool to(const bool& from, uint8_t& to)
     {
         to = static_cast<uint8_t>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, uint16_t& to)
+    static inline bool to(const bool& from, uint16_t& to)
     {
         to = static_cast<uint16_t>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, uint32_t& to)
+    static inline bool to(const bool& from, uint32_t& to)
     {
         to = static_cast<uint32_t>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, uint64_t& to)
+    static inline bool to(const bool& from, uint64_t& to)
     {
         to = static_cast<uint64_t>(from ? 1 : 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, float& to)
+    static inline bool to(const bool& from, float& to)
     {
         to = static_cast<float>(from ? 1.0f : 0.0f);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, double& to)
+    static inline bool to(const bool& from, double& to)
     {
         to = static_cast<double>(from ? 1.0 : 0.0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const bool& from, std::string& to)
+    static inline bool to(const bool& from, std::string& to)
     {
         to = (from ? "true" : "false");
         return true;
     }
 
-    static RTTR_INLINE bool to_enum(const bool& from, argument& to)
+    static inline bool to_enum(const bool& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -289,81 +289,81 @@ struct RTTR_API convert_from<bool>
 template<>
 struct RTTR_API convert_from<char>
 {
-    static RTTR_INLINE bool to(const char& from, bool& to)
+    static inline bool to(const char& from, bool& to)
     {
         to = (from != '\0');
         return true;
     }
 
-    static RTTR_INLINE bool to(const char& from, char& to)
+    static inline bool to(const char& from, char& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const char& from, int8_t& to)
+    static inline bool to(const char& from, int8_t& to)
     {
         to = static_cast<int8_t>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const char& from, int16_t& to)
+    static inline bool to(const char& from, int16_t& to)
     {
         to = static_cast<int16_t>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const char& from, int32_t& to)
+    static inline bool to(const char& from, int32_t& to)
     {
         to = static_cast<int32_t>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const char& from, int64_t& to)
+    static inline bool to(const char& from, int64_t& to)
     {
         to = static_cast<int64_t>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const char& from, uint8_t& to)
+    static inline bool to(const char& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const char& from, uint16_t& to)
+    static inline bool to(const char& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const char& from, uint32_t& to)
+    static inline bool to(const char& from, uint32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const char& from, uint64_t& to)
+    static inline bool to(const char& from, uint64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const char& from, float& to)
+    static inline bool to(const char& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const char& from, double& to)
+    static inline bool to(const char& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const char& from, std::string& to)
+    static inline bool to(const char& from, std::string& to)
     {
         to = std::string(1, from);
         return true;
     }
 
-    static RTTR_INLINE bool to_enum(const char& from, argument& to)
+    static inline bool to_enum(const char& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -374,80 +374,80 @@ struct RTTR_API convert_from<char>
 template<>
 struct RTTR_API convert_from<int8_t>
 {
-    static RTTR_INLINE bool to(const int8_t& from, bool& to)
+    static inline bool to(const int8_t& from, bool& to)
     {
         to = (from != 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, char& to)
+    static inline bool to(const int8_t& from, char& to)
     {
         to = static_cast<char>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, int8_t& to)
+    static inline bool to(const int8_t& from, int8_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, int16_t& to)
+    static inline bool to(const int8_t& from, int16_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, int32_t& to)
+    static inline bool to(const int8_t& from, int32_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, int64_t& to)
+    static inline bool to(const int8_t& from, int64_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, uint8_t& to)
+    static inline bool to(const int8_t& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, uint16_t& to)
+    static inline bool to(const int8_t& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, uint32_t& to)
+    static inline bool to(const int8_t& from, uint32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, uint64_t& to)
+    static inline bool to(const int8_t& from, uint64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, float& to)
+    static inline bool to(const int8_t& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, double& to)
+    static inline bool to(const int8_t& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int8_t& from, std::string& to)
+    static inline bool to(const int8_t& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const int8_t& from, argument& to)
+    static inline bool to_enum(const int8_t& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -458,78 +458,78 @@ struct RTTR_API convert_from<int8_t>
 template<>
 struct RTTR_API convert_from<int16_t>
 {
-    static RTTR_INLINE bool to(const int16_t& from, bool& to)
+    static inline bool to(const int16_t& from, bool& to)
     {
         to = (from != 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, char& to)
+    static inline bool to(const int16_t& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, int8_t& to)
+    static inline bool to(const int16_t& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, int16_t& to)
+    static inline bool to(const int16_t& from, int16_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, int32_t& to)
+    static inline bool to(const int16_t& from, int32_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, int64_t& to)
+    static inline bool to(const int16_t& from, int64_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, uint8_t& to)
+    static inline bool to(const int16_t& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, uint16_t& to)
+    static inline bool to(const int16_t& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, uint32_t& to)
+    static inline bool to(const int16_t& from, uint32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, uint64_t& to)
+    static inline bool to(const int16_t& from, uint64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, float& to)
+    static inline bool to(const int16_t& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, double& to)
+    static inline bool to(const int16_t& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int16_t& from, std::string& to)
+    static inline bool to(const int16_t& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const int16_t& from, argument& to)
+    static inline bool to_enum(const int16_t& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -540,77 +540,77 @@ struct RTTR_API convert_from<int16_t>
 template<>
 struct RTTR_API convert_from<int32_t>
 {
-    static RTTR_INLINE bool to(const int32_t& from, bool& to)
+    static inline bool to(const int32_t& from, bool& to)
     {
         to = (from != 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, char& to)
+    static inline bool to(const int32_t& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, int8_t& to)
+    static inline bool to(const int32_t& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, int16_t& to)
+    static inline bool to(const int32_t& from, int16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, int32_t& to)
+    static inline bool to(const int32_t& from, int32_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, int64_t& to)
+    static inline bool to(const int32_t& from, int64_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, uint8_t& to)
+    static inline bool to(const int32_t& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, uint16_t& to)
+    static inline bool to(const int32_t& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, uint32_t& to)
+    static inline bool to(const int32_t& from, uint32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, uint64_t& to)
+    static inline bool to(const int32_t& from, uint64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, float& to)
+    static inline bool to(const int32_t& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, double& to)
+    static inline bool to(const int32_t& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int32_t& from, std::string& to)
+    static inline bool to(const int32_t& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const int32_t& from, argument& to)
+    static inline bool to_enum(const int32_t& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -621,76 +621,76 @@ struct RTTR_API convert_from<int32_t>
 template<>
 struct RTTR_API convert_from<int64_t>
 {
-    static RTTR_INLINE bool to(const int64_t& from, bool& to)
+    static inline bool to(const int64_t& from, bool& to)
     {
         to = (from != 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, char& to)
+    static inline bool to(const int64_t& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, int8_t& to)
+    static inline bool to(const int64_t& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, int16_t& to)
+    static inline bool to(const int64_t& from, int16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, int32_t& to)
+    static inline bool to(const int64_t& from, int32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, int64_t& to)
+    static inline bool to(const int64_t& from, int64_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, uint8_t& to)
+    static inline bool to(const int64_t& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, uint16_t& to)
+    static inline bool to(const int64_t& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, uint32_t& to)
+    static inline bool to(const int64_t& from, uint32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, uint64_t& to)
+    static inline bool to(const int64_t& from, uint64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, float& to)
+    static inline bool to(const int64_t& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, double& to)
+    static inline bool to(const int64_t& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const int64_t& from, std::string& to)
+    static inline bool to(const int64_t& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const int64_t& from, argument& to)
+    static inline bool to_enum(const int64_t& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -703,81 +703,81 @@ struct RTTR_API convert_from<int64_t>
 template<>
 struct RTTR_API convert_from<uint8_t>
 {
-    static RTTR_INLINE bool to(const uint8_t& from, bool& to)
+    static inline bool to(const uint8_t& from, bool& to)
     {
         to = (from != 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, char& to)
+    static inline bool to(const uint8_t& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, int8_t& to)
+    static inline bool to(const uint8_t& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, int16_t& to)
+    static inline bool to(const uint8_t& from, int16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, int32_t& to)
+    static inline bool to(const uint8_t& from, int32_t& to)
     {
         to = static_cast<int32_t>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, int64_t& to)
+    static inline bool to(const uint8_t& from, int64_t& to)
     {
         to = static_cast<int64_t>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, uint8_t& to)
+    static inline bool to(const uint8_t& from, uint8_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, uint16_t& to)
+    static inline bool to(const uint8_t& from, uint16_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, uint32_t& to)
+    static inline bool to(const uint8_t& from, uint32_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, uint64_t& to)
+    static inline bool to(const uint8_t& from, uint64_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, float& to)
+    static inline bool to(const uint8_t& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, double& to)
+    static inline bool to(const uint8_t& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint8_t& from, std::string& to)
+    static inline bool to(const uint8_t& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const uint8_t& from, argument& to)
+    static inline bool to_enum(const uint8_t& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -788,79 +788,79 @@ struct RTTR_API convert_from<uint8_t>
 template<>
 struct RTTR_API convert_from<uint16_t>
 {
-    static RTTR_INLINE bool to(const uint16_t& from, bool& to)
+    static inline bool to(const uint16_t& from, bool& to)
     {
         to = (from != 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, char& to)
+    static inline bool to(const uint16_t& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, int8_t& to)
+    static inline bool to(const uint16_t& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, int16_t& to)
+    static inline bool to(const uint16_t& from, int16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, int32_t& to)
+    static inline bool to(const uint16_t& from, int32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, int64_t& to)
+    static inline bool to(const uint16_t& from, int64_t& to)
     {
         to = static_cast<int64_t>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, uint8_t& to)
+    static inline bool to(const uint16_t& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, uint16_t& to)
+    static inline bool to(const uint16_t& from, uint16_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, uint32_t& to)
+    static inline bool to(const uint16_t& from, uint32_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, uint64_t& to)
+    static inline bool to(const uint16_t& from, uint64_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, float& to)
+    static inline bool to(const uint16_t& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, double& to)
+    static inline bool to(const uint16_t& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint16_t& from, std::string& to)
+    static inline bool to(const uint16_t& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const uint16_t& from, argument& to)
+    static inline bool to_enum(const uint16_t& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -871,77 +871,77 @@ struct RTTR_API convert_from<uint16_t>
 template<>
 struct RTTR_API convert_from<uint32_t>
 {
-    static RTTR_INLINE bool to(const uint32_t& from, bool& to)
+    static inline bool to(const uint32_t& from, bool& to)
     {
         to = (from != 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, char& to)
+    static inline bool to(const uint32_t& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, int8_t& to)
+    static inline bool to(const uint32_t& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, int16_t& to)
+    static inline bool to(const uint32_t& from, int16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, int32_t& to)
+    static inline bool to(const uint32_t& from, int32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, int64_t& to)
+    static inline bool to(const uint32_t& from, int64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, uint8_t& to)
+    static inline bool to(const uint32_t& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, uint16_t& to)
+    static inline bool to(const uint32_t& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, uint32_t& to)
+    static inline bool to(const uint32_t& from, uint32_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, uint64_t& to)
+    static inline bool to(const uint32_t& from, uint64_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, float& to)
+    static inline bool to(const uint32_t& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, double& to)
+    static inline bool to(const uint32_t& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint32_t& from, std::string& to)
+    static inline bool to(const uint32_t& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const uint32_t& from, argument& to)
+    static inline bool to_enum(const uint32_t& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -952,76 +952,76 @@ struct RTTR_API convert_from<uint32_t>
 template<>
 struct RTTR_API convert_from<uint64_t>
 {
-    static RTTR_INLINE bool to(const uint64_t& from, bool& to)
+    static inline bool to(const uint64_t& from, bool& to)
     {
         to = (from != 0);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, char& to)
+    static inline bool to(const uint64_t& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, int8_t& to)
+    static inline bool to(const uint64_t& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, int16_t& to)
+    static inline bool to(const uint64_t& from, int16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, int32_t& to)
+    static inline bool to(const uint64_t& from, int32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, int64_t& to)
+    static inline bool to(const uint64_t& from, int64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, uint8_t& to)
+    static inline bool to(const uint64_t& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, uint16_t& to)
+    static inline bool to(const uint64_t& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, uint32_t& to)
+    static inline bool to(const uint64_t& from, uint32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, uint64_t& to)
+    static inline bool to(const uint64_t& from, uint64_t& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, float& to)
+    static inline bool to(const uint64_t& from, float& to)
     {
         to = static_cast<float>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, double& to)
+    static inline bool to(const uint64_t& from, double& to)
     {
         to = static_cast<double>(from);
         return true;
     }
 
-    static RTTR_INLINE bool to(const uint64_t& from, std::string& to)
+    static inline bool to(const uint64_t& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const uint64_t& from, argument& to)
+    static inline bool to_enum(const uint64_t& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -1032,7 +1032,7 @@ struct RTTR_API convert_from<uint64_t>
 template<>
 struct RTTR_API convert_from<float>
 {
-    static RTTR_INLINE bool to(const float& from, bool& to)
+    static inline bool to(const float& from, bool& to)
     {
         to = !(from <= std::numeric_limits<float>::min() &&
                from >= -1 * std::numeric_limits<float>::min());
@@ -1040,69 +1040,69 @@ struct RTTR_API convert_from<float>
         return true;
     }
 
-    static RTTR_INLINE bool to(const float& from, char& to)
+    static inline bool to(const float& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, int8_t& to)
+    static inline bool to(const float& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, int16_t& to)
+    static inline bool to(const float& from, int16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, int32_t& to)
+    static inline bool to(const float& from, int32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, int64_t& to)
+    static inline bool to(const float& from, int64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, uint8_t& to)
+    static inline bool to(const float& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, uint16_t& to)
+    static inline bool to(const float& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, uint32_t& to)
+    static inline bool to(const float& from, uint32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, uint64_t& to)
+    static inline bool to(const float& from, uint64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const float& from, float& to)
+    static inline bool to(const float& from, float& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const float& from, double& to)
+    static inline bool to(const float& from, double& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const float& from, std::string& to)
+    static inline bool to(const float& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const float& from, argument& to)
+    static inline bool to_enum(const float& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -1113,7 +1113,7 @@ struct RTTR_API convert_from<float>
 template<>
 struct RTTR_API convert_from<double>
 {
-    static RTTR_INLINE bool to(const double& from, bool& to)
+    static inline bool to(const double& from, bool& to)
     {
         to = !(from <= std::numeric_limits<double>::min() &&
                from >= -1 * std::numeric_limits<double>::min());
@@ -1121,55 +1121,55 @@ struct RTTR_API convert_from<double>
         return true;
     }
 
-    static RTTR_INLINE bool to(const double& from, char& to)
+    static inline bool to(const double& from, char& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, int8_t& to)
+    static inline bool to(const double& from, int8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, int16_t& to)
+    static inline bool to(const double& from, int16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, int32_t& to)
+    static inline bool to(const double& from, int32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, int64_t& to)
+    static inline bool to(const double& from, int64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, uint8_t& to)
+    static inline bool to(const double& from, uint8_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, uint16_t& to)
+    static inline bool to(const double& from, uint16_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, uint32_t& to)
+    static inline bool to(const double& from, uint32_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, uint64_t& to)
+    static inline bool to(const double& from, uint64_t& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to(const double& from, float& to)
+    static inline bool to(const double& from, float& to)
     {
-        RTTR_CONSTEXPR_OR_CONST double float_min = -1 * std::numeric_limits<float>::max();
-        RTTR_CONSTEXPR_OR_CONST double float_max = std::numeric_limits<float>::max();
+        constexpr double float_min = -1 * std::numeric_limits<float>::max();
+        constexpr double float_max = std::numeric_limits<float>::max();
         if (from < float_min || from > float_max)
             return false;
 
@@ -1177,18 +1177,18 @@ struct RTTR_API convert_from<double>
         return true;
     }
 
-    static RTTR_INLINE bool to(const double& from, double& to)
+    static inline bool to(const double& from, double& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to(const double& from, std::string& to)
+    static inline bool to(const double& from, std::string& to)
     {
         return convert_to(from, to);
     }
 
-    static RTTR_INLINE bool to_enum(const double& from, argument& to)
+    static inline bool to_enum(const double& from, argument& to)
     {
         return to_enumeration(from, to);
     }
@@ -1199,14 +1199,14 @@ struct RTTR_API convert_from<double>
 template<>
 struct RTTR_API convert_from<std::string>
 {
-    static RTTR_INLINE bool to(const std::string& from, bool& to)
+    static inline bool to(const std::string& from, bool& to)
     {
         bool ok;
         to = string_to_bool(from, &ok);
         return ok;
     }
 
-    static RTTR_INLINE bool to(const std::string& from, char& to)
+    static inline bool to(const std::string& from, char& to)
     {
         const auto& val = from;
         if (val.empty())
@@ -1217,7 +1217,7 @@ struct RTTR_API convert_from<std::string>
         return true;
     }
 
-    static RTTR_INLINE bool to(const std::string& from, int8_t& to)
+    static inline bool to(const std::string& from, int8_t& to)
     {
         bool ok;
         int val = string_to_int(from, &ok);
@@ -1227,7 +1227,7 @@ struct RTTR_API convert_from<std::string>
         return convert_to(val, to);
     }
 
-    static RTTR_INLINE bool to(const std::string& from, int16_t& to)
+    static inline bool to(const std::string& from, int16_t& to)
     {
         bool ok;
         int val = string_to_int(from, &ok);
@@ -1237,21 +1237,21 @@ struct RTTR_API convert_from<std::string>
         return convert_to(val, to);
     }
 
-    static RTTR_INLINE bool to(const std::string& from, int32_t& to)
+    static inline bool to(const std::string& from, int32_t& to)
     {
         bool ok;
         to = string_to_int(from, &ok);
         return ok;
     }
 
-    static RTTR_INLINE bool to(const std::string& from, int64_t& to)
+    static inline bool to(const std::string& from, int64_t& to)
     {
         bool ok;
         to = string_to_long_long(from, &ok);
         return ok;
     }
 
-    static RTTR_INLINE bool to(const std::string& from, uint8_t& to)
+    static inline bool to(const std::string& from, uint8_t& to)
     {
         bool ok;
         unsigned int val = string_to_int(from, &ok);
@@ -1261,7 +1261,7 @@ struct RTTR_API convert_from<std::string>
         return convert_to(val, to);
     }
 
-    static RTTR_INLINE bool to(const std::string& from, uint16_t& to)
+    static inline bool to(const std::string& from, uint16_t& to)
     {
         bool ok;
         unsigned int val = string_to_int(from, &ok);
@@ -1271,7 +1271,7 @@ struct RTTR_API convert_from<std::string>
         return convert_to(val, to);
     }
 
-    static RTTR_INLINE bool to(const std::string& from, uint32_t& to)
+    static inline bool to(const std::string& from, uint32_t& to)
     {
         bool ok;
         const auto val = string_to_ulong(from, &ok);
@@ -1281,7 +1281,7 @@ struct RTTR_API convert_from<std::string>
         return convert_to(val, to);
     }
 
-    static RTTR_INLINE bool to(const std::string& from, uint64_t& to)
+    static inline bool to(const std::string& from, uint64_t& to)
     {
         bool ok;
         const auto val = string_to_ulong_long(from, &ok);
@@ -1291,27 +1291,27 @@ struct RTTR_API convert_from<std::string>
         return convert_to(val, to);
     }
 
-    static RTTR_INLINE bool to(const std::string& from, float& to)
+    static inline bool to(const std::string& from, float& to)
     {
         bool ok;
         to = string_to_float(from, &ok);
         return ok;
     }
 
-    static RTTR_INLINE bool to(const std::string& from, double& to)
+    static inline bool to(const std::string& from, double& to)
     {
         bool ok;
         to = string_to_double(from, &ok);
         return ok;
     }
 
-    static RTTR_INLINE bool to(const std::string& from, std::string& to)
+    static inline bool to(const std::string& from, std::string& to)
     {
         to = from;
         return true;
     }
 
-    static RTTR_INLINE bool to_enum(const std::string& from, argument& to)
+    static inline bool to_enum(const std::string& from, argument& to)
     {
         return to_enumeration(string_view(from), to);
     }
@@ -1337,13 +1337,13 @@ struct convert_from_enum
     template<typename T_>
     using enum_type_t = typename std::underlying_type<T_>::type;
 
-    static RTTR_INLINE enum_type_t<T> get_underlying_value(const T& from)
+    static inline enum_type_t<T> get_underlying_value(const T& from)
     {
         return static_cast<enum_type_t<T>>(from);
     }
 
     template<typename T1>
-    static RTTR_INLINE
+    static inline
     enable_if_t<!std::is_same<bool, enum_type_t<T1> >::value, bool>
     to(const T1& from, bool& to)
     {
@@ -1365,7 +1365,7 @@ struct convert_from_enum
     }
 
     template<typename T1>
-    static RTTR_INLINE
+    static inline
     enable_if_t<std::is_same<bool, enum_type_t<T1> >::value, bool>
     to(const T1& from, bool& to)
     {
@@ -1374,68 +1374,68 @@ struct convert_from_enum
         return true;
     }
 
-    static RTTR_INLINE bool to(const T& from, char& to)
+    static inline bool to(const T& from, char& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, int8_t& to)
+    static inline bool to(const T& from, int8_t& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, int16_t& to)
+    static inline bool to(const T& from, int16_t& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, int32_t& to)
+    static inline bool to(const T& from, int32_t& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, int64_t& to)
+    static inline bool to(const T& from, int64_t& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, uint8_t& to)
+    static inline bool to(const T& from, uint8_t& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, uint16_t& to)
+    static inline bool to(const T& from, uint16_t& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, uint32_t& to)
+    static inline bool to(const T& from, uint32_t& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, uint64_t& to)
+    static inline bool to(const T& from, uint64_t& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, float& to)
+    static inline bool to(const T& from, float& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, double& to)
+    static inline bool to(const T& from, double& to)
     {
         return convert_from<enum_type_t<T>>::to(get_underlying_value(from), to);
     }
 
-    static RTTR_INLINE bool to(const T& from, std::string& to)
+    static inline bool to(const T& from, std::string& to)
     {
         to = get_enumeration_name(from).to_string();
         return (to.empty() == false);
     }
 
-    static RTTR_INLINE bool to_enum(const T& from, argument& to)
+    static inline bool to_enum(const T& from, argument& to)
     {
         return false;
     }

@@ -114,14 +114,14 @@ class RTTR_API variant_sequential_view
          *
          * \remark The underlying data is not destroyed.
          */
-        ~variant_sequential_view() RTTR_NOEXCEPT;
+        ~variant_sequential_view() noexcept;
 
         /*!
          * \brief Assigns the value of the \a other variant_sequential_view to this variant_sequential_view.
          *
          * \return A reference to the variant_sequential_view with the new data.
          */
-        variant_sequential_view& operator=(const variant_sequential_view& other) RTTR_NOEXCEPT;
+        variant_sequential_view& operator=(const variant_sequential_view& other) noexcept;
 
         /*!
          * \brief Returns true if this variant_sequential_view is valid, that means the object is holding some data.
@@ -129,7 +129,7 @@ class RTTR_API variant_sequential_view
          *
          * \return True if this \ref variant_sequential_view is valid, otherwise false.
          */
-        bool is_valid() const RTTR_NOEXCEPT;
+        bool is_valid() const noexcept;
 
         /*!
          * \brief Convenience function to check if this \ref variant_sequential_view is valid or not.
@@ -138,12 +138,12 @@ class RTTR_API variant_sequential_view
          *
          * \return True if this \ref variant_sequential_view is valid, otherwise false.
          */
-        explicit operator bool() const RTTR_NOEXCEPT;
+        explicit operator bool() const noexcept;
 
         /*!
          * \brief Swaps this variant_sequential_view with the \a other variant_sequential_view.
          */
-        void swap(variant_sequential_view& other) RTTR_NOEXCEPT;
+        void swap(variant_sequential_view& other) noexcept;
 
 
         /*!
@@ -153,7 +153,7 @@ class RTTR_API variant_sequential_view
          *
          * \return \ref type "Type" of the sequential container.
          */
-        type get_type() const RTTR_NOEXCEPT;
+        type get_type() const noexcept;
 
         /*!
          * \brief Returns the \ref type object from the value of this sequential container.
@@ -162,14 +162,14 @@ class RTTR_API variant_sequential_view
          *
          * \return \ref type "Type" from the value of the sequential container.
          */
-        type get_value_type() const RTTR_NOEXCEPT;
+        type get_value_type() const noexcept;
 
         /*!
          * \brief Checks if the container has no elements.
          *
          * \return `true` if container is empty, otherwise `false`.
          */
-        bool is_empty() const RTTR_NOEXCEPT;
+        bool is_empty() const noexcept;
 
         /*!
          * \brief Returns `true` if this sequential view is dynamic, otherwise `false`.
@@ -180,7 +180,7 @@ class RTTR_API variant_sequential_view
          *
          * \return A boolean flag which indicates whether this sequential container is dynamic or not.
          */
-        bool is_dynamic() const RTTR_NOEXCEPT;
+        bool is_dynamic() const noexcept;
 
         /*!
          * \brief Gets the rank (number of dimensions) of this sequential container.
@@ -193,7 +193,7 @@ class RTTR_API variant_sequential_view
          *
          * \return Returns the rank of the sequential container.
          */
-        std::size_t get_rank() const RTTR_NOEXCEPT;
+        std::size_t get_rank() const noexcept;
 
         /*!
          * \brief Gets the type of the given rank index.
@@ -206,14 +206,14 @@ class RTTR_API variant_sequential_view
          *
          * \return The rank type at the given dimension \p index.
          */
-        type get_rank_type(std::size_t index) const RTTR_NOEXCEPT;
+        type get_rank_type(std::size_t index) const noexcept;
 
         /*!
          * \brief Returns the number of elements in the sequential container.
          *
          * \return The number of elements in the sequential container.
          */
-        std::size_t get_size() const RTTR_NOEXCEPT;
+        std::size_t get_size() const noexcept;
 
         /*!
          * \brief Sets the size of the sequential container.
@@ -222,7 +222,7 @@ class RTTR_API variant_sequential_view
          *
          * \see is_dynamic()
          */
-        bool set_size(std::size_t size) const RTTR_NOEXCEPT;
+        bool set_size(std::size_t size) const noexcept;
 
         /*!
          * \brief Insert a value into the container.
@@ -411,7 +411,7 @@ class RTTR_API variant_sequential_view
                 bool operator!=(const const_iterator& other) const;
 
             private:
-                const_iterator(const detail::variant_sequential_view_private* view) RTTR_NOEXCEPT;
+                const_iterator(const detail::variant_sequential_view_private* view) noexcept;
                 void swap(const_iterator& other);
 
                 friend class variant_sequential_view;

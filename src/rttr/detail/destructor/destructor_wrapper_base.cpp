@@ -34,7 +34,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-destructor_wrapper_base::destructor_wrapper_base() RTTR_NOEXCEPT
+destructor_wrapper_base::destructor_wrapper_base() noexcept
 {
 }
 
@@ -46,28 +46,28 @@ destructor_wrapper_base::~destructor_wrapper_base()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool destructor_wrapper_base::is_valid() const RTTR_NOEXCEPT
+bool destructor_wrapper_base::is_valid() const noexcept
 {
     return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type destructor_wrapper_base::get_declaring_type() const RTTR_NOEXCEPT
+type destructor_wrapper_base::get_declaring_type() const noexcept
 {
     return get_invalid_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type destructor_wrapper_base::get_destructed_type() const RTTR_NOEXCEPT
+type destructor_wrapper_base::get_destructed_type() const noexcept
 {
     return get_invalid_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool destructor_wrapper_base::invoke(variant& obj) const RTTR_NOEXCEPT
+bool destructor_wrapper_base::invoke(variant& obj) const noexcept
 {
     return false;
 }

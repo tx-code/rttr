@@ -113,20 +113,20 @@ public:
 
 
 
-    bool is_loaded() const RTTR_NOEXCEPT { return (m_handle != nullptr); }
-    string_view get_error_string() const RTTR_NOEXCEPT { return m_error_string; }
-    string_view get_file_name() const RTTR_NOEXCEPT { return m_file_name; }
-    string_view get_qualified_filename() const RTTR_NOEXCEPT { return m_qualifed_file_name; }
+    bool is_loaded() const noexcept { return (m_handle != nullptr); }
+    string_view get_error_string() const noexcept { return m_error_string; }
+    string_view get_file_name() const noexcept { return m_file_name; }
+    string_view get_qualified_filename() const noexcept { return m_qualifed_file_name; }
 
     /////////////////////////////////////////////////////////////
 
-    array_range<type> get_types() const RTTR_NOEXCEPT { return m_state_saver.get_types(); }
+    array_range<type> get_types() const noexcept { return m_state_saver.get_types(); }
 
-    array_range<property> get_global_properties() const RTTR_NOEXCEPT { return m_state_saver.get_global_properties(); }
+    array_range<property> get_global_properties() const noexcept { return m_state_saver.get_global_properties(); }
 
-    array_range<method> get_global_methods() const RTTR_NOEXCEPT { return m_state_saver.get_global_methods(); }
+    array_range<method> get_global_methods() const noexcept { return m_state_saver.get_global_methods(); }
 
-    int get_load_count() const RTTR_NOEXCEPT { return m_load_count.load(); }
+    int get_load_count() const noexcept { return m_load_count.load(); }
 
     void set_load_count(int count) { m_load_count.store(count); }
 

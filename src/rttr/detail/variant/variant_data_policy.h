@@ -38,6 +38,7 @@
 #include "rttr/detail/comparison/compare_less.h"
 
 #include <cstdint>
+#include <new>
 
 namespace rttr
 {
@@ -155,7 +156,7 @@ using variant_policy_func = bool (*)(variant_policy_operation, const variant_dat
 
 template<typename T>
 enable_if_t<std::is_pointer<T>::value, bool>
-static RTTR_INLINE is_nullptr(T& val)
+static inline is_nullptr(T& val)
 {
     return (val == nullptr);
 }
@@ -164,7 +165,7 @@ static RTTR_INLINE is_nullptr(T& val)
 
 template<typename T>
 enable_if_t<!std::is_pointer<T>::value, bool>
-static RTTR_INLINE is_nullptr(T& to)
+static inline is_nullptr(T& to)
 {
     return false;
 }
@@ -309,7 +310,7 @@ struct variant_data_base_policy
                 bool& ok            = std::get<2>(param);
                 const type rhs_type = rhs.get_type();
                 const type lhs_type = type::get<T>();
-                const auto is_lhs_arithmetic = std::is_arithmetic<T>::value;
+                [[maybe_unused]] const auto is_lhs_arithmetic = std::is_arithmetic<T>::value;
                 RTTR_BEGIN_DISABLE_CONDITIONAL_EXPR_WARNING
 
                 if (lhs_type == rhs_type)
@@ -387,29 +388,29 @@ struct variant_data_base_policy
 template<typename T, typename Converter>
 struct variant_data_policy_small : variant_data_base_policy<T, variant_data_policy_small<T>, Converter>
 {
-    static RTTR_INLINE const T& get_value(const variant_data& data)
+    static inline const T& get_value(const variant_data& data)
     {
         return reinterpret_cast<const T&>(data);
     }
 
-    static RTTR_INLINE void destroy(T& value)
+    static inline void destroy(T& value)
     {
         value.~T();
     }
 
-    static RTTR_INLINE void clone(const T& value, variant_data& dest)
+    static inline void clone(const T& value, variant_data& dest)
     {
         new (&dest) T(value);
     }
 
-    static RTTR_INLINE void swap(T& value, variant_data& dest)
+    static inline void swap(T& value, variant_data& dest)
     {
         new (&dest) T(value);
         destroy(value);
     }
 
     template<typename U>
-    static RTTR_INLINE void create(U&& value, variant_data& dest)
+    static inline void create(U&& value, variant_data& dest)
     {
         new (&dest) T(std::forward<U>(value));
     }
@@ -425,28 +426,28 @@ struct variant_data_policy_small : variant_data_base_policy<T, variant_data_poli
 template<typename T, typename Converter>
 struct variant_data_policy_big : variant_data_base_policy<T, variant_data_policy_big<T>, Converter>
 {
-    static RTTR_INLINE const T& get_value(const variant_data& data)
+    static inline const T& get_value(const variant_data& data)
     {
         return *reinterpret_cast<T* const &>(data);
     }
 
-    static RTTR_INLINE void destroy(T& value)
+    static inline void destroy(T& value)
     {
         delete &value;
     }
 RTTR_BEGIN_DISABLE_INIT_LIST_WARNING
-    static RTTR_INLINE void clone(const T& value, variant_data& dest)
+    static inline void clone(const T& value, variant_data& dest)
     {
         reinterpret_cast<T*&>(dest) = new T(value);
     }
 
-    static RTTR_INLINE void swap(T& value, variant_data& dest)
+    static inline void swap(T& value, variant_data& dest)
     {
         reinterpret_cast<T*&>(dest) = &value;
     }
 
     template<typename U>
-    static RTTR_INLINE void create(U&& value, variant_data& dest)
+    static inline void create(U&& value, variant_data& dest)
     {
         reinterpret_cast<T*&>(dest) = new T(std::forward<U>(value));
     }
@@ -466,27 +467,27 @@ RTTR_END_DISABLE_INIT_LIST_WARNING
 template<typename T>
 struct variant_data_policy_array_small : variant_data_base_policy<T, variant_data_policy_array_small<T>>
 {
-    static RTTR_INLINE const T& get_value(const variant_data& data)
+    static inline const T& get_value(const variant_data& data)
     {
         return reinterpret_cast<const T&>(data);
     }
 
-    static RTTR_INLINE void destroy(T& value)
+    static inline void destroy(T& value)
     {
     }
 
-    static RTTR_INLINE void clone(const T& value, variant_data& dest)
+    static inline void clone(const T& value, variant_data& dest)
     {
         COPY_ARRAY_PRE_PROC(value, dest);
     }
 
-    static RTTR_INLINE void swap(T& value, variant_data& dest)
+    static inline void swap(T& value, variant_data& dest)
     {
         clone(value, dest);
     }
 
     template<typename U>
-    static RTTR_INLINE void create(U&& value, variant_data& dest)
+    static inline void create(U&& value, variant_data& dest)
     {
         COPY_ARRAY_PRE_PROC(value, dest);
     }
@@ -504,33 +505,33 @@ struct variant_data_policy_array_big : variant_data_base_policy<T, variant_data_
 {
     using array_dest_type = decltype(new T);
 
-    static RTTR_INLINE const T& get_value(const variant_data& data)
+    static inline const T& get_value(const variant_data& data)
     {
         return reinterpret_cast<const T&>(*reinterpret_cast<const array_dest_type&>(data));
     }
 
-    static RTTR_INLINE void destroy(T& value)
+    static inline void destroy(T& value)
     {
         delete [] &value;
     }
 
-    static RTTR_INLINE void clone(const T& value, variant_data& dest)
+    static inline void clone(const T& value, variant_data& dest)
     {
-        reinterpret_cast<array_dest_type&>(dest) = new T;
+        reinterpret_cast<array_dest_type&>(dest) = new(std::nothrow) T;
 
         COPY_ARRAY_PRE_PROC(value, dest);
     }
 
-    static RTTR_INLINE void swap(T& value, variant_data& dest)
+    static inline void swap(T& value, variant_data& dest)
     {
         reinterpret_cast<array_dest_type&>(dest) = value;
     }
 
     template<typename U>
-    static RTTR_INLINE void create(U&& value, variant_data& dest)
+    static inline void create(U&& value, variant_data& dest)
     {
-        using array_dest_type = decltype(new T);
-        reinterpret_cast<array_dest_type&>(dest) = new T;
+        using array_dest_type = decltype(new(std::nothrow) T);
+        reinterpret_cast<array_dest_type&>(dest) = new(std::nothrow) T;
 
         COPY_ARRAY_PRE_PROC(value, dest);
     }
@@ -546,27 +547,27 @@ struct variant_data_policy_array_big : variant_data_base_policy<T, variant_data_
 template<typename T>
 struct variant_data_policy_arithmetic : variant_data_base_policy<T, variant_data_policy_arithmetic<T>, default_type_converter<T>>
 {
-    static RTTR_INLINE const T& get_value(const variant_data& data)
+    static inline const T& get_value(const variant_data& data)
     {
         return reinterpret_cast<const T&>(data);
     }
 
-    static RTTR_INLINE void destroy(T& value)
+    static inline void destroy(T& value)
     {
     }
 
-    static RTTR_INLINE void clone(const T& value, variant_data& dest)
+    static inline void clone(const T& value, variant_data& dest)
     {
         reinterpret_cast<T&>(dest) = value;
     }
 
-    static RTTR_INLINE void swap(T& value, variant_data& dest)
+    static inline void swap(T& value, variant_data& dest)
     {
         clone(value, dest);
     }
 
     template<typename U>
-    static RTTR_INLINE void create(U&& value, variant_data& dest)
+    static inline void create(U&& value, variant_data& dest)
     {
         reinterpret_cast<T&>(dest) = value;
     }
@@ -582,13 +583,13 @@ struct variant_data_policy_arithmetic : variant_data_base_policy<T, variant_data
 struct RTTR_API variant_data_policy_string : variant_data_policy_big<std::string, default_type_converter<std::string>>
 {
     template<typename U>
-    static RTTR_INLINE void create(U&& value, variant_data& dest)
+    static inline void create(U&& value, variant_data& dest)
     {
         reinterpret_cast<std::string*&>(dest) = new std::string(std::forward<U>(value));
     }
 
     template<std::size_t N>
-    static RTTR_INLINE void create(const char (&value)[N], variant_data& dest)
+    static inline void create(const char (&value)[N], variant_data& dest)
     {
         reinterpret_cast<std::string*&>(dest) = new std::string(value, N - 1);
     }
@@ -696,7 +697,7 @@ struct RTTR_API variant_data_policy_empty
     }
 
     template<typename U>
-    static RTTR_INLINE void create(U&&, variant_data&)
+    static inline void create(U&&, variant_data&)
     {
     }
 };
@@ -806,7 +807,7 @@ struct RTTR_API variant_data_policy_void
     }
 
     template<typename U>
-    static RTTR_INLINE void create(U&&, variant_data&)
+    static inline void create(U&&, variant_data&)
     {
     }
 };
@@ -822,24 +823,24 @@ struct RTTR_API variant_data_policy_void
  */
 struct RTTR_API variant_data_policy_nullptr_t
 {
-    static RTTR_INLINE std::nullptr_t& get_value(const variant_data& data)
+    static inline std::nullptr_t& get_value(const variant_data& data)
     {
         return reinterpret_cast<std::nullptr_t&>(const_cast<variant_data&>(data));
     }
 
-    static RTTR_INLINE void destroy(std::nullptr_t& value)
+    static inline void destroy(std::nullptr_t& value)
     {
         // for unknown reason we have to fully qualify the dtor call here;
         // otherwise mingw has reports a problems here: "request for member 'nullptr_t' in non-class type 'std::nullptr_t'"
         value.std::nullptr_t::~nullptr_t();
     }
 
-    static RTTR_INLINE void clone(const std::nullptr_t& value, variant_data& dest)
+    static inline void clone(const std::nullptr_t& value, variant_data& dest)
     {
         new (&dest) std::nullptr_t(value);
     }
 
-    static RTTR_INLINE void swap(std::nullptr_t& value, variant_data& dest)
+    static inline void swap(std::nullptr_t& value, variant_data& dest)
     {
         new (&dest) std::nullptr_t(value);
         destroy(value);
@@ -956,7 +957,7 @@ struct RTTR_API variant_data_policy_nullptr_t
     }
 
     template<typename U>
-    static RTTR_INLINE void create(U&& value, variant_data& dest)
+    static inline void create(U&& value, variant_data& dest)
     {
         new (&dest) std::nullptr_t(std::forward<U>(value));
     }

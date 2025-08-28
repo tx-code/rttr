@@ -45,12 +45,12 @@ struct method_accessor_impl;
 template<typename F, std::size_t... ArgCount>
 struct method_accessor_impl<F, index_sequence<ArgCount...>, std::true_type>
 {
-    static std::vector<bool> get_is_reference() RTTR_NOEXCEPT
+    static std::vector<bool> get_is_reference() noexcept
     {
         return { std::is_reference<typename param_types<F, ArgCount>::type>::value... };
     }
 
-    static std::vector<bool> get_is_const() RTTR_NOEXCEPT
+    static std::vector<bool> get_is_const() noexcept
     {
         return { std::is_const<typename std::remove_reference<typename param_types<F, ArgCount>::type>::type>::value... };
     }
@@ -61,12 +61,12 @@ struct method_accessor_impl<F, index_sequence<ArgCount...>, std::true_type>
 template<typename F, std::size_t... ArgCount>
 struct method_accessor_impl<F, index_sequence<ArgCount...>, std::false_type>
 {
-    static std::vector<bool> get_is_reference() RTTR_NOEXCEPT
+    static std::vector<bool> get_is_reference() noexcept
     {
         return std::vector<bool>();
     }
 
-    static std::vector<bool> get_is_const() RTTR_NOEXCEPT
+    static std::vector<bool> get_is_const() noexcept
     {
         return std::vector<bool>();
     }
@@ -77,19 +77,19 @@ struct method_accessor_impl<F, index_sequence<ArgCount...>, std::false_type>
 template<typename MethodType>
 struct method_accessor_helper_is_static
 {
-    static bool is_static() RTTR_NOEXCEPT { return true; }
+    static bool is_static() noexcept { return true; }
 };
 
 template<>
 struct method_accessor_helper_is_static<return_member_func>
 {
-    static bool is_static() RTTR_NOEXCEPT { return false; }
+    static bool is_static() noexcept { return false; }
 };
 
 template<>
 struct method_accessor_helper_is_static<void_member_func>
 {
-    static bool is_static() RTTR_NOEXCEPT { return false; }
+    static bool is_static() noexcept { return false; }
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -97,20 +97,20 @@ struct method_accessor_helper_is_static<void_member_func>
 template<typename F, typename Policy>
 struct method_accessor_helper_return_type
 {
-    static type get_return_type() RTTR_NOEXCEPT { return type::get<typename function_traits<F>::return_type>(); }
+    static type get_return_type() noexcept { return type::get<typename function_traits<F>::return_type>(); }
 };
 
 template<typename F>
 struct method_accessor_helper_return_type<F, return_as_ptr>
 {
     using return_type = typename function_traits<F>::return_type;
-    static type get_return_type() RTTR_NOEXCEPT { return type::get<typename std::remove_reference<return_type>::type*>(); }
+    static type get_return_type() noexcept { return type::get<typename std::remove_reference<return_type>::type*>(); }
 };
 
 template<typename F>
 struct method_accessor_helper_return_type<F, discard_return>
 {
-    static type get_return_type() RTTR_NOEXCEPT { return type::get<void>(); }
+    static type get_return_type() noexcept { return type::get<void>(); }
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -125,12 +125,12 @@ struct does_argument_count_match : std::integral_constant<bool, (sizeof...(TArgs
 template<typename F, typename Policy>
 struct method_accessor
 {
-    static RTTR_CONSTEXPR_OR_CONST std::size_t arg_count = function_traits<F>::arg_count;
+    static constexpr std::size_t arg_count = function_traits<F>::arg_count;
     using method_type = typename detail::method_type<F>::type;
     using arg_index_sequence = make_index_sequence< arg_count >;
     using invoker_class = method_invoker<F, Policy, method_type, arg_index_sequence>;
 
-    static bool is_static() RTTR_NOEXCEPT
+    static bool is_static() noexcept
     {
         using method_type = typename detail::method_type<F>::type;
         return method_accessor_helper_is_static<method_type>::is_static();
@@ -138,14 +138,14 @@ struct method_accessor
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    static type get_return_type() RTTR_NOEXCEPT
+    static type get_return_type() noexcept
     {
         return method_accessor_helper_return_type<F, Policy>::get_return_type();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    static std::vector<bool> get_is_reference() RTTR_NOEXCEPT
+    static std::vector<bool> get_is_reference() noexcept
     {
         using has_arguments         = typename std::integral_constant<bool, arg_count != 0>::type;
         return method_accessor_impl<F, make_index_sequence<arg_count>, has_arguments>::get_is_reference();
@@ -153,7 +153,7 @@ struct method_accessor
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    static std::vector<bool> get_is_const() RTTR_NOEXCEPT
+    static std::vector<bool> get_is_const() noexcept
     {
         using has_arguments         = typename std::integral_constant<bool, arg_count != 0>::type;
         return method_accessor_impl<F, make_index_sequence<arg_count>, has_arguments>::get_is_const();
@@ -162,7 +162,7 @@ struct method_accessor
     /////////////////////////////////////////////////////////////////////////////////////
 
     template<typename... TArgs>
-    static RTTR_INLINE
+    static inline
     enable_if_t< does_argument_count_match<F, TArgs...>::value, variant>
     invoke(const F& func_ptr, const instance& obj, const TArgs&...args)
     {
@@ -172,7 +172,7 @@ struct method_accessor
     /////////////////////////////////////////////////////////////////////////////////////
 
     template<typename... TArgs>
-    static RTTR_INLINE
+    static inline
     enable_if_t< !does_argument_count_match<F, TArgs...>::value, variant>
     invoke(const F& func_ptr, const instance& obj, const TArgs&...args)
     {
@@ -182,14 +182,14 @@ struct method_accessor
     /////////////////////////////////////////////////////////////////////////////////////
 
     template<std::size_t... Arg_Idx>
-    static RTTR_INLINE variant invoke_variadic_impl(const F& func_ptr, const instance& obj, index_sequence<Arg_Idx...>, const std::vector<argument>& arg_list)
+    static inline variant invoke_variadic_impl(const F& func_ptr, const instance& obj, index_sequence<Arg_Idx...>, const std::vector<argument>& arg_list)
     {
         return invoker_class::invoke(func_ptr, obj, arg_list[Arg_Idx]...);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    static RTTR_INLINE variant invoke_variadic(const F& func_ptr, const instance& obj, const std::vector<argument>& arg_list)
+    static inline variant invoke_variadic(const F& func_ptr, const instance& obj, const std::vector<argument>& arg_list)
     {
         if (arg_list.size() == arg_count)
             return invoke_variadic_impl(func_ptr, obj, make_index_sequence<arg_count>(), arg_list);

@@ -153,14 +153,14 @@ bool library::unload()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool library::is_loaded() const RTTR_NOEXCEPT
+bool library::is_loaded() const noexcept
 {
     return m_pimpl->is_loaded();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-string_view library::get_file_name() const RTTR_NOEXCEPT
+string_view library::get_file_name() const noexcept
 {
     return m_pimpl->get_qualified_filename().empty() ? m_pimpl->get_file_name() :
                                                        m_pimpl->get_qualified_filename();
@@ -168,28 +168,28 @@ string_view library::get_file_name() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-string_view library::get_error_string() const RTTR_NOEXCEPT
+string_view library::get_error_string() const noexcept
 {
     return m_pimpl->get_error_string();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<type> library::get_types() const RTTR_NOEXCEPT
+array_range<type> library::get_types() const noexcept
 {
     return m_pimpl->get_types();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<property> library::get_global_properties() const RTTR_NOEXCEPT
+array_range<property> library::get_global_properties() const noexcept
 {
     return m_pimpl->get_global_properties();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<method> library::get_global_methods() const RTTR_NOEXCEPT
+array_range<method> library::get_global_methods() const noexcept
 {
     return m_pimpl->get_global_methods();
 }

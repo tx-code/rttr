@@ -54,15 +54,15 @@ class RTTR_API metadata
 
         struct order_by_key
         {
-            RTTR_INLINE bool operator () ( const metadata& _left, const metadata& _right )  const
+            inline bool operator () ( const metadata& _left, const metadata& _right )  const
             {
                 return _left.m_key < _right.m_key;
             }
-            RTTR_INLINE bool operator () ( const variant& _left, const metadata& _right ) const
+            inline bool operator () ( const variant& _left, const metadata& _right ) const
             {
                 return _left < _right.m_key;
             }
-            RTTR_INLINE bool operator () ( const metadata& _left, const variant& _right ) const
+            inline bool operator () ( const metadata& _left, const variant& _right ) const
             {
                 return _left.m_key < _right;
             }

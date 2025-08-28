@@ -117,35 +117,35 @@ class RTTR_API enumeration
          *
          * \return True if this \ref enumeration is valid, otherwise false.
          */
-        bool is_valid() const RTTR_NOEXCEPT;
+        bool is_valid() const noexcept;
 
         /*!
          * \brief Convenience function to check if this \ref enumeration is valid or not.
          *
          * \return True if this \ref enumeration is valid, otherwise false.
          */
-        explicit operator bool() const RTTR_NOEXCEPT;
+        explicit operator bool() const noexcept;
 
         /*!
          * \brief Returns the declared name of this \ref enumeration.
          *
          * \return Name of the \ref enumeration.
          */
-        string_view get_name() const RTTR_NOEXCEPT;
+        string_view get_name() const noexcept;
 
         /*!
          * \brief Returns the underlying type (int, unsigned int, etc.) of this \ref enumeration.
          *
          * \return Data type of the \ref enumeration.
          */
-        type get_underlying_type() const RTTR_NOEXCEPT;
+        type get_underlying_type() const noexcept;
 
         /*!
          * \brief Returns the type object of this \ref enumeration.
          *
          * \return Data type of the \ref enumeration.
          */
-        type get_type() const RTTR_NOEXCEPT;
+        type get_type() const noexcept;
 
         /*!
          * \brief Returns the \ref type of the class or struct that declares this \ref enumeration.
@@ -155,7 +155,7 @@ class RTTR_API enumeration
          *
          * \return \ref type "Type" of the declaring class/struct for this enumeration.
          */
-        type get_declaring_type() const RTTR_NOEXCEPT;
+        type get_declaring_type() const noexcept;
 
         /*!
          * \brief Returns the meta data for the given key \p key.
@@ -174,7 +174,7 @@ class RTTR_API enumeration
          *
          * \return A range of enumeration names.
          */
-        array_range<string_view> get_names() const RTTR_NOEXCEPT;
+        array_range<string_view> get_names() const noexcept;
 
 
          /*!
@@ -184,7 +184,7 @@ class RTTR_API enumeration
          *
          * \return A range of enumeration values.
          */
-        array_range<variant> get_values() const RTTR_NOEXCEPT;
+        array_range<variant> get_values() const noexcept;
 
         /*!
          * \brief Returns the string_view that is used as the name of the given enumeration \p value,
@@ -206,17 +206,17 @@ class RTTR_API enumeration
          *
          * \return True if both enumerations are equal, otherwise false.
          */
-        bool operator==(const enumeration& other) const RTTR_NOEXCEPT;
+        bool operator==(const enumeration& other) const noexcept;
 
         /*!
          * Returns true if this enumeration is the not the same like the \p other.
          *
          * \return True if both enumerations are different, otherwise false.
          */
-        bool operator!=(const enumeration& other) const RTTR_NOEXCEPT;
+        bool operator!=(const enumeration& other) const noexcept;
 
     private:
-        enumeration(const detail::enumeration_wrapper_base* wrapper) RTTR_NOEXCEPT;
+        enumeration(const detail::enumeration_wrapper_base* wrapper) noexcept;
 
         template<typename T>
         friend T detail::create_item(const detail::class_item_to_wrapper_t<T>* wrapper);

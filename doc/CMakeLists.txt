@@ -47,7 +47,7 @@ set(DOXYGEN_PREDEFINED        "DOXYGEN \\
                                RTTR_CONSTEXPR=constexpr \\
                                RTTR_CXX14_CONSTEXPR=constexpr \\
                                RTTR_STATIC_CONSTEXPR=static constexpr \\
-                               RTTR_NOEXCEPT_OR_NOTHROW=throw() \\
+                               RTTR_NOEXCEPT_OR_NOTHROW=noexcept \\
                                RTTR_DEPRECATED_WITH_MSG= \\
                                RTTR_LOCAL= \\
                                ")

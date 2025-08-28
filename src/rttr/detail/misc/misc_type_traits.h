@@ -31,12 +31,14 @@
 #include "rttr/detail/base/core_prerequisites.h"
 
 #include "rttr/detail/misc/function_traits.h"
+#include "rttr/detail/misc/type_concepts.h"
 
 #include "rttr/detail/misc/std_type_traits.h"
 #include "rttr/type_list.h"
 
 #include <type_traits>
 #include <memory>
+#include <concepts>
 
 namespace rttr
 {
@@ -53,52 +55,60 @@ namespace detail
     struct invalid_type;
 
     /////////////////////////////////////////////////////////////////////////////////////////
-    // This trait will removes cv-qualifiers, pointers and reference from type T.
-    template<typename T, typename Enable = void>
+    // This trait removes cv-qualifiers, pointers and reference from type T.
+    // Modernized with C++20 concepts
+    template<typename T>
     struct raw_type
     {
         using type = detail::remove_cv_t<T>;
     };
 
-    template<typename T> struct raw_type<T, enable_if_t<std::is_pointer<T>::value && !detail::is_function_ptr<T>::value>>
+    template<typename T> 
+        requires PointerButNotFunction<T>
+    struct raw_type<T>
     {
-        using type = typename raw_type< detail::remove_pointer_t<T>>::type;
+        using type = typename raw_type<detail::remove_pointer_t<T>>::type;
     };
 
-    template<typename T> struct raw_type<T, enable_if_t<std::is_reference<T>::value> >
+    template<typename T> 
+        requires ReferenceType<T>
+    struct raw_type<T>
     {
-        using type = typename raw_type< remove_reference_t<T> >::type;
+        using type = typename raw_type<remove_reference_t<T>>::type;
     };
 
     template<typename T>
     using raw_type_t = typename raw_type<T>::type;
 
     /////////////////////////////////////////////////////////////////////////////////////////
-    // this trait removes all pointers
+    // This trait removes all pointers - modernized with C++20 concepts
 
-    template<typename T, typename Enable = void>
-    struct remove_pointers { using type = T; };
     template<typename T>
-    struct remove_pointers<T, enable_if_t<std::is_pointer<T>::value>>
+    struct remove_pointers { using type = T; };
+    
+    template<typename T>
+        requires PointerType<T>
+    struct remove_pointers<T>
     {
-        using type = typename remove_pointers<remove_pointer_t<T> >::type;
+        using type = typename remove_pointers<remove_pointer_t<T>>::type;
     };
 
     template<typename T>
     using remove_pointers_t = typename remove_pointers<T>::type;
 
     /////////////////////////////////////////////////////////////////////////////////////////
-    // this trait removes all pointers except one
+    // This trait removes all pointers except one - modernized with C++20 concepts
 
-    template<typename T, typename Enable = void>
-    struct remove_pointers_except_one { using type = T; };
     template<typename T>
-    struct remove_pointers_except_one<T, enable_if_t<std::is_pointer<T>::value>>
+    struct remove_pointers_except_one { using type = T; };
+    
+    template<typename T>
+        requires PointerType<T>
+    struct remove_pointers_except_one<T>
     {
-        using type = conditional_t< std::is_pointer< remove_pointer_t<T> >::value,
-                                    typename remove_pointers_except_one<remove_pointer_t<T>>::type,
-                                    T
-                                  >;
+        using type = conditional_t<std::is_pointer_v<remove_pointer_t<T>>,
+                                   typename remove_pointers_except_one<remove_pointer_t<T>>::type,
+                                   T>;
     };
 
     template<typename T>
@@ -117,9 +127,10 @@ namespace detail
     struct raw_array_type_impl<T[N]> { using type = typename raw_array_type<T>::type; };
 
     template<typename T>
-    struct raw_array_type<T, typename std::enable_if<std::is_array<T>::value>::type>
+        requires ArrayType<T>
+    struct raw_array_type<T>
     {
-         using type = typename raw_array_type_impl< remove_cv_t<T> >::type;
+         using type = typename raw_array_type_impl<remove_cv_t<T>>::type;
     };
 
     template<typename T>
@@ -175,18 +186,15 @@ namespace detail
         static NoType& f(...);
 
     public:
-        static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
+        static constexpr bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
     };
 
-    /*!
+    /*!  
+     * Modern C++20 concept-based version of has_get_type_func
      * If T has a member function 'type get_type() const;' then inherits from true_type, otherwise inherits from false_type.
      */
-    template<class T, typename Enable = void>
-    struct has_get_type_func : std::false_type
-    {};
-
-    template<class T>
-    struct has_get_type_func<T, enable_if_t<has_get_type_func_impl<T>::value> > : std::true_type
+    template<typename T>
+    struct has_get_type_func : std::bool_constant<HasGetTypeMethod<raw_type_t<T>>>
     {};
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -211,18 +219,15 @@ namespace detail
         static NoType& f(...);
 
     public:
-        static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
+        static constexpr bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
     };
 
-    /*!
-     * If T has a member function 'type get_type() const;' then inherits from true_type, otherwise inherits from false_type.
+    /*!     
+     * Modern C++20 concept-based version of has_get_ptr_func
+     * If T has a member function 'void* get_ptr()' then inherits from true_type, otherwise inherits from false_type.
      */
-    template<class T, typename Enable = void>
-    struct has_get_ptr_func : std::false_type
-    {};
-
-    template<class T>
-    struct has_get_ptr_func<T, enable_if_t<has_get_ptr_func_impl<T>::value> > : std::true_type
+    template<typename T>
+    struct has_get_ptr_func : std::bool_constant<HasGetPtrMethod<raw_type_t<T>>>
     {};
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -247,18 +252,15 @@ namespace detail
         static NoType& f(...);
 
     public:
-        static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
+        static constexpr bool value = (sizeof(f<typename raw_type<T>::type>(0)) == sizeof(YesType));
     };
 
-    /*!
-     * If T has a member function 'type get_type() const;' then inherits from true_type, otherwise inherits from false_type.
+    /*!     
+     * Modern C++20 concept-based version of has_get_derived_info_func
+     * If T has a member function 'derived_info get_derived_info()' then inherits from true_type, otherwise inherits from false_type.
      */
-    template<class T, typename Enable = void>
-    struct has_get_derived_info_func : std::false_type
-    {};
-
-    template<class T>
-    struct has_get_derived_info_func<T, enable_if_t<has_get_derived_info_func_impl<T>::value> > : std::true_type
+    template<typename T>
+    struct has_get_derived_info_func : std::bool_constant<HasGetDerivedInfoMethod<raw_type_t<T>>>
     {};
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -268,7 +270,7 @@ namespace detail
     template<typename T>
     struct get_ptr_impl
     {
-        static RTTR_INLINE void* get(T& data)
+        static inline void* get(T& data)
         {
             return const_cast<void*>(reinterpret_cast<const void*>(&data));
         }
@@ -277,7 +279,7 @@ namespace detail
     template<typename T>
     struct get_ptr_impl<T*>
     {
-        static RTTR_INLINE void* get(T* data)
+        static inline void* get(T* data)
         {
             return get_ptr_impl<T>::get(*data);
         }
@@ -286,7 +288,7 @@ namespace detail
     template<>
     struct get_ptr_impl<void*>
     {
-        static RTTR_INLINE void* get(void* data)
+        static inline void* get(void* data)
         {
             return data;
         }
@@ -295,20 +297,20 @@ namespace detail
     template<>
     struct get_ptr_impl<const void*>
     {
-        static RTTR_INLINE void* get(const void* data)
+        static inline void* get(const void* data)
         {
             return const_cast<void*>(data);
         }
     };
 
     template<typename T>
-    static RTTR_INLINE void* get_void_ptr(T* data)
+    static inline void* get_void_ptr(T* data)
     {
         return get_ptr_impl<T*>::get(data);
     }
 
     template<typename T>
-    static RTTR_INLINE void* get_void_ptr(T& data)
+    static inline void* get_void_ptr(T& data)
     {
         return get_ptr_impl<T>::get(data);
     }
@@ -458,7 +460,7 @@ namespace detail
         template <typename U> static NoType& check(...);
 
 
-        static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(check<T>(0)) == sizeof(YesType));
+        static constexpr bool value = (sizeof(check<T>(0)) == sizeof(YesType));
     };
 
     template<typename T, typename Tp = remove_cv_t<remove_reference_t<T>>>
@@ -491,15 +493,14 @@ namespace detail
     template<typename T, typename Enable = void>
     struct pointer_count_impl
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t size = 0;
+        static constexpr std::size_t size = 0;
     };
 
     template<typename T>
-    struct pointer_count_impl<T, enable_if_t<std::is_pointer<T>::value &&
-                                             !is_function_ptr<T>::value &&
-                                             !std::is_member_pointer<T>::value>>
+        requires ValidPointerForCount<T>
+    struct pointer_count_impl<T>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t size = pointer_count_impl<remove_pointer_t<T> >::size + 1;
+        static constexpr std::size_t size = pointer_count_impl<remove_pointer_t<T>>::size + 1;
     };
 
     template<typename T>
@@ -523,22 +524,19 @@ namespace detail
      template <typename T>
     struct max_sizeof_list_impl<T>
     {
-        static RTTR_CONSTEXPR_OR_CONST size_t value = sizeof(T);
+        static constexpr size_t value = sizeof(T);
     };
 
     template<typename T1, typename T2, typename... U>
     struct max_sizeof_list_impl<T1, T2, U...>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = max_sizeof_list_impl< conditional_t< sizeof(T1) >= sizeof(T2),
-                                                                                              T1,
-                                                                                              T2>,
-                                                                                 U...>::value;
+        static constexpr std::size_t value = max_sizeof_list_impl<conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>, U...>::value;
     };
 
     template<template<class...> class List, class... Ts>
     struct max_sizeof_list_impl<List<Ts...>>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = max_sizeof_list_impl<Ts...>::value;
+        static constexpr std::size_t value = max_sizeof_list_impl<Ts...>::value;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -558,22 +556,21 @@ namespace detail
      template <typename T>
     struct max_alignof_list_impl<T>
     {
-        static RTTR_CONSTEXPR_OR_CONST size_t value = std::alignment_of<T>::value;
+        static constexpr size_t value = std::alignment_of_v<T>;
     };
 
     template<typename T1, typename T2, typename... U>
     struct max_alignof_list_impl<T1, T2, U...>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = max_alignof_list_impl<
-                                                                conditional_t<std::alignment_of<T1>::value >= std::alignment_of<T2>::value,
-                                                                              T1, T2>,
+        static constexpr std::size_t value = max_alignof_list_impl<
+                                                                conditional_t<std::alignment_of_v<T1> >= std::alignment_of_v<T2>, T1, T2>,
                                                                 U...>::value;
     };
 
     template<template<class...> class List, typename... Ts>
     struct max_alignof_list_impl<List<Ts...>>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = max_alignof_list_impl<Ts...>::value;
+        static constexpr std::size_t value = max_alignof_list_impl<Ts...>::value;
     };
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -652,19 +649,19 @@ namespace detail
     template<typename T>
     struct count_type_impl<T, type_list<>>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = 0;
+        static constexpr std::size_t value = 0;
     };
 
     template<typename T, typename... Tail>
     struct count_type_impl<T, type_list<T, Tail...>>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = count_type_impl<T, type_list<Tail...>>::value + 1;
+        static constexpr std::size_t value = count_type_impl<T, type_list<Tail...>>::value + 1;
     };
 
     template<typename T, typename U, typename... Tail>
     struct count_type_impl<T, type_list<U, Tail...>>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = count_type_impl<T, type_list<Tail...>>::value;
+        static constexpr std::size_t value = count_type_impl<T, type_list<Tail...>>::value;
     };
 
     template<typename T, typename Type_List>
@@ -738,19 +735,21 @@ namespace detail
     template<template<class> class Condition>
     struct count_if_impl<Condition, type_list<>>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = 0;
+        static constexpr std::size_t value = 0;
     };
 
     template<template<class> class Condition, typename T, typename...TArgs>
-    struct count_if_impl<Condition, type_list<T, TArgs...>, enable_if_t<Condition<T>::value>>
+        requires SatisfiesCondition<Condition, T>
+    struct count_if_impl<Condition, type_list<T, TArgs...>>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = count_if_impl<Condition, type_list<TArgs...>>::value + 1;
+        static constexpr std::size_t value = count_if_impl<Condition, type_list<TArgs...>>::value + 1;
     };
 
     template<template<class> class Condition, typename T, typename...TArgs>
-    struct count_if_impl<Condition, type_list<T, TArgs...>, enable_if_t<!Condition<T>::value>>
+        requires (!SatisfiesCondition<Condition, T>)
+    struct count_if_impl<Condition, type_list<T, TArgs...>>
     {
-        static RTTR_CONSTEXPR_OR_CONST std::size_t value = count_if_impl<Condition, type_list<TArgs...>>::value;
+        static constexpr std::size_t value = count_if_impl<Condition, type_list<TArgs...>>::value;
     };
 
     template<template<class> class Condition, typename...TArgs>

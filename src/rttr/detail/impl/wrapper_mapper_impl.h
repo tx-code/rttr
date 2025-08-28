@@ -48,12 +48,12 @@ struct wrapper_mapper<std::shared_ptr<T>>
     using wrapped_type = decltype(std::shared_ptr<T>().get());
     using type = std::shared_ptr<T>;
 
-    static RTTR_INLINE wrapped_type get(const type& obj)
+    static inline wrapped_type get(const type& obj)
     {
         return obj.get();
     }
 
-    static RTTR_INLINE type create(const wrapped_type& t)
+    static inline type create(const wrapped_type& t)
     {
         return type(t);
     }
@@ -82,12 +82,12 @@ struct wrapper_mapper<std::reference_wrapper<T>>
     using wrapped_type  = decltype(std::declval<std::reference_wrapper<T>>().get());
     using type          = std::reference_wrapper<T>;
 
-    static RTTR_INLINE wrapped_type get(const type& obj)
+    static inline wrapped_type get(const type& obj)
     {
         return obj.get();
     }
 
-    static RTTR_INLINE type create(const wrapped_type& t)
+    static inline type create(const wrapped_type& t)
     {
         return type(t);
     }
@@ -101,12 +101,12 @@ struct wrapper_mapper<std::unique_ptr<T>>
     using wrapped_type  = decltype(std::declval<std::unique_ptr<T>>().get());
     using type          = std::unique_ptr<T>;
 
-    static RTTR_INLINE wrapped_type get(const type& obj)
+    static inline wrapped_type get(const type& obj)
     {
         return obj.get();
     }
 
-    static RTTR_INLINE type create(const wrapped_type& t)
+    static inline type create(const wrapped_type& t)
     {
         return type(t);
     }
@@ -120,7 +120,7 @@ struct wrapper_mapper<std::weak_ptr<T>>
     using wrapped_type  = decltype(std::declval<std::weak_ptr<T>>().lock().get());
     using type          = std::weak_ptr<T>;
 
-    static RTTR_INLINE wrapped_type get(const type& obj)
+    static inline wrapped_type get(const type& obj)
     {
         return obj.lock().get();
     }
@@ -191,7 +191,7 @@ class has_create_wrapper_func_impl
     static NoType& f(...);
 
 public:
-    static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(f<Tp>(0)) == sizeof(YesType));
+    static constexpr bool value = (sizeof(f<Tp>(0)) == sizeof(YesType));
 };
 
 template<typename T>

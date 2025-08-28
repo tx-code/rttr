@@ -31,11 +31,13 @@
 #include "rttr/detail/base/core_prerequisites.h"
 #include "rttr/detail/misc/misc_type_traits.h"
 #include "rttr/detail/misc/std_type_traits.h"
+#include "rttr/detail/misc/type_concepts.h"
 
 #include <vector>
 #include <utility>
 #include <functional>
 #include <algorithm>
+#include <concepts>
 // #include <ciso646> // _LIBCPP_VERSION // Removed in C++20
 
 namespace rttr
@@ -45,9 +47,11 @@ namespace detail
 
 /*!
  * \brief The flat_map class implements a simple map based on std::vector instead of a binary tree.
+ *        Modernized with C++20 concepts for better constraint checking.
  *
  */
-template<typename Key, typename Value, template<class> class Hash = std::hash, typename Compare = std::equal_to<Key>>
+template<FlatMapKey Key, FlatMapValue Value, template<class> class Hash = std::hash, typename Compare = std::equal_to<Key>>
+    requires HashFunction<Hash<Key>, Key> && CompareFunction<Compare, Key>
 class flat_map
 {
     template<typename Hash_Type = std::size_t>
@@ -58,15 +62,15 @@ class flat_map
 
         struct order
         {
-            RTTR_INLINE bool operator () (const key_data& left, const key_data& right)  const
+            constexpr bool operator () (const key_data& left, const key_data& right) const noexcept
             {
                 return (left.m_hash_value < right.m_hash_value);
             }
-            RTTR_INLINE bool operator () (const Hash_Type& left, const key_data& right) const
+            constexpr bool operator () (const Hash_Type& left, const key_data& right) const noexcept
             {
                 return (left < right.m_hash_value);
             }
-            RTTR_INLINE bool operator () (const key_data& left, const Hash_Type& right) const
+            constexpr bool operator () (const key_data& left, const Hash_Type& right) const noexcept
             {
                 return (left.m_hash_value < right);
             }

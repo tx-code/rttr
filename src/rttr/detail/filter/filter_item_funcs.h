@@ -56,7 +56,7 @@ static bool is_valid_filter_item(filter_items filter)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE bool filter_member_item(const T& item, const type& t, filter_items filter)
+inline bool filter_member_item(const T& item, const type& t, filter_items filter)
 {
     bool result = true;
 
@@ -108,7 +108,7 @@ detail::default_predicate<T> get_filter_predicate(const type& t, filter_items fi
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<>
-RTTR_INLINE detail::default_predicate<constructor> get_filter_predicate(const type& t, filter_items filter)
+inline detail::default_predicate<constructor> get_filter_predicate(const type& t, filter_items filter)
 {
     if (!is_valid_filter_item(filter))
     {

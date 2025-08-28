@@ -403,7 +403,7 @@ function(set_compiler_warnings target)
     endif()
   elseif(MSVC)
     # MSVC 2019+ warnings optimized for C++20
-    set(WARNINGS "/W4" "/permissive-" "/Zc:__cplusplus")
+    set(WARNINGS "/W4" "/permissive-" "/Zc:__cplusplus" "/EHsc")
     if(RTTR_WARNINGS_AS_ERRORS)
       list(APPEND WARNINGS "/WX")
     endif()

@@ -337,21 +337,21 @@ std::vector<property>& type_register_private::get_global_properties()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type_data* type_register::register_type(type_data* info) RTTR_NOEXCEPT
+type_data* type_register::register_type(type_data* info) noexcept
 {
     return type_register_private::get_instance().register_type(info);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void type_register::unregister_type(type_data* info) RTTR_NOEXCEPT
+void type_register::unregister_type(type_data* info) noexcept
 {
     type_register_private::get_instance().unregister_type(info);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool type_register::register_visit_type_func(type& t, visit_type_func func) RTTR_NOEXCEPT
+bool type_register::register_visit_type_func(type& t, visit_type_func func) noexcept
 {
     t.m_type_data->visit_type = func;
     return true;
@@ -551,7 +551,7 @@ void type_register_private::register_base_class_info(type_data* info)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type_data* type_register_private::register_type(type_data* info) RTTR_NOEXCEPT
+type_data* type_register_private::register_type(type_data* info) noexcept
 {
     // this will register the base types
     info->get_base_types();
@@ -610,7 +610,7 @@ void type_register_private::remove_base_types_from_derived_classes(type& t, cons
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void type_register_private::unregister_type(type_data* info) RTTR_NOEXCEPT
+void type_register_private::unregister_type(type_data* info) noexcept
 {
     // REMARK: the base_types has to be provided as argument explicitely and cannot be retrieve via the type_data itself,
     // because the `class_data` which holds the base_types information cannot be retrieve via the function `get_class_data`

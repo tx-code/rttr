@@ -32,8 +32,8 @@
 
 using namespace std;
 
-static RTTR_CONSTEXPR const char* is_ref_list[] = {"", " &"};
-static RTTR_CONSTEXPR const char* is_const_list[] = {"", " const"};
+static constexpr const char* is_ref_list[] = {"", " &"};
+static constexpr const char* is_const_list[] = {"", " const"};
 
 namespace rttr
 {
@@ -42,7 +42,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-method_wrapper_base::method_wrapper_base(string_view name, type declaring_type) RTTR_NOEXCEPT
+method_wrapper_base::method_wrapper_base(string_view name, type declaring_type) noexcept
 :   m_name(name),
     m_declaring_type(declaring_type)
 {
@@ -56,7 +56,7 @@ method_wrapper_base::~method_wrapper_base()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void method_wrapper_base::init() RTTR_NOEXCEPT
+void method_wrapper_base::init() noexcept
 {
     create_signature_string();
     // register the underlying type with the following calls:
@@ -66,28 +66,28 @@ void method_wrapper_base::init() RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-string_view method_wrapper_base::get_name() const RTTR_NOEXCEPT
+string_view method_wrapper_base::get_name() const noexcept
 {
     return m_name;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type method_wrapper_base::get_declaring_type() const RTTR_NOEXCEPT
+type method_wrapper_base::get_declaring_type() const noexcept
 {
     return m_declaring_type;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-string_view method_wrapper_base::get_signature() const RTTR_NOEXCEPT
+string_view method_wrapper_base::get_signature() const noexcept
 {
     return m_signature_view;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void method_wrapper_base::create_signature_string() RTTR_NOEXCEPT
+void method_wrapper_base::create_signature_string() noexcept
 {
     if (!m_signature.empty())
         return;
@@ -115,49 +115,49 @@ void method_wrapper_base::create_signature_string() RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool method_wrapper_base::is_valid() const RTTR_NOEXCEPT
+bool method_wrapper_base::is_valid() const noexcept
 {
     return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-access_levels method_wrapper_base::get_access_level() const RTTR_NOEXCEPT
+access_levels method_wrapper_base::get_access_level() const noexcept
 {
     return access_levels::public_access;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type method_wrapper_base::get_return_type() const RTTR_NOEXCEPT
+type method_wrapper_base::get_return_type() const noexcept
 {
     return get_invalid_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool method_wrapper_base::is_static() const RTTR_NOEXCEPT
+bool method_wrapper_base::is_static() const noexcept
 {
     return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<bool> method_wrapper_base::get_is_reference() const RTTR_NOEXCEPT
+std::vector<bool> method_wrapper_base::get_is_reference() const noexcept
 {
     return std::vector<bool>();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<bool> method_wrapper_base::get_is_const() const RTTR_NOEXCEPT
+std::vector<bool> method_wrapper_base::get_is_const() const noexcept
 {
     return std::vector<bool>();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<parameter_info> method_wrapper_base::get_parameter_infos() const RTTR_NOEXCEPT
+array_range<parameter_info> method_wrapper_base::get_parameter_infos() const noexcept
 {
     return array_range<parameter_info>();
 }
@@ -231,7 +231,7 @@ variant method_wrapper_base::invoke_variadic(const instance& object, std::vector
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void method_wrapper_base::visit(visitor& visitor, const method& m) const RTTR_NOEXCEPT
+void method_wrapper_base::visit(visitor& visitor, const method& m) const noexcept
 {
 
 }

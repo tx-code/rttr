@@ -65,19 +65,19 @@ using is_equal_comparable = std::integral_constant<bool, has_equal_operator_impl
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE typename std::enable_if<is_equal_comparable<T>::value && !std::is_array<T>::value, bool>::type
+inline typename std::enable_if<is_equal_comparable<T>::value && !std::is_array<T>::value, bool>::type
 compare_equal(const T& lhs, const T& rhs, bool& ok);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE typename std::enable_if<!is_equal_comparable<T>::value && !std::is_array<T>::value, bool>::type
+inline typename std::enable_if<!is_equal_comparable<T>::value && !std::is_array<T>::value, bool>::type
 compare_equal(const T& lhs, const T& rhs, bool& ok);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE typename std::enable_if<!is_equal_comparable<T>::value && std::is_array<T>::value, bool>::type
+inline typename std::enable_if<!is_equal_comparable<T>::value && std::is_array<T>::value, bool>::type
 compare_equal(const T& lhs, const T& rhs, bool& ok);
 
 /////////////////////////////////////////////////////////////////////////////////////////

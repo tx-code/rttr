@@ -53,7 +53,7 @@ destructor create_invalid_item()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-destructor::destructor(const detail::destructor_wrapper_base* wrapper) RTTR_NOEXCEPT
+destructor::destructor(const detail::destructor_wrapper_base* wrapper) noexcept
 :   m_wrapper(wrapper)
 {
 
@@ -61,49 +61,49 @@ destructor::destructor(const detail::destructor_wrapper_base* wrapper) RTTR_NOEX
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool destructor::is_valid() const RTTR_NOEXCEPT
+bool destructor::is_valid() const noexcept
 {
     return m_wrapper->is_valid();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-destructor::operator bool() const RTTR_NOEXCEPT
+destructor::operator bool() const noexcept
 {
     return m_wrapper->is_valid();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type destructor::get_declaring_type() const RTTR_NOEXCEPT
+type destructor::get_declaring_type() const noexcept
 {
     return m_wrapper->get_declaring_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type destructor::get_destructed_type() const RTTR_NOEXCEPT
+type destructor::get_destructed_type() const noexcept
 {
     return m_wrapper->get_destructed_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool destructor::invoke(variant& obj) const RTTR_NOEXCEPT
+bool destructor::invoke(variant& obj) const noexcept
 {
     return m_wrapper->invoke(obj);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool destructor::operator==(const destructor& other) const RTTR_NOEXCEPT
+bool destructor::operator==(const destructor& other) const noexcept
 {
     return (m_wrapper == other.m_wrapper);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool destructor::operator!=(const destructor& other) const RTTR_NOEXCEPT
+bool destructor::operator!=(const destructor& other) const noexcept
 {
     return (m_wrapper != other.m_wrapper);
 }

@@ -36,28 +36,28 @@ namespace rttr
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE argument::argument() RTTR_NOEXCEPT : m_data(nullptr), m_variant(nullptr), m_type(detail::get_invalid_type()) {}
+inline argument::argument() noexcept : m_data(nullptr), m_variant(nullptr), m_type(detail::get_invalid_type()) {}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE argument::argument(argument&& arg) RTTR_NOEXCEPT : m_data(arg.m_data), m_variant(arg.m_variant), m_type(arg.m_type) {}
+inline argument::argument(argument&& arg) noexcept : m_data(arg.m_data), m_variant(arg.m_variant), m_type(arg.m_type) {}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE argument::argument(const argument& other) RTTR_NOEXCEPT : m_data(other.m_data), m_variant(other.m_variant), m_type(other.m_type) {}
+inline argument::argument(const argument& other) noexcept : m_data(other.m_data), m_variant(other.m_variant), m_type(other.m_type) {}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE argument::argument(variant& var) RTTR_NOEXCEPT : m_data(var.get_ptr()), m_variant(&var), m_type(var.get_type()) {}
+inline argument::argument(variant& var) noexcept : m_data(var.get_ptr()), m_variant(&var), m_type(var.get_type()) {}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE argument::argument(const variant& var) RTTR_NOEXCEPT : m_data(var.get_ptr()),  m_variant(&var), m_type(var.get_type()) {}
+inline argument::argument(const variant& var) noexcept : m_data(var.get_ptr()),  m_variant(&var), m_type(var.get_type()) {}
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename Tp>
-argument::argument(const T& data) RTTR_NOEXCEPT
+argument::argument(const T& data) noexcept
 :   m_data(reinterpret_cast<const void*>(std::addressof(data))),
     m_variant(nullptr),
     m_type(rttr::type::get<T>())
@@ -68,7 +68,7 @@ argument::argument(const T& data) RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T, typename Tp>
-argument::argument(T& data) RTTR_NOEXCEPT
+argument::argument(T& data) noexcept
 :   m_data(reinterpret_cast<const void*>(std::addressof(data))),
     m_variant(nullptr),
     m_type(rttr::type::get<T>())
@@ -79,7 +79,7 @@ argument::argument(T& data) RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE argument::ptr_type<T> argument::is_type() const RTTR_NOEXCEPT
+inline argument::ptr_type<T> argument::is_type() const noexcept
 {
     return ((rttr::type::get<T>() == m_type) ||
              m_type == type::get<std::nullptr_t>() ||
@@ -89,7 +89,7 @@ RTTR_INLINE argument::ptr_type<T> argument::is_type() const RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE argument::non_ptr_type<T> argument::is_type() const RTTR_NOEXCEPT
+inline argument::non_ptr_type<T> argument::is_type() const noexcept
 {
     return (rttr::type::get<T>() == m_type ||
             (m_variant && type::get<variant>() == type::get<T>()));
@@ -97,7 +97,7 @@ RTTR_INLINE argument::non_ptr_type<T> argument::is_type() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type argument::get_type() const RTTR_NOEXCEPT
+inline type argument::get_type() const noexcept
 {
     return m_type;
 }
@@ -105,7 +105,7 @@ RTTR_INLINE type argument::get_type() const RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE argument::arg_value_t<T>& argument::get_value() const RTTR_NOEXCEPT
+inline argument::arg_value_t<T>& argument::get_value() const noexcept
 {
     using raw_type = typename std::remove_reference<T>::type;
     return (*reinterpret_cast<raw_type*>(const_cast<void *>(m_data)));
@@ -114,7 +114,7 @@ RTTR_INLINE argument::arg_value_t<T>& argument::get_value() const RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE argument::arg_rvalue_t<T>&& argument::get_value() const RTTR_NOEXCEPT
+inline argument::arg_rvalue_t<T>&& argument::get_value() const noexcept
 {
     using raw_type = typename std::remove_reference<T>::type;
     return std::move(*reinterpret_cast<raw_type*>(const_cast<void *>(m_data)));
@@ -123,7 +123,7 @@ RTTR_INLINE argument::arg_rvalue_t<T>&& argument::get_value() const RTTR_NOEXCEP
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE argument::is_variant_t<T>& argument::get_value() const RTTR_NOEXCEPT
+inline argument::is_variant_t<T>& argument::get_value() const noexcept
 {
     using raw_type = typename std::remove_reference<T>::type;
     return (*reinterpret_cast<raw_type*>(const_cast<variant *>(m_variant)));
@@ -132,7 +132,7 @@ RTTR_INLINE argument::is_variant_t<T>& argument::get_value() const RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE argument::is_variant_ref_t<T>&& argument::get_value() const RTTR_NOEXCEPT
+inline argument::is_variant_ref_t<T>&& argument::get_value() const noexcept
 {
     using raw_type = typename std::remove_reference<T>::type;
     return std::move(*reinterpret_cast<raw_type*>(const_cast<variant *>(m_variant)));
@@ -140,7 +140,7 @@ RTTR_INLINE argument::is_variant_ref_t<T>&& argument::get_value() const RTTR_NOE
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE argument& argument::operator=(const argument& other) RTTR_NOEXCEPT
+inline argument& argument::operator=(const argument& other) noexcept
 {
     m_data = other.m_data;
     const_cast<rttr::type&>(m_type) = other.m_type;

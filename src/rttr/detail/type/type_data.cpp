@@ -46,7 +46,7 @@ struct class_data_impl
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static type_data& get_invalid_type_data_impl() RTTR_NOEXCEPT
+static type_data& get_invalid_type_data_impl() noexcept
 {
     static type_data instance{ nullptr, nullptr,
                                nullptr,
@@ -72,7 +72,7 @@ static type_data& get_invalid_type_data_impl() RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type_data* get_invalid_type_data() RTTR_NOEXCEPT
+type_data* get_invalid_type_data() noexcept
 {
     static auto instance = &get_invalid_type_data_impl();
     return instance;

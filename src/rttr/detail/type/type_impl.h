@@ -29,6 +29,7 @@
 #define RTTR_TYPE_IMPL_H_
 
 #include <type_traits>
+#include <compare>
 #include "rttr/detail/misc/misc_type_traits.h"
 #include "rttr/detail/misc/function_traits.h"
 #include "rttr/detail/type/base_classes.h"
@@ -49,21 +50,21 @@ namespace rttr
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type::type(detail::type_data* data) RTTR_NOEXCEPT
+inline type::type(detail::type_data* data) noexcept
 :  m_type_data(data)
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type::type(const type& other) RTTR_NOEXCEPT
+inline type::type(const type& other) noexcept
 :   m_type_data(other.m_type_data)
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type& type::operator=(const type& other) RTTR_NOEXCEPT
+inline type& type::operator=(const type& other) noexcept
 {
     m_type_data = other.m_type_data;
     return *this;
@@ -71,196 +72,169 @@ RTTR_INLINE type& type::operator=(const type& other) RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::operator<(const type& other) const RTTR_NOEXCEPT
+// C++20 Three-way comparison operator - generates all comparison operators
+inline std::strong_ordering type::operator<=>(const type& other) const noexcept
 {
-    return (m_type_data < other.m_type_data);
+    return m_type_data <=> other.m_type_data;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::operator>(const type& other) const RTTR_NOEXCEPT
+inline bool type::operator==(const type& other) const noexcept
 {
-    return (m_type_data > other.m_type_data);
+    return m_type_data == other.m_type_data;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::operator>=(const type& other) const RTTR_NOEXCEPT
-{
-    return (m_type_data >= other.m_type_data);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-RTTR_INLINE bool type::operator<=(const type& other) const RTTR_NOEXCEPT
-{
-    return (m_type_data <= other.m_type_data);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-RTTR_INLINE bool type::operator==(const type& other) const RTTR_NOEXCEPT
-{
-    return (m_type_data == other.m_type_data);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-RTTR_INLINE bool type::operator!=(const type& other) const RTTR_NOEXCEPT
-{
-    return (m_type_data != other.m_type_data);
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-RTTR_INLINE type::type_id type::get_id() const RTTR_NOEXCEPT
+inline type::type_id type::get_id() const noexcept
 {
     return reinterpret_cast<type::type_id>(m_type_data);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_valid() const RTTR_NOEXCEPT
+inline bool type::is_valid() const noexcept
 {
     return m_type_data->is_valid;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type::operator bool() const RTTR_NOEXCEPT
+inline type::operator bool() const noexcept
 {
     return m_type_data->is_valid;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type type::get_raw_type() const RTTR_NOEXCEPT
+inline type type::get_raw_type() const noexcept
 {
     return type(m_type_data->raw_type_data);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type type::get_wrapped_type() const RTTR_NOEXCEPT
+inline type type::get_wrapped_type() const noexcept
 {
     return type(m_type_data->wrapped_type);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type type::get_raw_array_type() const RTTR_NOEXCEPT
+inline type type::get_raw_array_type() const noexcept
 {
     return type(m_type_data->array_raw_type);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE string_view type::get_name() const RTTR_NOEXCEPT
+inline string_view type::get_name() const noexcept
 {
     return m_type_data->name;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE string_view type::get_full_name() const RTTR_NOEXCEPT
+inline string_view type::get_full_name() const noexcept
 {
     return m_type_data->type_name;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE std::size_t type::get_sizeof() const RTTR_NOEXCEPT
+inline std::size_t type::get_sizeof() const noexcept
 {
     return m_type_data->get_sizeof;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE std::size_t type::get_pointer_dimension() const RTTR_NOEXCEPT
+inline std::size_t type::get_pointer_dimension() const noexcept
 {
     return m_type_data->get_pointer_dimension;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_class() const RTTR_NOEXCEPT
+inline bool type::is_class() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_class);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_template_instantiation() const RTTR_NOEXCEPT
+inline bool type::is_template_instantiation() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_template_instantiation);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_enumeration() const RTTR_NOEXCEPT
+inline bool type::is_enumeration() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_enum);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_array() const RTTR_NOEXCEPT
+inline bool type::is_array() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_array);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_associative_container() const RTTR_NOEXCEPT
+inline bool type::is_associative_container() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_associative_container);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_sequential_container() const RTTR_NOEXCEPT
+inline bool type::is_sequential_container() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_sequential_container);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_pointer() const RTTR_NOEXCEPT
+inline bool type::is_pointer() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_pointer);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_arithmetic() const RTTR_NOEXCEPT
+inline bool type::is_arithmetic() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_arithmetic);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_function_pointer() const RTTR_NOEXCEPT
+inline bool type::is_function_pointer() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_function_pointer);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_member_object_pointer() const RTTR_NOEXCEPT
+inline bool type::is_member_object_pointer() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_member_object_pointer);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_member_function_pointer() const RTTR_NOEXCEPT
+inline bool type::is_member_function_pointer() const noexcept
 {
     return m_type_data->type_trait_value(detail::type_trait_infos::is_member_function_pointer);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE bool type::is_wrapper() const RTTR_NOEXCEPT
+inline bool type::is_wrapper() const noexcept
 {
     return m_type_data->wrapped_type->is_valid;
 }
@@ -268,7 +242,7 @@ RTTR_INLINE bool type::is_wrapper() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE variant type::create_variant(const argument& data) const
+inline variant type::create_variant(const argument& data) const
 {
     return m_type_data->create_variant(data);
 }
@@ -280,11 +254,11 @@ RTTR_INLINE variant type::create_variant(const argument& data) const
 namespace detail
 {
 
-RTTR_INLINE static type get_invalid_type() RTTR_NOEXCEPT { return create_type(nullptr); }
+inline static type get_invalid_type() noexcept { return create_type(nullptr); }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE type create_type(type_data* data) RTTR_NOEXCEPT
+inline type create_type(type_data* data) noexcept
 {
     return data ? type(data) : type();
 }
@@ -294,8 +268,8 @@ template<typename T>
 using is_complete_type = std::integral_constant<bool, !std::is_function<T>::value && !std::is_same<T, void>::value>;
 
 template<typename T>
-RTTR_LOCAL RTTR_INLINE enable_if_t<is_complete_type<T>::value, type>
-create_or_get_type() RTTR_NOEXCEPT
+RTTR_LOCAL inline enable_if_t<is_complete_type<T>::value, type>
+create_or_get_type() noexcept
 {
     // when you get an error here, then the type was not completely defined
     // (a forward declaration is not enough because base_classes will not be found)
@@ -308,8 +282,8 @@ create_or_get_type() RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_LOCAL RTTR_INLINE enable_if_t<!is_complete_type<T>::value, type>
-create_or_get_type() RTTR_NOEXCEPT
+RTTR_LOCAL inline enable_if_t<!is_complete_type<T>::value, type>
+create_or_get_type() noexcept
 {
     static const type val = create_type(get_registration_manager().add_item(make_type_data<T>()));
     return val;
@@ -320,7 +294,7 @@ create_or_get_type() RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_LOCAL RTTR_INLINE type get_type_from_instance(const T*) RTTR_NOEXCEPT
+RTTR_LOCAL inline type get_type_from_instance(const T*) noexcept
 {
     return detail::create_or_get_type<T>();
 }
@@ -334,7 +308,7 @@ struct type_from_instance;
 template<typename T>
 struct type_from_instance<T, false> // the typeInfo function is not available
 {
-    static RTTR_INLINE type get(T&&) RTTR_NOEXCEPT
+    static inline type get(T&&) noexcept
     {
         using non_ref_type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
         return create_or_get_type<non_ref_type>();
@@ -347,7 +321,7 @@ struct type_from_instance<T, false> // the typeInfo function is not available
 template<typename T>
 struct type_from_instance<T, true>
 {
-    static RTTR_INLINE type get(T&& object) RTTR_NOEXCEPT
+    static inline type get(T&& object) noexcept
     {
         return object.get_type();
     }
@@ -365,7 +339,7 @@ struct type_converter;
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE type type::get() RTTR_NOEXCEPT
+inline type type::get() noexcept
 {
     using non_ref_type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
     return detail::create_or_get_type<non_ref_type>();
@@ -374,7 +348,7 @@ RTTR_INLINE type type::get() RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<>
-RTTR_INLINE type type::get<detail::invalid_type>() RTTR_NOEXCEPT
+inline type type::get<detail::invalid_type>() noexcept
 {
     return detail::get_invalid_type();
 }
@@ -382,7 +356,7 @@ RTTR_INLINE type type::get<detail::invalid_type>() RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE type type::get(T&& object) RTTR_NOEXCEPT
+inline type type::get(T&& object) noexcept
 {
     using remove_ref = typename std::remove_reference<T>::type;
     return detail::type_from_instance<T, detail::has_get_type_func<T>::value && !std::is_pointer<remove_ref>::value>::get(std::forward<T>(object));
@@ -391,7 +365,7 @@ RTTR_INLINE type type::get(T&& object) RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE bool type::is_derived_from() const RTTR_NOEXCEPT
+inline bool type::is_derived_from() const noexcept
 {
     return is_derived_from(type::get<T>());
 }
@@ -399,7 +373,7 @@ RTTR_INLINE bool type::is_derived_from() const RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE bool type::is_base_of() const RTTR_NOEXCEPT
+inline bool type::is_base_of() const noexcept
 {
     return is_base_of(type::get<T>());
 }
@@ -407,7 +381,7 @@ RTTR_INLINE bool type::is_base_of() const RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename F>
-RTTR_INLINE void type::register_converter_func(F func)
+inline void type::register_converter_func(F func)
 {
     using namespace detail;
 
@@ -429,7 +403,7 @@ RTTR_INLINE void type::register_converter_func(F func)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_INLINE void type::register_wrapper_converter_for_base_classes()
+inline void type::register_wrapper_converter_for_base_classes()
 {
     detail::reg_wrapper_converter_for_base_classes<T>();
 }

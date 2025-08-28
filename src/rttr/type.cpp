@@ -75,14 +75,14 @@ struct class_data_impl
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type::type() RTTR_NOEXCEPT
+type::type() noexcept
 :   m_type_data(detail::get_invalid_type_data())
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool type::is_derived_from(const type& other) const RTTR_NOEXCEPT
+bool type::is_derived_from(const type& other) const noexcept
 {
     auto& src_raw_type = m_type_data->raw_type_data;
     auto& tgt_raw_type = other.m_type_data->raw_type_data;
@@ -103,7 +103,7 @@ bool type::is_derived_from(const type& other) const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool type::is_base_of(const type& other) const RTTR_NOEXCEPT
+bool type::is_base_of(const type& other) const noexcept
 {
     auto& src_raw_type = m_type_data->raw_type_data;
     auto& tgt_raw_type = other.m_type_data->raw_type_data;
@@ -124,7 +124,7 @@ bool type::is_base_of(const type& other) const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void* type::apply_offset(void* ptr, const type& source_type, const type& target_type) RTTR_NOEXCEPT
+void* type::apply_offset(void* ptr, const type& source_type, const type& target_type) noexcept
 {
     auto& src_raw_type = source_type.m_type_data->raw_type_data;
     auto& tgt_raw_type = target_type.m_type_data->raw_type_data;
@@ -152,7 +152,7 @@ void* type::apply_offset(void* ptr, const type& source_type, const type& target_
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type type::get_derived_type(void* ptr, const type& source_type) RTTR_NOEXCEPT
+type type::get_derived_type(void* ptr, const type& source_type) noexcept
 {
     if (ptr == nullptr)
         return type();
@@ -164,7 +164,7 @@ type type::get_derived_type(void* ptr, const type& source_type) RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<type> type::get_base_classes() const RTTR_NOEXCEPT
+array_range<type> type::get_base_classes() const noexcept
 {
     return array_range<type>(m_type_data->m_class_data.m_base_types.data(),
                              m_type_data->m_class_data.m_base_types.size());
@@ -172,7 +172,7 @@ array_range<type> type::get_base_classes() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<type> type::get_derived_classes() const RTTR_NOEXCEPT
+array_range<type> type::get_derived_classes() const noexcept
 {
     return array_range<type>(m_type_data->m_class_data.m_derived_types.data(),
                              m_type_data->m_class_data.m_derived_types.size());
@@ -180,7 +180,7 @@ array_range<type> type::get_derived_classes() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<type> type::get_types() RTTR_NOEXCEPT
+array_range<type> type::get_types() noexcept
 {
     auto& type_list = detail::type_register_private::get_instance().get_type_storage();
     return array_range<type>(&type_list[1], type_list.size() - 1);
@@ -188,7 +188,7 @@ array_range<type> type::get_types() RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<type> type::get_template_arguments() const RTTR_NOEXCEPT
+array_range<type> type::get_template_arguments() const noexcept
 {
     return array_range<type>(m_type_data->m_class_data.m_nested_types.data(),
                              m_type_data->m_class_data.m_nested_types.size());
@@ -224,14 +224,14 @@ variant type::create(vector<argument> args) const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool type::destroy(variant& obj) const RTTR_NOEXCEPT
+bool type::destroy(variant& obj) const noexcept
 {
     return get_destructor().invoke(obj);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-property type::get_property(string_view name) const RTTR_NOEXCEPT
+property type::get_property(string_view name) const noexcept
 {
     const auto raw_t = get_raw_type();
     const auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_properties;
@@ -282,7 +282,7 @@ bool type::set_property_value(string_view name, argument arg)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<property> type::get_properties() const RTTR_NOEXCEPT
+array_range<property> type::get_properties() const noexcept
 {
     auto& vec = get_raw_type().m_type_data->m_class_data.m_impl->m_properties;
     if (!vec.empty())
@@ -299,7 +299,7 @@ array_range<property> type::get_properties() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<property> type::get_properties(filter_items filter) const RTTR_NOEXCEPT
+array_range<property> type::get_properties(filter_items filter) const noexcept
 {
     const auto raw_t = get_raw_type();
     auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_properties;
@@ -311,7 +311,7 @@ array_range<property> type::get_properties(filter_items filter) const RTTR_NOEXC
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-method type::get_method(string_view name) const RTTR_NOEXCEPT
+method type::get_method(string_view name) const noexcept
 {
     const auto raw_t = get_raw_type();
     const auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
@@ -331,7 +331,7 @@ method type::get_method(string_view name) const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-method type::get_method(string_view name, const std::vector<type>& type_list) const RTTR_NOEXCEPT
+method type::get_method(string_view name, const std::vector<type>& type_list) const noexcept
 {
     const auto raw_t = get_raw_type();
     const auto& methvec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
@@ -350,7 +350,7 @@ method type::get_method(string_view name, const std::vector<type>& type_list) co
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<method> type::get_methods() const RTTR_NOEXCEPT
+array_range<method> type::get_methods() const noexcept
 {
     const auto raw_t = get_raw_type();
     auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
@@ -368,7 +368,7 @@ array_range<method> type::get_methods() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<method> type::get_methods(filter_items filter) const RTTR_NOEXCEPT
+array_range<method> type::get_methods(filter_items filter) const noexcept
 {
     const auto raw_t = get_raw_type();
     auto& vec = raw_t.m_type_data->m_class_data.m_impl->m_methods;
@@ -380,7 +380,7 @@ array_range<method> type::get_methods(filter_items filter) const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-property type::get_global_property(string_view name) RTTR_NOEXCEPT
+property type::get_global_property(string_view name) noexcept
 {
     auto& prop_list = detail::type_register_private::get_instance().get_global_property_storage();
     const auto ret = prop_list.find(name);
@@ -392,7 +392,7 @@ property type::get_global_property(string_view name) RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-method type::get_global_method(string_view name) RTTR_NOEXCEPT
+method type::get_global_method(string_view name) noexcept
 {
     auto& meth_list = detail::type_register_private::get_instance().get_global_method_storage();
     const auto ret = meth_list.find(name);
@@ -404,7 +404,7 @@ method type::get_global_method(string_view name) RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-method type::get_global_method(string_view name, const std::vector<type>& type_list) RTTR_NOEXCEPT
+method type::get_global_method(string_view name, const std::vector<type>& type_list) noexcept
 {
     auto& meth_list = detail::type_register_private::get_instance().get_global_method_storage();
     auto itr = meth_list.find(name);
@@ -425,7 +425,7 @@ method type::get_global_method(string_view name, const std::vector<type>& type_l
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<method> type::get_global_methods() RTTR_NOEXCEPT
+array_range<method> type::get_global_methods() noexcept
 {
     auto& vec = detail::type_register_private::get_instance().get_global_methods();
     return array_range<method>(vec.data(), vec.size());
@@ -433,7 +433,7 @@ array_range<method> type::get_global_methods() RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<property> type::get_global_properties() RTTR_NOEXCEPT
+array_range<property> type::get_global_properties() noexcept
 {
     auto& vec = detail::type_register_private::get_instance().get_global_properties();
     return array_range<property>(vec.data(), vec.size());
@@ -441,7 +441,7 @@ array_range<property> type::get_global_properties() RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-enumeration type::get_enumeration() const RTTR_NOEXCEPT
+enumeration type::get_enumeration() const noexcept
 {
     if (m_type_data->enum_wrapper)
         return detail::create_item<enumeration>(m_type_data->enum_wrapper);
@@ -493,7 +493,7 @@ variant type::invoke(string_view name, std::vector<argument> args)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type type::get_by_name(string_view name) RTTR_NOEXCEPT
+type type::get_by_name(string_view name) noexcept
 {
     auto& custom_name_to_id = detail::type_register_private::get_instance().get_custom_name_to_id();
     auto ret = custom_name_to_id.find(name);
@@ -505,28 +505,28 @@ type type::get_by_name(string_view name) RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-const detail::type_converter_base* type::get_type_converter(const type& target_type) const RTTR_NOEXCEPT
+const detail::type_converter_base* type::get_type_converter(const type& target_type) const noexcept
 {
     return detail::type_register_private::get_instance().get_converter(*this, target_type);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-const detail::type_comparator_base* type::get_equal_comparator() const RTTR_NOEXCEPT
+const detail::type_comparator_base* type::get_equal_comparator() const noexcept
 {
     return detail::type_register_private::get_instance().get_equal_comparator(*this);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-const detail::type_comparator_base* type::get_less_than_comparator() const RTTR_NOEXCEPT
+const detail::type_comparator_base* type::get_less_than_comparator() const noexcept
 {
     return detail::type_register_private::get_instance().get_less_than_comparator(*this);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-constructor type::get_constructor(const std::vector<type>& args) const RTTR_NOEXCEPT
+constructor type::get_constructor(const std::vector<type>& args) const noexcept
 {
     auto& ctors = m_type_data->m_class_data.m_impl->m_ctors;
     for (const auto& ctor : ctors)
@@ -540,7 +540,7 @@ constructor type::get_constructor(const std::vector<type>& args) const RTTR_NOEX
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<constructor> type::get_constructors() const RTTR_NOEXCEPT
+array_range<constructor> type::get_constructors() const noexcept
 {
     auto& ctors = m_type_data->m_class_data.m_impl->m_ctors;
     if (!ctors.empty())
@@ -557,7 +557,7 @@ array_range<constructor> type::get_constructors() const RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<constructor> type::get_constructors(filter_items filter) const RTTR_NOEXCEPT
+array_range<constructor> type::get_constructors(filter_items filter) const noexcept
 {
     auto& ctors = m_type_data->m_class_data.m_impl->m_ctors;
     if (!ctors.empty())
@@ -568,7 +568,7 @@ array_range<constructor> type::get_constructors(filter_items filter) const RTTR_
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-destructor type::get_destructor() const RTTR_NOEXCEPT
+destructor type::get_destructor() const noexcept
 {
     return get_raw_type().m_type_data->m_class_data.m_dtor;
 }
@@ -583,7 +583,7 @@ void type::create_wrapped_value(const argument& arg, variant& var) const
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void type::visit(visitor& vi, detail::type_of_visit visit_type) const RTTR_NOEXCEPT
+void type::visit(visitor& vi, detail::type_of_visit visit_type) const noexcept
 {
     if (m_type_data->visit_type)
         m_type_data->visit_type(visit_type, vi, *this);

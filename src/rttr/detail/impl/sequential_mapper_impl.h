@@ -843,7 +843,7 @@ struct sequential_container_empty
     {
     }
 
-    static bool equal(const iterator_data& lhs_itr, const iterator_data& rhs_itr) RTTR_NOEXCEPT
+    static bool equal(const iterator_data& lhs_itr, const iterator_data& rhs_itr) noexcept
     {
         return true;
     }

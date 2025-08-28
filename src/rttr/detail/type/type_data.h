@@ -59,10 +59,10 @@ namespace detail
 struct type_data;
 
 template<typename T>
-RTTR_INLINE type_data& get_type_data() RTTR_NOEXCEPT;
-RTTR_LOCAL type_data* get_invalid_type_data() RTTR_NOEXCEPT;
+inline type_data& get_type_data() noexcept;
+RTTR_LOCAL type_data* get_invalid_type_data() noexcept;
 
-static type get_invalid_type() RTTR_NOEXCEPT;
+static type get_invalid_type() noexcept;
 
 using rttr_cast_func        = void*(*)(void*);
 using get_derived_info_func = derived_info(*)(void*);
@@ -167,7 +167,7 @@ struct RTTR_LOCAL type_data
     impl::visit_type_func      visit_type;
 
     bool is_valid;
-    RTTR_FORCE_INLINE bool type_trait_value(type_trait_infos type_trait) const RTTR_NOEXCEPT { return m_type_traits.test(static_cast<std::size_t>(type_trait)); }
+    inline bool type_trait_value(type_trait_infos type_trait) const noexcept { return m_type_traits.test(static_cast<std::size_t>(type_trait)); }
 
 
     type_traits m_type_traits;
@@ -182,7 +182,7 @@ struct RTTR_LOCAL type_data
 template<typename T, typename Enable = void>
 struct RTTR_LOCAL get_size_of
 {
-    RTTR_INLINE RTTR_CONSTEXPR static std::size_t value()
+    consteval static std::size_t value()
     {
         return sizeof(T);
     }
@@ -193,7 +193,7 @@ struct RTTR_LOCAL get_size_of
 template<typename T>
 struct RTTR_LOCAL get_size_of<T, enable_if_t<std::is_same<T, void>::value || std::is_function<T>::value>>
 {
-    RTTR_INLINE RTTR_CONSTEXPR static std::size_t value()
+    consteval static std::size_t value()
     {
         return 0;
     }
@@ -204,7 +204,7 @@ struct RTTR_LOCAL get_size_of<T, enable_if_t<std::is_same<T, void>::value || std
 template<typename T, bool = std::is_same<T, typename raw_type<T>::type >::value>
 struct RTTR_LOCAL raw_type_info
 {
-    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return get_invalid_type(); } // we have to return an empty type, so we can stop the recursion
+    static inline type get_type() noexcept { return get_invalid_type(); } // we have to return an empty type, so we can stop the recursion
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -212,7 +212,7 @@ struct RTTR_LOCAL raw_type_info
 template<typename T>
 struct RTTR_LOCAL raw_type_info<T, false>
 {
-    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return type::get<typename raw_type<T>::type>(); }
+    static inline type get_type() noexcept { return type::get<typename raw_type<T>::type>(); }
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ struct RTTR_LOCAL raw_type_info<T, false>
 template<typename T, bool = std::is_array<T>::value>
 struct RTTR_LOCAL array_raw_type
 {
-    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return type::get<raw_array_type_t<T>>(); }
+    static inline type get_type() noexcept { return type::get<raw_array_type_t<T>>(); }
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +228,7 @@ struct RTTR_LOCAL array_raw_type
 template<typename T>
 struct RTTR_LOCAL array_raw_type<T, false>
 {
-    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return get_invalid_type(); } // we have to return an empty type, so we can stop the recursion
+    static inline type get_type() noexcept { return get_invalid_type(); } // we have to return an empty type, so we can stop the recursion
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +236,7 @@ struct RTTR_LOCAL array_raw_type<T, false>
 template<typename T, bool = is_wrapper<T>::value>
 struct RTTR_LOCAL wrapper_type_info
 {
-    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return type::get<wrapper_mapper_t<T>>(); }
+    static inline type get_type() noexcept { return type::get<wrapper_mapper_t<T>>(); }
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -244,13 +244,13 @@ struct RTTR_LOCAL wrapper_type_info
 template<typename T>
 struct RTTR_LOCAL wrapper_type_info<T, false>
 {
-    static RTTR_INLINE type get_type() RTTR_NOEXCEPT { return get_invalid_type(); }
+    static inline type get_type() noexcept { return get_invalid_type(); }
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename Wrapper, typename Wrapped_Type>
-RTTR_LOCAL RTTR_INLINE void create_wrapper(const argument& arg, variant& var)
+RTTR_LOCAL inline void create_wrapper(const argument& arg, variant& var)
 {
     if (arg.get_type() != type::get<Wrapped_Type>())
         return;
@@ -260,7 +260,7 @@ RTTR_LOCAL RTTR_INLINE void create_wrapper(const argument& arg, variant& var)
 }
 
 template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
-RTTR_LOCAL RTTR_INLINE
+RTTR_LOCAL inline
 enable_if_t<is_wrapper<Wrapper>::value &&
             ::rttr::detail::is_copy_constructible<Wrapper>::value &&
             std::is_default_constructible<Wrapper>::value &&
@@ -272,7 +272,7 @@ get_create_wrapper_func()
 
 
 template<typename Wrapper, typename Tp = wrapper_mapper_t<Wrapper>>
-RTTR_LOCAL RTTR_INLINE
+RTTR_LOCAL inline
 enable_if_t<!is_wrapper<Wrapper>::value ||
             !::rttr::detail::is_copy_constructible<Wrapper>::value ||
             !std::is_default_constructible<Wrapper>::value ||
@@ -285,7 +285,7 @@ get_create_wrapper_func()
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_LOCAL RTTR_INLINE std::vector<metadata>& get_metadata_func_impl()
+RTTR_LOCAL inline std::vector<metadata>& get_metadata_func_impl()
 {
     static std::unique_ptr<std::vector<metadata>> obj = make_unique<std::vector<metadata>>();
     return (*obj.get());

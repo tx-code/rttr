@@ -56,7 +56,7 @@ namespace rttr
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-RTTR_INLINE detail::metadata metadata(variant key, variant value)
+inline detail::metadata metadata(variant key, variant value)
 {
     return detail::metadata{std::move(key), std::move(value)};
 }
@@ -64,7 +64,7 @@ RTTR_INLINE detail::metadata metadata(variant key, variant value)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename Enum_Type>
-RTTR_INLINE detail::enum_data<Enum_Type> value(string_view name, Enum_Type value)
+inline detail::enum_data<Enum_Type> value(string_view name, Enum_Type value)
 {
     return detail::enum_data<Enum_Type>(name, value);
 }
@@ -72,7 +72,7 @@ RTTR_INLINE detail::enum_data<Enum_Type> value(string_view name, Enum_Type value
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename...TArgs>
-RTTR_INLINE detail::default_args<TArgs...> default_arguments(TArgs&&...args)
+inline detail::default_args<TArgs...> default_arguments(TArgs&&...args)
 {
     static_assert((sizeof...(TArgs) > 0), "Please provide at least one default argument!");
     return { std::forward<TArgs>(args)... };
@@ -81,7 +81,7 @@ RTTR_INLINE detail::default_args<TArgs...> default_arguments(TArgs&&...args)
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename...TArgs>
-RTTR_INLINE detail::parameter_names<detail::decay_t<TArgs>...> parameter_names(TArgs&&...args)
+inline detail::parameter_names<detail::decay_t<TArgs>...> parameter_names(TArgs&&...args)
 {
     using namespace detail;
     static_assert(static_all_of<is_string_literal<raw_type_t<TArgs>>::value...>::value, "Please use this function only with string literals!");

@@ -52,20 +52,20 @@ variant_sequential_view::variant_sequential_view(const variant_sequential_view& 
 
 /////////////////////////////////////////////////////////////////////////////////
 
-variant_sequential_view::~variant_sequential_view() RTTR_NOEXCEPT
+variant_sequential_view::~variant_sequential_view() noexcept
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void variant_sequential_view::swap(variant_sequential_view& other) RTTR_NOEXCEPT
+void variant_sequential_view::swap(variant_sequential_view& other) noexcept
 {
     std::swap(m_view, other.m_view);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-variant_sequential_view& variant_sequential_view::operator=(const variant_sequential_view& other) RTTR_NOEXCEPT
+variant_sequential_view& variant_sequential_view::operator=(const variant_sequential_view& other) noexcept
 {
     variant_sequential_view(other).swap(*this);
     return *this;
@@ -73,70 +73,70 @@ variant_sequential_view& variant_sequential_view::operator=(const variant_sequen
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant_sequential_view::is_valid() const RTTR_NOEXCEPT
+bool variant_sequential_view::is_valid() const noexcept
 {
     return m_view.get_type().is_valid();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant_sequential_view::operator bool() const RTTR_NOEXCEPT
+variant_sequential_view::operator bool() const noexcept
 {
     return m_view.get_type().is_valid();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type variant_sequential_view::get_type() const RTTR_NOEXCEPT
+type variant_sequential_view::get_type() const noexcept
 {
     return m_view.get_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type variant_sequential_view::get_value_type() const RTTR_NOEXCEPT
+type variant_sequential_view::get_value_type() const noexcept
 {
     return m_view.get_value_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant_sequential_view::is_empty() const RTTR_NOEXCEPT
+bool variant_sequential_view::is_empty() const noexcept
 {
     return m_view.is_empty();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant_sequential_view::is_dynamic() const RTTR_NOEXCEPT
+bool variant_sequential_view::is_dynamic() const noexcept
 {
     return m_view.is_dynamic();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::size_t variant_sequential_view::get_rank() const RTTR_NOEXCEPT
+std::size_t variant_sequential_view::get_rank() const noexcept
 {
     return m_view.get_rank();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type variant_sequential_view::get_rank_type(std::size_t index) const RTTR_NOEXCEPT
+type variant_sequential_view::get_rank_type(std::size_t index) const noexcept
 {
     return m_view.get_rank_type(index);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::size_t variant_sequential_view::get_size() const RTTR_NOEXCEPT
+std::size_t variant_sequential_view::get_size() const noexcept
 {
     return m_view.get_size();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant_sequential_view::set_size(std::size_t size) const RTTR_NOEXCEPT
+bool variant_sequential_view::set_size(std::size_t size) const noexcept
 {
     return m_view.set_size(size);
 }
@@ -210,7 +210,7 @@ variant_sequential_view::const_iterator variant_sequential_view::end() const
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant_sequential_view::const_iterator::const_iterator(const detail::variant_sequential_view_private* view) RTTR_NOEXCEPT
+variant_sequential_view::const_iterator::const_iterator(const detail::variant_sequential_view_private* view) noexcept
 :   m_view(view)
 {
 }

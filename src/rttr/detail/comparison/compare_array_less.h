@@ -46,7 +46,7 @@ namespace detail
 // the comparison will go down till element wise comparison
 
 template<typename ElementType, std::size_t Count>
-RTTR_INLINE bool compare_array_less(const ElementType(&lhs)[Count], const ElementType(&rhs)[Count]);
+inline bool compare_array_less(const ElementType(&lhs)[Count], const ElementType(&rhs)[Count]);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

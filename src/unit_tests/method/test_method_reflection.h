@@ -65,7 +65,7 @@ struct method_test
         return (var == 23) ? true : false;
     }
 
-    int func_with_noexcept(int value) const volatile RTTR_NOEXCEPT
+    int func_with_noexcept(int value) const volatile noexcept
     {
         method_with_noexpcet_called = true;
         return 42;

@@ -60,17 +60,17 @@ class basic_string_view
         using reverse_iterator  = const_reverse_iterator;
         using size_type         = std::size_t;
         using difference_type   = std::ptrdiff_t;
-        RTTR_STATIC_CONSTEXPR size_type npos = size_type(-1);
+        static constexpr size_type npos = size_type(-1);
 
         /*!
          * \brief Default constructor. Constructs an empty basic_string_view.
          */
-        RTTR_CONSTEXPR basic_string_view() RTTR_NOEXCEPT;
+        constexpr basic_string_view() noexcept;
 
         /*!
          * \brief Copy constructor. Constructs a view of the same content as \p other.
          */
-        RTTR_CONSTEXPR basic_string_view(const basic_string_view& other) RTTR_NOEXCEPT;
+        constexpr basic_string_view(const basic_string_view& other) noexcept;
 
         /*!
          * \brief Constructs a view of the null-terminated character string pointed to by \p str, not including the terminating null character.
@@ -78,7 +78,7 @@ class basic_string_view
          *        The behavior is undefined if `[str, str + Traits::length(str))` is not a valid range
          *        (even though the constructor may not access any of the elements of this range).
          */
-        RTTR_CONSTEXPR basic_string_view(const CharT* str);
+        constexpr basic_string_view(const CharT* str);
 
         /*!
          * \brief Constructs a view of the first count characters of the character array starting with the element pointed by \p str.
@@ -86,34 +86,34 @@ class basic_string_view
          *        The behavior is undefined if `[str, str + count)` is not a valid range
          *        (even though the constructor may not access any of the elements of this range).
          */
-        RTTR_CONSTEXPR basic_string_view(const CharT* str, size_type len);
+        constexpr basic_string_view(const CharT* str, size_type len);
 
         /*!
          * \brief Constructs a view of the first \p str.size() characters of the character array
          *        starting with the element pointed by \p str.data().
          */
         template<typename Allocator>
-        basic_string_view(const std::basic_string<CharT, Traits, Allocator>& str) RTTR_NOEXCEPT;
+        basic_string_view(const std::basic_string<CharT, Traits, Allocator>& str) noexcept;
 
         /*!
          * \brief Replaces the this view with that of \p other view.
          */
-        basic_string_view& operator=(const basic_string_view& other) RTTR_NOEXCEPT;
-        RTTR_CXX14_CONSTEXPR void swap(basic_string_view& s) RTTR_NOEXCEPT;
+        basic_string_view& operator=(const basic_string_view& other) noexcept;
+        constexpr void swap(basic_string_view& s) noexcept;
 
         /*!
          * \brief Returns an iterator to the beginning of the view.
          *
          * \return const_iterator to the first character of this view.
          */
-        RTTR_CONSTEXPR const_iterator begin() const RTTR_NOEXCEPT;
+        constexpr const_iterator begin() const noexcept;
 
         /*!
          * \brief Returns an iterator to the beginning of the view.
          *
          * \return const_iterator to the first character of this view.
          */
-        RTTR_CONSTEXPR const_iterator cbegin() const RTTR_NOEXCEPT;
+        constexpr const_iterator cbegin() const noexcept;
 
         /*!
          * \brief Returns an iterator to the character following the last character of the view.
@@ -121,7 +121,7 @@ class basic_string_view
          *
          * \return const_iterator to the character following the last character.
          */
-        RTTR_CONSTEXPR const_iterator end() const RTTR_NOEXCEPT;
+        constexpr const_iterator end() const noexcept;
 
         /*!
          * \brief Returns an iterator to the character following the last character of the view.
@@ -129,7 +129,7 @@ class basic_string_view
          *
          * \return const_iterator to the character following the last character.
          */
-        RTTR_CONSTEXPR const_iterator cend() const RTTR_NOEXCEPT;
+        constexpr const_iterator cend() const noexcept;
 
         /*!
          * \brief Returns a reverse iterator to the first character of the reversed view.
@@ -137,7 +137,7 @@ class basic_string_view
          *
          * \return const_reverse_iterator to the first character.
          */
-        const_reverse_iterator rbegin() const RTTR_NOEXCEPT;
+        const_reverse_iterator rbegin() const noexcept;
 
         /*!
          * \brief Returns a reverse iterator to the first character of the reversed view.
@@ -145,7 +145,7 @@ class basic_string_view
          *
          * \return const_reverse_iterator to the first character.
          */
-        const_reverse_iterator crbegin() const RTTR_NOEXCEPT;
+        const_reverse_iterator crbegin() const noexcept;
 
         /*!
          * \brief Returns a reverse iterator to the character following the last character of the reversed view.
@@ -154,7 +154,7 @@ class basic_string_view
          *
          * \return const_reverse_iterator to the character following the last character.
          */
-        const_reverse_iterator rend() const RTTR_NOEXCEPT;
+        const_reverse_iterator rend() const noexcept;
 
         /*!
          * \brief Returns a reverse iterator to the character following the last character of the reversed view.
@@ -163,35 +163,35 @@ class basic_string_view
          *
          * \return const_reverse_iterator to the character following the last character.
          */
-        const_reverse_iterator crend() const RTTR_NOEXCEPT;
+        const_reverse_iterator crend() const noexcept;
 
         /*!
          * \brief Returns the number of `CharT` elements in the view, i.e. `std::distance(begin(), end())`.
          *
          * \return The number of `CharT` elements in the view.
          */
-        RTTR_CONSTEXPR size_type size() const RTTR_NOEXCEPT;
+        constexpr size_type size() const noexcept;
 
         /*!
          * \brief Returns the number of `CharT` elements in the view, i.e. `std::distance(begin(), end())`.
          *
          * \return The number of `CharT` elements in the view.
          */
-        RTTR_CONSTEXPR size_type length() const RTTR_NOEXCEPT;
+        constexpr size_type length() const noexcept;
 
         /*!
          * \brief The largest possible number of char-like objects that can be referred to by a \ref basic_string_view.
          *
          * \return Maximum number of characters.
          */
-        RTTR_CONSTEXPR size_type max_size() const RTTR_NOEXCEPT;
+        constexpr size_type max_size() const noexcept;
 
         /*!
          * \brief Checks if the view has no characters, i.e. whether size() == 0.
          *
          * \return `true` if the view is empty, `false` otherwise.
          */
-        RTTR_CONSTEXPR bool empty() const RTTR_NOEXCEPT;
+        constexpr bool empty() const noexcept;
 
         /*!
          * \brief Returns a const reference to the character at specified location \p pos.
@@ -199,21 +199,21 @@ class basic_string_view
          *
          * \return Const reference to the requested character.
          */
-        RTTR_CONSTEXPR const_reference operator[](size_type pos) const RTTR_NOEXCEPT;
+        constexpr const_reference operator[](size_type pos) const noexcept;
 
         /*!
          * \brief Returns reference to the first character in the view.
          *
          * \return Reference to the first character, equivalent to `operator[](0)`.
          */
-        RTTR_CONSTEXPR const_reference front() const;
+        constexpr const_reference front() const;
 
         /*!
          * \brief Returns reference to the last character in the view.
          *
          * \return Reference to the last character, equivalent to `operator[](size() - 1)`.
          */
-        RTTR_CONSTEXPR const_reference back() const;
+        constexpr const_reference back() const;
 
         /*!
          * \brief Returns a pointer to the underlying character array.
@@ -224,19 +224,19 @@ class basic_string_view
          *
          * \return A pointer to the underlying character array.
          */
-        RTTR_CONSTEXPR const_pointer data() const RTTR_NOEXCEPT;
+        constexpr const_pointer data() const noexcept;
 
         /*!
          * \brief Moves the start of the view forward by n characters.
          *        The behavior is undefined if `n > size()`.
          */
-        RTTR_CXX14_CONSTEXPR void remove_prefix(size_type n) RTTR_NOEXCEPT;
+        constexpr void remove_prefix(size_type n) noexcept;
 
         /*!
          * \brief Moves the end of the view back by n characters.
          *        The behavior is undefined if `n > size()`.
          */
-        RTTR_CXX14_CONSTEXPR void remove_suffix(size_type n) RTTR_NOEXCEPT;
+        constexpr void remove_suffix(size_type n) noexcept;
 
 
         /*!
@@ -263,7 +263,7 @@ class basic_string_view
          *         zero if the both character sequences are equal,
          *         positive value if this view is greater than the other character sequence.
          */
-        RTTR_CXX14_CONSTEXPR int compare(basic_string_view v) const RTTR_NOEXCEPT;
+        constexpr int compare(basic_string_view v) const noexcept;
 
         /*!
          * \brief Equivalent to `compare(basic_string_view(c))`.
@@ -272,7 +272,7 @@ class basic_string_view
          *         zero if the both character sequences are equal,
          *         positive value if this view is greater than the other character sequence.
          */
-        RTTR_CXX14_CONSTEXPR int compare(const CharT* c) const RTTR_NOEXCEPT;
+        constexpr int compare(const CharT* c) const noexcept;
 
     private:
         const value_type*   m_data;
@@ -294,24 +294,24 @@ class basic_string_view
  * \return `true` when both views are the same, otherwise `false`.
  */
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator==(basic_string_view<CharT, Traits> lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator==(basic_string_view<CharT, Traits> lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator==(const char* lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator==(const char* lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator==(basic_string_view<CharT, Traits> lhs,
-                                                 const char* rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator==(basic_string_view<CharT, Traits> lhs,
+                                                 const char* rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator==(const std::basic_string<CharT, Traits>& lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator==(const std::basic_string<CharT, Traits>& lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator==(basic_string_view<CharT, Traits> lhs,
-                                                 const std::basic_string<CharT, Traits>& rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator==(basic_string_view<CharT, Traits> lhs,
+                                                 const std::basic_string<CharT, Traits>& rhs) noexcept;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -323,24 +323,24 @@ RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator==(basic_string_view<CharT, Traits
  * \return `true` when both views are **not** the same, otherwise `false`.
  */
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator!=(basic_string_view<CharT, Traits> lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator!=(basic_string_view<CharT, Traits> lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator!=(const char* lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator!=(const char* lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator!=(basic_string_view<CharT, Traits> lhs,
-                                                 const char* rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator!=(basic_string_view<CharT, Traits> lhs,
+                                                 const char* rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator!=(const std::basic_string<CharT, Traits>& lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator!=(const std::basic_string<CharT, Traits>& lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator!=(basic_string_view<CharT, Traits> lhs,
-                                                 const std::basic_string<CharT, Traits>& rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator!=(basic_string_view<CharT, Traits> lhs,
+                                                 const std::basic_string<CharT, Traits>& rhs) noexcept;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -352,24 +352,24 @@ RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator!=(basic_string_view<CharT, Traits
  * \return `true` when lhs is smaller or equal to \p rhs, otherwise false.
  */
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<=(basic_string_view<CharT, Traits> lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<=(basic_string_view<CharT, Traits> lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<=(const char* lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<=(const char* lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<=(basic_string_view<CharT, Traits> lhs,
-                                                 const char* rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<=(basic_string_view<CharT, Traits> lhs,
+                                                 const char* rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<=(const std::basic_string<CharT, Traits>& lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<=(const std::basic_string<CharT, Traits>& lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<=(basic_string_view<CharT, Traits> lhs,
-                                                 const std::basic_string<CharT, Traits>& rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<=(basic_string_view<CharT, Traits> lhs,
+                                                 const std::basic_string<CharT, Traits>& rhs) noexcept;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -381,24 +381,24 @@ RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<=(basic_string_view<CharT, Traits
  * \return `true` when lhs is greater or equal to \p rhs, otherwise false.
  */
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>=(basic_string_view<CharT, Traits> lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>=(basic_string_view<CharT, Traits> lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>=(const char* lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>=(const char* lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>=(basic_string_view<CharT, Traits> lhs,
-                                                 const char* rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>=(basic_string_view<CharT, Traits> lhs,
+                                                 const char* rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>=(const std::basic_string<CharT, Traits>& lhs,
-                                                 basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>=(const std::basic_string<CharT, Traits>& lhs,
+                                                 basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>=(basic_string_view<CharT, Traits> lhs,
-                                                 const std::basic_string<CharT, Traits>& rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>=(basic_string_view<CharT, Traits> lhs,
+                                                 const std::basic_string<CharT, Traits>& rhs) noexcept;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -410,24 +410,24 @@ RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>=(basic_string_view<CharT, Traits
  * \return `true` when lhs is greater than \p rhs, otherwise false.
  */
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>(basic_string_view<CharT, Traits> lhs,
-                                                basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>(basic_string_view<CharT, Traits> lhs,
+                                                basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>(const char* lhs,
-                                                basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>(const char* lhs,
+                                                basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>(basic_string_view<CharT, Traits> lhs,
-                                                const char* rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>(basic_string_view<CharT, Traits> lhs,
+                                                const char* rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>(const std::basic_string<CharT, Traits>& lhs,
-                                                basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>(const std::basic_string<CharT, Traits>& lhs,
+                                                basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>(basic_string_view<CharT, Traits> lhs,
-                                                const std::basic_string<CharT, Traits>& rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator>(basic_string_view<CharT, Traits> lhs,
+                                                const std::basic_string<CharT, Traits>& rhs) noexcept;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -439,41 +439,41 @@ RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator>(basic_string_view<CharT, Traits>
  * \return `true` when lhs is smaller than \p rhs, otherwise false.
  */
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<(basic_string_view<CharT, Traits> lhs,
-                                                basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<(basic_string_view<CharT, Traits> lhs,
+                                                basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<(const char* lhs,
-                                                basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<(const char* lhs,
+                                                basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<(basic_string_view<CharT, Traits> lhs,
-                                                const char* rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<(basic_string_view<CharT, Traits> lhs,
+                                                const char* rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<(const std::basic_string<CharT, Traits>& lhs,
-                                                basic_string_view<CharT, Traits> rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<(const std::basic_string<CharT, Traits>& lhs,
+                                                basic_string_view<CharT, Traits> rhs) noexcept;
 
 template<typename CharT, typename Traits>
-RTTR_INLINE RTTR_CXX14_CONSTEXPR bool operator<(basic_string_view<CharT, Traits> lhs,
-                                                const std::basic_string<CharT, Traits>& rhs) RTTR_NOEXCEPT;
+inline constexpr bool operator<(basic_string_view<CharT, Traits> lhs,
+                                                const std::basic_string<CharT, Traits>& rhs) noexcept;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename CharT, typename Traits>
-RTTR_INLINE std::basic_string<CharT, Traits> operator+(basic_string_view<CharT, Traits> lhs,
+inline std::basic_string<CharT, Traits> operator+(basic_string_view<CharT, Traits> lhs,
                                                        const std::basic_string<CharT, Traits>& rhs);
 
 template<typename CharT, typename Traits>
-RTTR_INLINE std::basic_string<CharT, Traits> operator+(const std::basic_string<CharT, Traits>& lhs,
+inline std::basic_string<CharT, Traits> operator+(const std::basic_string<CharT, Traits>& lhs,
                                                        basic_string_view<CharT, Traits> rhs);
 
 template<typename CharT, typename Traits>
-RTTR_INLINE std::basic_string<CharT, Traits> operator+(basic_string_view<CharT, Traits> lhs,
+inline std::basic_string<CharT, Traits> operator+(basic_string_view<CharT, Traits> lhs,
                                                        std::basic_string<CharT, Traits>&& rhs);
 
 template<typename CharT, typename Traits>
-RTTR_INLINE std::basic_string<CharT, Traits> operator+(std::basic_string<CharT, Traits>&& lhs,
+inline std::basic_string<CharT, Traits> operator+(std::basic_string<CharT, Traits>&& lhs,
                                                        basic_string_view<CharT, Traits> rhs);
 
 /////////////////////////////////////////////////////////////////////////////////////////

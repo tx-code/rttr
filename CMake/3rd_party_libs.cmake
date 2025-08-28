@@ -56,15 +56,5 @@ endif()
 # Note: Benchmarks disabled - use dedicated tools like Google Benchmark if needed
 # Note: Catch test framework is now managed through vcpkg
 
-# Use ChaiScript from vcpkg
-find_path(CHAISCRIPT_INCLUDE_DIRS "chaiscript/chaiscript.hpp")
-if(CHAISCRIPT_INCLUDE_DIRS)
-    message(STATUS "ChaiScript found via vcpkg at: ${CHAISCRIPT_INCLUDE_DIRS}")
-    add_library(ChaiScript INTERFACE)
-    add_library(ChaiScript::ChaiScript ALIAS ChaiScript)
-    target_include_directories(ChaiScript INTERFACE ${CHAISCRIPT_INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR "ChaiScript not found! Please install via vcpkg: vcpkg install chaiscript")
-endif()
 
 MESSAGE(STATUS "Finished finding 3rd party libs!")

@@ -57,17 +57,17 @@ namespace detail
 class RTTR_API constructor_wrapper_base
 {
     public:
-        constructor_wrapper_base() RTTR_NOEXCEPT;
+        constructor_wrapper_base() noexcept;
         virtual ~constructor_wrapper_base();
-        string_view get_signature() const RTTR_NOEXCEPT;
+        string_view get_signature() const noexcept;
 
-        virtual bool is_valid() const RTTR_NOEXCEPT;
-        virtual type get_declaring_type() const RTTR_NOEXCEPT;
-        virtual access_levels get_access_level() const RTTR_NOEXCEPT;
-        virtual type get_instantiated_type() const RTTR_NOEXCEPT;
-        virtual std::vector<bool> get_is_reference() const RTTR_NOEXCEPT;
-        virtual std::vector<bool> get_is_const() const RTTR_NOEXCEPT;
-        virtual array_range<parameter_info> get_parameter_infos() const RTTR_NOEXCEPT;
+        virtual bool is_valid() const noexcept;
+        virtual type get_declaring_type() const noexcept;
+        virtual access_levels get_access_level() const noexcept;
+        virtual type get_instantiated_type() const noexcept;
+        virtual std::vector<bool> get_is_reference() const noexcept;
+        virtual std::vector<bool> get_is_const() const noexcept;
+        virtual array_range<parameter_info> get_parameter_infos() const noexcept;
         virtual variant get_metadata(const variant& key) const;
 
         virtual variant invoke() const;
@@ -82,11 +82,11 @@ class RTTR_API constructor_wrapper_base
 
         virtual variant invoke_variadic(std::vector<argument>& args) const;
 
-        virtual void visit(visitor& visitor, const constructor& ctor) const RTTR_NOEXCEPT;
+        virtual void visit(visitor& visitor, const constructor& ctor) const noexcept;
     protected:
-        void init() RTTR_NOEXCEPT;
+        void init() noexcept;
     private:
-        void create_signature_string() RTTR_NOEXCEPT;
+        void create_signature_string() noexcept;
     private:
         string_view m_signature_view;
         std::string m_signature;

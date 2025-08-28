@@ -122,9 +122,9 @@ public:
     static void unregister_reg_manager(registration_manager* manager);
 
 
-    static type_data* register_type(type_data* info) RTTR_NOEXCEPT;
-    static void unregister_type(type_data* info) RTTR_NOEXCEPT;
-    static bool register_visit_type_func(type& t, visit_type_func) RTTR_NOEXCEPT;
+    static type_data* register_type(type_data* info) noexcept;
+    static void unregister_type(type_data* info) noexcept;
+    static bool register_visit_type_func(type& t, visit_type_func) noexcept;
 
 private:
 

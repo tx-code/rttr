@@ -73,8 +73,8 @@ public:
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    type_data* register_type(type_data* info) RTTR_NOEXCEPT;
-    void unregister_type(type_data* info) RTTR_NOEXCEPT;
+    type_data* register_type(type_data* info) noexcept;
+    void unregister_type(type_data* info) noexcept;
 
     bool register_constructor(const constructor_wrapper_base* ctor);
     bool register_destructor(const destructor_wrapper_base* dtor);
@@ -148,20 +148,20 @@ private:
 
         struct order_by_id
         {
-            RTTR_INLINE bool operator () ( const data_container<T>& _left, const data_container<T>& _right )  const
+            inline bool operator () ( const data_container<T>& _left, const data_container<T>& _right )  const
             {
                 return _left.m_id < _right.m_id;
             }
-            RTTR_INLINE bool operator () ( const type::type_id& _left, const data_container<T>& _right ) const
+            inline bool operator () ( const type::type_id& _left, const data_container<T>& _right ) const
             {
                 return _left < _right.m_id;
             }
-            RTTR_INLINE bool operator () ( const data_container<T>& _left, const type::type_id& _right ) const
+            inline bool operator () ( const data_container<T>& _left, const type::type_id& _right ) const
             {
                 return _left.m_id < _right;
             }
 
-            RTTR_INLINE bool operator () ( const data_container<T>& _left, const Data_Type& _right ) const
+            inline bool operator () ( const data_container<T>& _left, const Data_Type& _right ) const
             {
                 return _left.m_data < _right;
             }

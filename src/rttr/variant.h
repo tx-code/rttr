@@ -53,9 +53,9 @@ class instance;
 namespace detail
 {
     template<class T>
-    RTTR_INLINE T* unsafe_variant_cast(variant* operand) RTTR_NOEXCEPT;
+    inline T* unsafe_variant_cast(variant* operand) noexcept;
     template<class T>
-    RTTR_INLINE const T* unsafe_variant_cast(const variant* operand) RTTR_NOEXCEPT;
+    inline const T* unsafe_variant_cast(const variant* operand) noexcept;
 
     struct data_address_container;
     template<typename T>
@@ -203,7 +203,7 @@ class RTTR_API variant
          *
          * \see is_valid()
          */
-        RTTR_INLINE variant();
+        inline variant();
 
         /*!
          * \brief Constructs a new variant with the new value \p val.
@@ -225,7 +225,7 @@ class RTTR_API variant
         /*!
          * \brief Destroys the variant and the contained object.
          */
-        RTTR_INLINE ~variant();
+        inline ~variant();
 
         /*!
          * Assigns the value of the \p other object to this variant.
@@ -265,7 +265,7 @@ class RTTR_API variant
          *
          * \return A boolean with value `true`, that indicates both variant's are equal, otherwise `false`.
          */
-        RTTR_INLINE bool operator==(const variant& other) const;
+        inline bool operator==(const variant& other) const;
 
         /*!
          * \brief Compares this variant with \p other and returns `true` if they are **not** equal; otherwise returns `false`.
@@ -280,7 +280,7 @@ class RTTR_API variant
          *
          * \return A boolean with value `true`, that indicates both variant's are **not** equal, otherwise `false`.
          */
-        RTTR_INLINE bool operator!=(const variant& other) const;
+        inline bool operator!=(const variant& other) const;
 
         /*!
          * \brief Compares this variant with \p other and returns `true` if this is *less than* \p other, otherwise returns `false`.
@@ -298,7 +298,7 @@ class RTTR_API variant
          *
          * \return A boolean with value `true`, that indicates that this variant is *less than* \p other, otherwise `false`.
          */
-        RTTR_INLINE bool operator<(const variant& other) const;
+        inline bool operator<(const variant& other) const;
 
 
         /*!
@@ -314,7 +314,7 @@ class RTTR_API variant
          *
          * \return A boolean with value `true`, that indicates that this variant is *less* or *equal* than \p other, otherwise `false`.
          */
-        RTTR_INLINE bool operator<=(const variant& other) const;
+        inline bool operator<=(const variant& other) const;
 
         /*!
          * \brief Compares this variant with \p other and returns `true` if this is *greater* or *equal* then \p other, otherwise returns `false`.
@@ -329,7 +329,7 @@ class RTTR_API variant
          *
          * \return A boolean with value `true`, that indicates that this variant is *greater* or *equal* than \p other, otherwise `false`.
          */
-        RTTR_INLINE bool operator>=(const variant& other) const;
+        inline bool operator>=(const variant& other) const;
 
         /*!
          * \brief Compares this variant with \p other and returns `true` if this is *greater than* \p other, otherwise returns `false`.
@@ -343,7 +343,7 @@ class RTTR_API variant
          *
          * \return A boolean with value `true`, that indicates that this variant is *greater than* \p other, otherwise `false`.
          */
-        RTTR_INLINE bool operator>(const variant& other) const;
+        inline bool operator>(const variant& other) const;
 
         /*!
          * \brief When the variant contains a value, then this function will clear the content.
@@ -947,7 +947,7 @@ class RTTR_API variant
          *
          * \return
          */
-        RTTR_INLINE void* get_ptr() const;
+        inline void* get_ptr() const;
 
          /*!
          * \brief Returns the type object of the underlying data
@@ -956,7 +956,7 @@ class RTTR_API variant
          *
          * \return Type object.
          */
-        RTTR_INLINE type get_raw_type() const;
+        inline type get_raw_type() const;
 
         /*!
          * \brief Returns a pointer to the underlying data.
@@ -966,7 +966,7 @@ class RTTR_API variant
          *
          * \return Raw void pointer.
          */
-        RTTR_INLINE void* get_raw_ptr() const;
+        inline void* get_raw_ptr() const;
 
         //! Helper function to initialize all arithmetic types
         template<typename T>
@@ -985,7 +985,7 @@ class RTTR_API variant
          *
          * \return Type object of the wrapped pointer object.
          */
-        RTTR_INLINE detail::data_address_container get_data_address_container() const;
+        inline detail::data_address_container get_data_address_container() const;
 
         bool convert(const type& target_type, variant& var) const;
 
@@ -1038,7 +1038,7 @@ class RTTR_API variant
          *
          * \return A boolean with value `true`, when the contained value type is equal to `nullptr`; otherwise false.
          */
-        RTTR_INLINE bool is_nullptr() const;
+        inline bool is_nullptr() const;
 
 
         variant create_wrapped_value(const type& wrapped_type) const;
@@ -1052,7 +1052,7 @@ class RTTR_API variant
         friend struct detail::variant_data_policy_nullptr_t;
         friend RTTR_API bool detail::variant_compare_less(const variant&, const type&, const variant&, const type&, bool& ok);
         template<class T>
-        friend RTTR_INLINE T* detail::unsafe_variant_cast(variant* operand) RTTR_NOEXCEPT;
+        friend inline T* detail::unsafe_variant_cast(variant* operand) noexcept;
 
 
         detail::variant_data            m_data;
@@ -1131,7 +1131,7 @@ T variant_cast(variant&& operand);
  * \return A valid pointer, when the containing type is of type \p T; otherwise a `nullptr`.
  */
 template<class T>
-const T* variant_cast(const variant* operand) RTTR_NOEXCEPT;
+const T* variant_cast(const variant* operand) noexcept;
 
 /*!
  * \brief Returns a pointer to the containing value with type \p T.
@@ -1150,7 +1150,7 @@ const T* variant_cast(const variant* operand) RTTR_NOEXCEPT;
  * \return A valid pointer, when the containing type is of type \p T; otherwise a `nullptr`.
  */
 template<class T>
-T* variant_cast(variant* operand) RTTR_NOEXCEPT;
+T* variant_cast(variant* operand) noexcept;
 
 } // end namespace rttr
 

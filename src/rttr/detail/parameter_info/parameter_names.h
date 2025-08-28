@@ -47,7 +47,7 @@ struct parameter_names
 
     std::tuple<T...> m_param_names;
 
-    RTTR_STATIC_CONSTEXPR std::size_t count = sizeof...(T);
+    static constexpr std::size_t count = sizeof...(T);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////

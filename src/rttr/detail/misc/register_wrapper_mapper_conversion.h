@@ -53,7 +53,7 @@ class has_conversion_function_impl
     template <typename U> static YesType& check(decltype(&wrapper_mapper<U>::convert));
     template <typename U> static NoType&  check(...);
 public:
-    static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(check<raw_type_t<T>>(0)) != sizeof(YesType));
+    static constexpr bool value = (sizeof(check<raw_type_t<T>>(0)) != sizeof(YesType));
 };
 
 /*!
@@ -74,13 +74,13 @@ struct create_wrapper_conversion;
 template<typename DerivedClass>
 struct create_wrapper_conversion<DerivedClass>
 {
-    static RTTR_INLINE void perform() { }
+    static inline void perform() { }
 };
 
 template<typename DerivedClass, typename BaseClass, typename... U>
 struct create_wrapper_conversion<DerivedClass, BaseClass, U...>
 {
-    static RTTR_INLINE void perform()
+    static inline void perform()
     {
         static_assert(has_base_class_list<BaseClass>::value, "The parent class has no base class list defined - please use the macro RTTR_ENABLE");
         type::register_converter_func(wrapper_mapper<DerivedClass>::template convert<BaseClass>);

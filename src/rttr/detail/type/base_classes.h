@@ -62,7 +62,7 @@ class has_base_class_list_impl
     static NoType& test(...);
 
 public:
-    static RTTR_CONSTEXPR_OR_CONST bool value = (sizeof(YesType) == sizeof(test<T>(0)));
+    static constexpr bool value = (sizeof(YesType) == sizeof(test<T>(0)));
 };
 
 /*!
@@ -82,7 +82,7 @@ struct RTTR_LOCAL type_from_base_classes;
 template<typename DerivedClass>
 struct RTTR_LOCAL type_from_base_classes<DerivedClass>
 {
-    static RTTR_INLINE void fill(info_container&)
+    static inline void fill(info_container&)
     {
     }
 };
@@ -105,7 +105,7 @@ static void* rttr_cast_impl(void* ptr)
 template<typename DerivedClass, typename BaseClass, typename... U>
 struct RTTR_LOCAL type_from_base_classes<DerivedClass, BaseClass, U...>
 {
-    static RTTR_INLINE void fill(info_container& vec)
+    static inline void fill(info_container& vec)
     {
         static_assert(has_base_class_list<BaseClass>::value, "The parent class has no base class list defined - please use the macro RTTR_ENABLE");
         vec.emplace_back(type::get<BaseClass>(), &rttr_cast_impl<DerivedClass, BaseClass>);
@@ -127,7 +127,7 @@ struct type_from_base_classes<DerivedClass, type_list<BaseClassList...>> : type_
 template<typename T, typename Enable = void>
 struct RTTR_LOCAL base_classes
 {
-    static RTTR_INLINE info_container get_types()
+    static inline info_container get_types()
     {
         info_container result;
         return result;
@@ -137,7 +137,7 @@ struct RTTR_LOCAL base_classes
 template<typename T>
 struct RTTR_LOCAL base_classes<T, typename std::enable_if<has_base_class_list<T>::value>::type>
 {
-    static RTTR_INLINE info_container get_types()
+    static inline info_container get_types()
     {
         info_container result;
         type_from_base_classes<T, typename T::base_class_list>::fill(result);

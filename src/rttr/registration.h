@@ -643,7 +643,7 @@ auto select_non_const(ReturnType(ClassType::*func)(Args...) noexcept) -> decltyp
  * registration process of reflection information. Use it in the `()` operator of the returned
  * \ref bind object.
  */
-RTTR_INLINE detail::metadata metadata(variant key, variant value);
+inline detail::metadata metadata(variant key, variant value);
 
 
 /*!
@@ -654,7 +654,7 @@ RTTR_INLINE detail::metadata metadata(variant key, variant value);
  * \see \ref registration::enumeration
  */
 template<typename Enum_Type>
-RTTR_INLINE detail::enum_data<Enum_Type> value(string_view, Enum_Type value);
+inline detail::enum_data<Enum_Type> value(string_view, Enum_Type value);
 
 /*!
  * The \ref default_arguments function should be used add default arguments,
@@ -688,7 +688,7 @@ RTTR_INLINE detail::enum_data<Enum_Type> value(string_view, Enum_Type value);
  *
  */
 template<typename...TArgs>
-RTTR_INLINE detail::default_args<TArgs...> default_arguments(TArgs&&...args);
+inline detail::default_args<TArgs...> default_arguments(TArgs&&...args);
 
 /*!
  * The \ref parameter_names function should be used add human-readable names of the parameters,
@@ -716,7 +716,7 @@ RTTR_INLINE detail::default_args<TArgs...> default_arguments(TArgs&&...args);
  *
  */
 template<typename...TArgs>
-RTTR_INLINE detail::parameter_names<detail::decay_t<TArgs>...> parameter_names(TArgs&&...args);
+inline detail::parameter_names<detail::decay_t<TArgs>...> parameter_names(TArgs&&...args);
 
 
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -29,8 +29,8 @@
 
 using namespace std;
 
-static RTTR_CONSTEXPR const char* is_ref_list[] = {"", " &"};
-static RTTR_CONSTEXPR const char* is_const_list[] = {"", " const"};
+static constexpr const char* is_ref_list[] = {"", " &"};
+static constexpr const char* is_const_list[] = {"", " const"};
 
 namespace rttr
 {
@@ -39,7 +39,7 @@ namespace detail
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-constructor_wrapper_base::constructor_wrapper_base() RTTR_NOEXCEPT
+constructor_wrapper_base::constructor_wrapper_base() noexcept
 {
 
 }
@@ -52,7 +52,7 @@ constructor_wrapper_base::~constructor_wrapper_base()
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void constructor_wrapper_base::init() RTTR_NOEXCEPT
+void constructor_wrapper_base::init() noexcept
 {
     create_signature_string();
     get_instantiated_type();
@@ -61,14 +61,14 @@ void constructor_wrapper_base::init() RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-string_view constructor_wrapper_base::get_signature() const RTTR_NOEXCEPT
+string_view constructor_wrapper_base::get_signature() const noexcept
 {
     return m_signature_view;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void constructor_wrapper_base::create_signature_string() RTTR_NOEXCEPT
+void constructor_wrapper_base::create_signature_string() noexcept
 {
     if (!m_signature.empty())
         return;
@@ -96,49 +96,49 @@ void constructor_wrapper_base::create_signature_string() RTTR_NOEXCEPT
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool constructor_wrapper_base::is_valid() const RTTR_NOEXCEPT
+bool constructor_wrapper_base::is_valid() const noexcept
 {
     return false;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type constructor_wrapper_base::get_declaring_type() const RTTR_NOEXCEPT
+type constructor_wrapper_base::get_declaring_type() const noexcept
 {
     return get_invalid_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-access_levels constructor_wrapper_base::get_access_level() const RTTR_NOEXCEPT
+access_levels constructor_wrapper_base::get_access_level() const noexcept
 {
     return access_levels::public_access;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type constructor_wrapper_base::get_instantiated_type() const RTTR_NOEXCEPT
+type constructor_wrapper_base::get_instantiated_type() const noexcept
 {
     return get_invalid_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<bool> constructor_wrapper_base::get_is_reference() const RTTR_NOEXCEPT
+std::vector<bool> constructor_wrapper_base::get_is_reference() const noexcept
 {
     return std::vector<bool>();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<bool> constructor_wrapper_base::get_is_const() const RTTR_NOEXCEPT
+std::vector<bool> constructor_wrapper_base::get_is_const() const noexcept
 {
     return std::vector<bool>();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-array_range<parameter_info> constructor_wrapper_base::get_parameter_infos() const RTTR_NOEXCEPT
+array_range<parameter_info> constructor_wrapper_base::get_parameter_infos() const noexcept
 {
     return array_range<parameter_info>();
 }
@@ -210,7 +210,7 @@ variant constructor_wrapper_base::invoke_variadic(std::vector<argument>& args) c
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-void constructor_wrapper_base::visit(visitor& visitor, const constructor& ctor) const RTTR_NOEXCEPT
+void constructor_wrapper_base::visit(visitor& visitor, const constructor& ctor) const noexcept
 {
 }
 

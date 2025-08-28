@@ -57,15 +57,15 @@ class flat_multimap
 
         struct order
         {
-            RTTR_INLINE bool operator () (const key_data& left, const key_data& right)  const
+            inline bool operator () (const key_data& left, const key_data& right)  const
             {
                 return (left.m_hash_value < right.m_hash_value);
             }
-            RTTR_INLINE bool operator () (const Hash_Type& left, const key_data& right) const
+            inline bool operator () (const Hash_Type& left, const key_data& right) const
             {
                 return (left < right.m_hash_value);
             }
-            RTTR_INLINE bool operator () (const key_data& left, const Hash_Type& right) const
+            inline bool operator () (const key_data& left, const Hash_Type& right) const
             {
                 return (left.m_hash_value < right);
             }

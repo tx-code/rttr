@@ -73,7 +73,7 @@ struct compare_array_equal_impl<ElementType[Count]>
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename ElementType, std::size_t Count>
-RTTR_INLINE bool compare_array_equal(const ElementType (&lhs)[Count], const ElementType (&rhs)[Count], bool& ok)
+inline bool compare_array_equal(const ElementType (&lhs)[Count], const ElementType (&rhs)[Count], bool& ok)
 {
     return compare_array_equal_impl<ElementType[Count]>()(lhs, rhs, ok);
 }

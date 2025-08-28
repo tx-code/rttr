@@ -74,7 +74,7 @@ struct compare_array_less_impl<ElementType[Count]>
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename ElementType, std::size_t Count>
-RTTR_INLINE bool compare_array_less(const ElementType (&lhs)[Count], const ElementType (&rhs)[Count])
+inline bool compare_array_less(const ElementType (&lhs)[Count], const ElementType (&rhs)[Count])
 {
     if (compare_array_less_impl<ElementType[Count]>()(lhs, rhs) == -1)
         return true;

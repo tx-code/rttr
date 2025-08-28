@@ -44,7 +44,7 @@ namespace detail
 class RTTR_LOCAL variant_associative_view_private
 {
     public:
-        variant_associative_view_private() RTTR_NOEXCEPT
+        variant_associative_view_private() noexcept
         :   m_type(get_invalid_type()),
             m_key_type(get_invalid_type()),
             m_value_type(get_invalid_type()),
@@ -69,7 +69,7 @@ class RTTR_LOCAL variant_associative_view_private
         }
 
         template<typename T, typename RawType = raw_type_t<T>, typename ConstType = remove_pointer_t<T>>
-        variant_associative_view_private(const T& container) RTTR_NOEXCEPT
+        variant_associative_view_private(const T& container) noexcept
         :   m_type(type::get<RawType>()),
             m_key_type(type::get<typename associative_container_mapper<RawType>::key_t>()),
             m_value_type(type::get<conditional_t<std::is_void<typename associative_container_mapper<RawType>::value_t>::value,
@@ -95,117 +95,117 @@ class RTTR_LOCAL variant_associative_view_private
         {
         }
 
-        RTTR_INLINE variant_associative_view_private(const variant_associative_view_private& other) = default;
+        inline variant_associative_view_private(const variant_associative_view_private& other) = default;
 
-        RTTR_INLINE ~variant_associative_view_private()
+        inline ~variant_associative_view_private()
         {
 
         }
 
-        RTTR_INLINE type get_type() const RTTR_NOEXCEPT
+        inline type get_type() const noexcept
         {
             return m_type;
         }
 
-        RTTR_INLINE type get_key_type() const RTTR_NOEXCEPT
+        inline type get_key_type() const noexcept
         {
             return m_key_type;
         }
 
-        RTTR_INLINE type get_value_type() const RTTR_NOEXCEPT
+        inline type get_value_type() const noexcept
         {
             return m_value_type;
         }
 
-        RTTR_INLINE void copy(iterator_data& itr_tgt, const iterator_data& itr_src) const
+        inline void copy(iterator_data& itr_tgt, const iterator_data& itr_src) const
         {
             m_create_func(itr_tgt, itr_src);
         }
 
-        RTTR_INLINE void destroy(iterator_data& itr) const
+        inline void destroy(iterator_data& itr) const
         {
             m_delete_func(itr);
         }
 
-        RTTR_INLINE void begin(iterator_data& itr) const
+        inline void begin(iterator_data& itr) const
         {
             m_begin_func(m_container, itr);
         }
 
-        RTTR_INLINE void end(iterator_data& itr) const
+        inline void end(iterator_data& itr) const
         {
             m_end_func(m_container, itr);
         }
 
-        RTTR_INLINE bool is_empty() const RTTR_NOEXCEPT
+        inline bool is_empty() const noexcept
         {
             return m_get_is_empty_func(m_container);
         }
 
-        RTTR_INLINE std::size_t get_size() const RTTR_NOEXCEPT
+        inline std::size_t get_size() const noexcept
         {
             return m_get_size_func(m_container);
         }
 
-        RTTR_INLINE bool equal(const iterator_data& lhs_itr, const iterator_data& rhs_itr) const RTTR_NOEXCEPT
+        inline bool equal(const iterator_data& lhs_itr, const iterator_data& rhs_itr) const noexcept
         {
             return m_equal_func(lhs_itr, rhs_itr);
         }
 
-        RTTR_INLINE const variant get_key(const iterator_data& itr) const
+        inline const variant get_key(const iterator_data& itr) const
         {
             return m_get_key_func(itr);
         }
 
-        RTTR_INLINE const variant get_value(const iterator_data& itr) const
+        inline const variant get_value(const iterator_data& itr) const
         {
             return m_get_value_func(itr);
         }
 
-        RTTR_INLINE const std::pair<variant, variant> get_key_value(const iterator_data& itr) const
+        inline const std::pair<variant, variant> get_key_value(const iterator_data& itr) const
         {
             return {m_get_key_func(itr), m_get_value_func(itr)};
         }
 
 
-        RTTR_INLINE void advance(iterator_data& itr, std::ptrdiff_t index) const
+        inline void advance(iterator_data& itr, std::ptrdiff_t index) const
         {
             m_advance_func(itr, index);
         }
 
-        RTTR_INLINE void find(iterator_data& itr, argument& key)
+        inline void find(iterator_data& itr, argument& key)
         {
             m_find_func(m_container, itr, key);
         }
 
-        RTTR_INLINE void equal_range(argument& key,
+        inline void equal_range(argument& key,
                                      iterator_data& itr_begin, detail::iterator_data& itr_end)
         {
             m_equal_range_func(m_container, key, itr_begin, itr_end);
         }
 
-        RTTR_INLINE void clear()
+        inline void clear()
         {
             m_clear_func(m_container);
         }
 
-        RTTR_INLINE std::size_t erase(argument& key)
+        inline std::size_t erase(argument& key)
         {
             return m_erase_func(m_container, key);
         }
 
-        RTTR_INLINE bool insert(argument& key, iterator_data& itr)
+        inline bool insert(argument& key, iterator_data& itr)
         {
             return m_insert_func_key(m_container, key, itr);
         }
 
-        RTTR_INLINE bool insert(argument& key, argument& value, iterator_data& itr)
+        inline bool insert(argument& key, argument& value, iterator_data& itr)
         {
             return m_insert_func_key_value(m_container, key, value, itr);
         }
 
     private:
-        static bool equal_cmp_dummy_func(const iterator_data& lhs_itr, const iterator_data& rhs_itr) RTTR_NOEXCEPT;
+        static bool equal_cmp_dummy_func(const iterator_data& lhs_itr, const iterator_data& rhs_itr) noexcept;
         using equality_func     = decltype(&equal_cmp_dummy_func); // workaround because of 'noexcept' can only appear on function declaration
 
         using get_is_empty_func = bool(*)(void* container);

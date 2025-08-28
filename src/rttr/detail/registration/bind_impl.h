@@ -61,7 +61,7 @@ namespace detail
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename... Args>
-static RTTR_INLINE auto get_metadata(Args&&... arg) -> decltype(forward_to_array<metadata>(std::forward<Args>(arg)...))
+static inline auto get_metadata(Args&&... arg) -> decltype(forward_to_array<metadata>(std::forward<Args>(arg)...))
 {
     return forward_to_array<metadata>(std::forward<Args>(arg)...);
 }
@@ -69,7 +69,7 @@ static RTTR_INLINE auto get_metadata(Args&&... arg) -> decltype(forward_to_array
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename Enum_Type, typename... Args>
-static RTTR_INLINE auto get_enum_values(Args&&... arg) -> decltype(forward_to_array<enum_data<Enum_Type>>(std::forward<Args>(arg)...))
+static inline auto get_enum_values(Args&&... arg) -> decltype(forward_to_array<enum_data<Enum_Type>>(std::forward<Args>(arg)...))
 {
     return forward_to_array<enum_data<Enum_Type>>(std::forward<Args>(arg)...);
 }
@@ -105,7 +105,7 @@ class registration::bind<detail::ctor, Class_Type, acc_level, Visitor_List, Ctor
         // this additional wrapper function is needed, because of not triggered static_assert in func: 'operator()(Args&&... args)'
         // when we create the object directly inside the operator function, seems to be a bug in MSVC
         template<typename Policy, std::size_t Metadata_Count, typename...TArgs, typename...Param_Args>
-        static RTTR_INLINE std::unique_ptr<detail::constructor_wrapper_base>
+        static inline std::unique_ptr<detail::constructor_wrapper_base>
         create_constructor_wrapper(std::array<detail::metadata, Metadata_Count> metadata_list,
                                    detail::default_args<TArgs...> def_args,
                                    detail::parameter_infos<Param_Args...> param_infos)
@@ -123,7 +123,7 @@ class registration::bind<detail::ctor, Class_Type, acc_level, Visitor_List, Ctor
         }
 
         template<typename Policy, std::size_t Metadata_Count, typename...Param_Args>
-        static RTTR_INLINE std::unique_ptr<detail::constructor_wrapper_base>
+        static inline std::unique_ptr<detail::constructor_wrapper_base>
         create_constructor_wrapper(std::array<detail::metadata, Metadata_Count> metadata_list,
                                    detail::default_args<> def_args,
                                    detail::parameter_infos<Param_Args...> param_infos)
@@ -216,7 +216,7 @@ class registration::bind<detail::ctor_func, Class_Type, F, acc_level, Visitor_Li
 {
     private:
         template<std::size_t Metadata_Count, typename...TArgs, typename...Param_Args>
-        static RTTR_INLINE std::unique_ptr<detail::constructor_wrapper_base>
+        static inline std::unique_ptr<detail::constructor_wrapper_base>
         create_constructor_wrapper(F func,
                                    std::array<detail::metadata, Metadata_Count> metadata_list,
                                    detail::default_args<TArgs...> def_args,
@@ -237,7 +237,7 @@ class registration::bind<detail::ctor_func, Class_Type, F, acc_level, Visitor_Li
         }
 
         template<std::size_t Metadata_Count, typename...Param_Args>
-        static RTTR_INLINE std::unique_ptr<detail::constructor_wrapper_base>
+        static inline std::unique_ptr<detail::constructor_wrapper_base>
         create_constructor_wrapper(F func,
                                    std::array<detail::metadata, Metadata_Count> metadata_list,
                                    detail::default_args<> def_args,
@@ -260,7 +260,7 @@ class registration::bind<detail::ctor_func, Class_Type, F, acc_level, Visitor_Li
         // so we can make use of static_assert and check whether the given accessor is correct or not
         // REMARK: this seems to be a MSVC problem...
         template<typename Acc_Func>
-        static RTTR_INLINE std::unique_ptr<detail::constructor_wrapper_base> create_default_constructor(Acc_Func func)
+        static inline std::unique_ptr<detail::constructor_wrapper_base> create_default_constructor(Acc_Func func)
         {
             using namespace detail;
             using param_info_t = decltype(create_param_infos<type_list<Acc_Func>, function_type>());
@@ -273,7 +273,7 @@ class registration::bind<detail::ctor_func, Class_Type, F, acc_level, Visitor_Li
         }
 
         template<typename Acc_Func, typename... Args>
-        static RTTR_INLINE std::unique_ptr<detail::constructor_wrapper_base> create_custom_constructor(Acc_Func func, Args&&...args)
+        static inline std::unique_ptr<detail::constructor_wrapper_base> create_custom_constructor(Acc_Func func, Args&&...args)
         {
             using namespace detail;
             using has_valid_default_types = has_default_types<type_list<Acc_Func>, type_list<Args...>, function_type>;
@@ -350,7 +350,7 @@ class registration::bind<detail::prop, Class_Type, A, acc_level, Visitor_List> :
         using default_setter_policy = detail::set_value;
 
         template<typename Acc>
-        static RTTR_INLINE
+        static inline
         std::unique_ptr<detail::property_wrapper_base> create_default_property(string_view name, Acc acc)
         {
             using namespace detail;
@@ -367,7 +367,7 @@ class registration::bind<detail::prop, Class_Type, A, acc_level, Visitor_List> :
         }
 
         template<typename Acc, std::size_t Metadata_Count, typename... Args>
-        static RTTR_INLINE
+        static inline
         std::unique_ptr<detail::property_wrapper_base> create_custom_property(string_view name,
                                                                               Acc acc,
                                                                               std::array<detail::metadata, Metadata_Count> metadata_list,
@@ -446,7 +446,7 @@ class registration::bind<detail::prop, Class_Type, A1, A2, acc_level, Visitor_Li
         using default_setter_policy = detail::set_value;
 
         template<typename Acc1, typename Acc2>
-        static RTTR_INLINE
+        static inline
         std::unique_ptr<detail::property_wrapper_base> create_default_property(string_view name,
                                                                                Acc1 getter, Acc2 setter)
         {
@@ -462,7 +462,7 @@ class registration::bind<detail::prop, Class_Type, A1, A2, acc_level, Visitor_Li
         }
 
         template<typename Acc1, typename Acc2, std::size_t Metadata_Count, typename... Args>
-        static RTTR_INLINE
+        static inline
         std::unique_ptr<detail::property_wrapper_base> create_custom_property(string_view name,
                                                                               Acc1 getter, Acc2 setter,
                                                                               std::array<detail::metadata, Metadata_Count> metadata_list,
@@ -541,7 +541,7 @@ class registration::bind<detail::prop_readonly, Class_Type, A, acc_level, Visito
         using default_setter_policy = detail::read_only;
 
         template<typename Acc>
-        static RTTR_INLINE
+        static inline
         std::unique_ptr<detail::property_wrapper_base> create_default_property(string_view name, Acc acc)
         {
             using namespace detail;
@@ -554,7 +554,7 @@ class registration::bind<detail::prop_readonly, Class_Type, A, acc_level, Visito
         }
 
         template<typename Acc, std::size_t Metadata_Count, typename... Args>
-        static RTTR_INLINE
+        static inline
         std::unique_ptr<detail::property_wrapper_base>  create_custom_property(string_view name,
                                                                                Acc acc,
                                                                                std::array<detail::metadata,
@@ -625,7 +625,7 @@ class registration::bind<detail::meth, Class_Type, F, acc_level, Visitor_List> :
 {
     private:
         template<typename Acc_Func>
-        static RTTR_INLINE std::unique_ptr<detail::method_wrapper_base> create_default_method(string_view name, Acc_Func func)
+        static inline std::unique_ptr<detail::method_wrapper_base> create_default_method(string_view name, Acc_Func func)
         {
             using namespace detail;
             using param_info_t =  decltype(create_param_infos<type_list<F>, function_type>());
@@ -640,7 +640,7 @@ class registration::bind<detail::meth, Class_Type, F, acc_level, Visitor_List> :
         }
 
         template<typename Acc_Func, typename... Args>
-        static RTTR_INLINE std::unique_ptr<detail::method_wrapper_base> create_custom_method(string_view name, Acc_Func func, Args&&...args)
+        static inline std::unique_ptr<detail::method_wrapper_base> create_custom_method(string_view name, Acc_Func func, Args&&...args)
         {
             using namespace detail;
 
@@ -676,7 +676,7 @@ class registration::bind<detail::meth, Class_Type, F, acc_level, Visitor_List> :
         }
 
         template<typename Policy, std::size_t Metadata_Count, typename...TArgs, typename...Param_Args>
-        static RTTR_INLINE std::unique_ptr<detail::method_wrapper_base>
+        static inline std::unique_ptr<detail::method_wrapper_base>
         create_method_wrapper(string_view name, F func,
                               std::array<detail::metadata, Metadata_Count> metadata_list,
                               detail::default_args<TArgs...> def_args,
@@ -697,7 +697,7 @@ class registration::bind<detail::meth, Class_Type, F, acc_level, Visitor_List> :
         }
 
         template<typename Policy, std::size_t Metadata_Count, typename...Param_Args>
-        static RTTR_INLINE std::unique_ptr<detail::method_wrapper_base>
+        static inline std::unique_ptr<detail::method_wrapper_base>
         create_method_wrapper(string_view name, F func,
                               std::array<detail::metadata, Metadata_Count> metadata_list,
                               detail::default_args<> def_args,
@@ -761,19 +761,19 @@ class registration::bind<detail::enum_, Class_Type, Enum_Type> : public registra
 {
     private:
         template<typename E_Type>
-        static RTTR_INLINE std::unique_ptr<detail::enumeration_wrapper_base> create_default_enum()
+        static inline std::unique_ptr<detail::enumeration_wrapper_base> create_default_enum()
         {
             using namespace detail;
             return detail::make_unique<enumeration_wrapper<E_Type, 0, 0>>(get_enum_values<E_Type>(), std::array<detail::metadata, 0>());
         }
 
         template<typename E_Type, typename... Args>
-        static RTTR_INLINE std::unique_ptr<detail::enumeration_wrapper_base> create_custom_enum(Args&&...args)
+        static inline std::unique_ptr<detail::enumeration_wrapper_base> create_custom_enum(Args&&...args)
         {
             using namespace detail;
 
-            static RTTR_CONSTEXPR_OR_CONST std::size_t enum_count = count_type<enum_data<Enum_Type>, type_list<raw_type_t<Args>...>>::value;
-            static RTTR_CONSTEXPR_OR_CONST std::size_t global_enum_count = count_if<is_enum_data, raw_type_t<Args>...>::value;
+            static constexpr std::size_t enum_count = count_type<enum_data<Enum_Type>, type_list<raw_type_t<Args>...>>::value;
+            static constexpr std::size_t global_enum_count = count_if<is_enum_data, raw_type_t<Args>...>::value;
 
             static_assert(enum_count == global_enum_count, "Invalid 'value' pair for enumeration type provided, please specify values only for enums of type 'Enum_Type'.");
 

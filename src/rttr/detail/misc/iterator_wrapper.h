@@ -128,7 +128,7 @@ struct iterator_wrapper_base : Tp
         std::advance(Tp::get_iterator(itr), idx);
     }
 
-    static bool equal(const iterator_data& lhs_itr, const iterator_data& rhs_itr) RTTR_NOEXCEPT
+    static bool equal(const iterator_data& lhs_itr, const iterator_data& rhs_itr) noexcept
     {
         return (Tp::get_iterator(lhs_itr) == Tp::get_iterator(rhs_itr));
     }

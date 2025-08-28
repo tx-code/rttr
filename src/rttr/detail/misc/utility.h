@@ -193,10 +193,10 @@ using create_type_list_t = typename create_type_list<T, N>::type;
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-static RTTR_FORCE_INLINE bool check_all_true() { return true; }
+static inline bool check_all_true() { return true; }
 
 template<typename... BoolArgs>
-static RTTR_INLINE bool check_all_true(bool arg1, BoolArgs... args) { return arg1 & check_all_true(args...); }
+static inline bool check_all_true(bool arg1, BoolArgs... args) { return arg1 & check_all_true(args...); }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +274,7 @@ make_unique(Args&&...) = delete;
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template <class T>
-RTTR_CONSTEXPR RTTR_INLINE add_const_t<T>& as_const(T& value) RTTR_NOEXCEPT
+constexpr inline add_const_t<T>& as_const(T& value) noexcept
 {
     return value;
 }
@@ -284,14 +284,14 @@ RTTR_CONSTEXPR RTTR_INLINE add_const_t<T>& as_const(T& value) RTTR_NOEXCEPT
 /////////////////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
-RTTR_FORCE_INLINE typename std::enable_if<std::is_pointer<T>::value, void*>::type as_void_ptr(const T& obj)
+inline typename std::enable_if<std::is_pointer<T>::value, void*>::type as_void_ptr(const T& obj)
 {
     return const_cast<void*>(reinterpret_cast<const volatile void*>(obj));
 }
 
 
 template<typename T>
-RTTR_FORCE_INLINE typename std::enable_if<!std::is_pointer<T>::value, void*>::type as_void_ptr(const T& obj)
+inline typename std::enable_if<!std::is_pointer<T>::value, void*>::type as_void_ptr(const T& obj)
 {
     return const_cast<void*>(reinterpret_cast<const volatile void*>(&obj));
 }
@@ -365,7 +365,7 @@ using raw_addressof_return_type_t = typename raw_addressof_return_type<T>::type;
 template<typename T, typename Enable = void>
 struct raw_addressof_impl
 {
-    static RTTR_INLINE raw_addressof_return_type_t<T> get(T& data)
+    static inline raw_addressof_return_type_t<T> get(T& data)
     {
         return std::addressof(data);
     }
@@ -382,7 +382,7 @@ struct raw_addressof_impl<T, enable_if_t<(std::is_pointer<T>::value && pointer_c
                                          (pointer_count<T>::value == 1 && std::is_member_pointer<remove_pointer_t<T> >::value)
                                          > >
 {
-    static RTTR_INLINE raw_addressof_return_type_t<T> get(T& data)
+    static inline raw_addressof_return_type_t<T> get(T& data)
     {
         return raw_addressof_impl< remove_pointer_t<T> >::get(*data);
     }
@@ -391,7 +391,7 @@ struct raw_addressof_impl<T, enable_if_t<(std::is_pointer<T>::value && pointer_c
 template<typename T>
 struct raw_addressof_impl<T, enable_if_t<is_void_pointer<T>::value> >
 {
-    static RTTR_INLINE raw_addressof_return_type_t<T> get(T& data)
+    static inline raw_addressof_return_type_t<T> get(T& data)
     {
         return data; // void pointer cannot be dereferenced to type "void"
     }
@@ -406,7 +406,7 @@ struct raw_addressof_impl<T, enable_if_t<is_void_pointer<T>::value> >
  * \return The address of the raw type from the given object \p data as pointer.
  */
 template<typename T>
-static RTTR_INLINE raw_addressof_return_type_t<T> raw_addressof(T& data)
+static inline raw_addressof_return_type_t<T> raw_addressof(T& data)
 {
     return raw_addressof_impl<T>::get(data);
 }
@@ -449,7 +449,7 @@ struct move_wrapper
  * \return An instance of move_wrapper<T>.
  */
 template<typename T>
-static RTTR_INLINE move_wrapper<T> make_rref(T&& value)
+static inline move_wrapper<T> make_rref(T&& value)
 {
     return {std::move(value)};
 }
@@ -463,7 +463,7 @@ static RTTR_INLINE move_wrapper<T> make_rref(T&& value)
  *        otherwise returns a copy.
  */
 template<typename T>
-static RTTR_INLINE std::shared_ptr<T> create_if_empty(const std::shared_ptr<T>& obj)
+static inline std::shared_ptr<T> create_if_empty(const std::shared_ptr<T>& obj)
 {
     return (obj.get() ? obj : std::make_shared<T>());
 }
@@ -473,7 +473,7 @@ static RTTR_INLINE std::shared_ptr<T> create_if_empty(const std::shared_ptr<T>& 
 /*!
  * \brief Generates a hash value for continuous sequence of char's
  */
-RTTR_INLINE static std::size_t generate_hash(const char* text, std::size_t length)
+inline static std::size_t generate_hash(const char* text, std::size_t length)
 {
     const std::size_t  magic_prime = static_cast<std::size_t>(0x01000193);
     std::size_t               hash = static_cast<std::size_t>(0xcbf29ce4);
@@ -522,7 +522,7 @@ ends_with(const T& big_str, const T& small_str)
  * A simple identity function. Returns the same object, without doing anything.
  */
 template<typename T>
-static RTTR_INLINE T& identity_func(T& func) { return func; }
+static inline T& identity_func(T& func) { return func; }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

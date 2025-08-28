@@ -52,20 +52,20 @@ variant_associative_view::variant_associative_view(const variant_associative_vie
 
 /////////////////////////////////////////////////////////////////////////////////
 
-variant_associative_view::~variant_associative_view() RTTR_NOEXCEPT
+variant_associative_view::~variant_associative_view() noexcept
 {
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-void variant_associative_view::swap(variant_associative_view& other) RTTR_NOEXCEPT
+void variant_associative_view::swap(variant_associative_view& other) noexcept
 {
     std::swap(m_view, other.m_view);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
 
-variant_associative_view& variant_associative_view::operator=(const variant_associative_view& other) RTTR_NOEXCEPT
+variant_associative_view& variant_associative_view::operator=(const variant_associative_view& other) noexcept
 {
     variant_associative_view(other).swap(*this);
     return *this;
@@ -73,56 +73,56 @@ variant_associative_view& variant_associative_view::operator=(const variant_asso
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant_associative_view::is_valid() const RTTR_NOEXCEPT
+bool variant_associative_view::is_valid() const noexcept
 {
     return m_view.get_type().is_valid();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant_associative_view::operator bool() const RTTR_NOEXCEPT
+variant_associative_view::operator bool() const noexcept
 {
     return m_view.get_type().is_valid();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type variant_associative_view::get_type() const RTTR_NOEXCEPT
+type variant_associative_view::get_type() const noexcept
 {
     return m_view.get_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type variant_associative_view::get_key_type() const RTTR_NOEXCEPT
+type variant_associative_view::get_key_type() const noexcept
 {
     return m_view.get_key_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-type variant_associative_view::get_value_type() const RTTR_NOEXCEPT
+type variant_associative_view::get_value_type() const noexcept
 {
     return m_view.get_value_type();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant_associative_view::is_key_only_type() const RTTR_NOEXCEPT
+bool variant_associative_view::is_key_only_type() const noexcept
 {
     return (m_view.get_value_type().is_valid() == false && is_valid());
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-bool variant_associative_view::is_empty() const RTTR_NOEXCEPT
+bool variant_associative_view::is_empty() const noexcept
 {
     return m_view.is_empty();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-std::size_t variant_associative_view::get_size() const RTTR_NOEXCEPT
+std::size_t variant_associative_view::get_size() const noexcept
 {
     return m_view.get_size();
 }
@@ -214,7 +214,7 @@ variant_associative_view::const_iterator variant_associative_view::end() const
 /////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
 
-variant_associative_view::const_iterator::const_iterator(const detail::variant_associative_view_private* view) RTTR_NOEXCEPT
+variant_associative_view::const_iterator::const_iterator(const detail::variant_associative_view_private* view) noexcept
 :   m_view(view)
 {
 }

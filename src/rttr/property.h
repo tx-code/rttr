@@ -122,14 +122,14 @@ class RTTR_API property
          *
          * \return True if this property is valid, otherwise false.
          */
-        bool is_valid() const RTTR_NOEXCEPT;
+        bool is_valid() const noexcept;
 
         /*!
          * \brief Convenience function to check if this property is valid or not.
          *
          * \return True if this property is valid, otherwise false.
          */
-        explicit operator bool() const RTTR_NOEXCEPT;
+        explicit operator bool() const noexcept;
 
         /*!
          * \brief Returns the access level with which this property was
@@ -139,7 +139,7 @@ class RTTR_API property
          *
          * \return \ref access_levels of the property.
          */
-        access_levels get_access_level() const RTTR_NOEXCEPT;
+        access_levels get_access_level() const noexcept;
 
         /*!
          * \brief Returns true if this property is read only, otherwise false.
@@ -148,7 +148,7 @@ class RTTR_API property
          *
          * \return True if this is a read only property, otherwise false.
          */
-        bool is_readonly() const RTTR_NOEXCEPT;
+        bool is_readonly() const noexcept;
 
         /*!
          * \brief Returns true if this property is static property, otherwise false.
@@ -158,7 +158,7 @@ class RTTR_API property
          *
          * \return True if this is a static property, otherwise false.
          */
-        bool is_static() const RTTR_NOEXCEPT;
+        bool is_static() const noexcept;
 
         /*!
          * \brief Returns true if the underlying property is an \ref enumeration.
@@ -167,7 +167,7 @@ class RTTR_API property
          *
          * \return True if this is a \ref enumeration type, otherwise false.
          */
-        bool is_enumeration() const RTTR_NOEXCEPT;
+        bool is_enumeration() const noexcept;
 
        /*!
          * \brief Returns the enumerator if this property is an enum type;
@@ -177,7 +177,7 @@ class RTTR_API property
          *
          * \return An enumeration object.
          */
-        enumeration get_enumeration() const RTTR_NOEXCEPT;
+        enumeration get_enumeration() const noexcept;
 
         /*!
          * \brief Returns the name of this property.
@@ -186,7 +186,7 @@ class RTTR_API property
          *
          * \return Name of the property.
          */
-        string_view get_name() const RTTR_NOEXCEPT;
+        string_view get_name() const noexcept;
 
         /*!
          * \brief Returns the underlying \ref type object of this property.
@@ -195,7 +195,7 @@ class RTTR_API property
          *
          * \return \ref type "Type" of the underlying property.
          */
-        type get_type() const RTTR_NOEXCEPT;
+        type get_type() const noexcept;
 
         /*!
          * \brief Returns the \ref type of the class or struct that declares this property.
@@ -205,7 +205,7 @@ class RTTR_API property
          *
          * \return \ref type "Type" of the declaring class/struct for this property.
          */
-        type get_declaring_type() const RTTR_NOEXCEPT;
+        type get_declaring_type() const noexcept;
 
         /*!
          * \brief Set the property of the given instance \p object to the given value \p arg.
@@ -246,20 +246,20 @@ class RTTR_API property
          *
          * \return True if both properties are equal, otherwise false.
          */
-        bool operator==(const property& other) const RTTR_NOEXCEPT;
+        bool operator==(const property& other) const noexcept;
 
         /*!
          * Returns true if this property is the not the same like the \p other.
          *
          * \return True if both properties are different, otherwise false.
          */
-        bool operator!=(const property& other) const RTTR_NOEXCEPT;
+        bool operator!=(const property& other) const noexcept;
 
     private:
         //! Constructs a property from a property_wrapper_base.
-        property(const detail::property_wrapper_base* wrapper) RTTR_NOEXCEPT;
+        property(const detail::property_wrapper_base* wrapper) noexcept;
 
-        void visit(visitor& visitor) const RTTR_NOEXCEPT;
+        void visit(visitor& visitor) const noexcept;
 
         template<typename T>
         friend T detail::create_item(const detail::class_item_to_wrapper_t<T>* wrapper);

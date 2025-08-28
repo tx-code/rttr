@@ -87,7 +87,7 @@ private:
     enable_if_t< std::is_same<T, raw_type_t<U>>::value, void >
     extract_types_recursively(container_type& container, U&& value, Args &&... tail)
     {
-        RTTR_STATIC_CONSTEXPR auto index = count_type<T, type_list<OrigArgs...>>::value - count_type<T, type_list<Args...>>::value - 1;
+        static constexpr auto index = count_type<T, type_list<OrigArgs...>>::value - count_type<T, type_list<Args...>>::value - 1;
         container[index] = std::forward<U>(value);
         extract_types_recursively(container, std::forward< Args >(tail)...);
     }
