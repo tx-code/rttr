@@ -31,12 +31,12 @@ You may have to set the `BOOST_ROOT` environment variable to the Boost installat
 ###Config CMake Build###
 The build of RTTR can be configured at CMake configuration time with following variables:
 
-- `BUILD_STATIC`: Build RTTR as static library; Default: `FALSE`
-- `BUILD_WITH_STATIC_RUNTIME_LIBS`: Link against the static runtime libraries; Default: `FALSE`
-- `BUILD_WITH_RTTI`: Enable the C++ language feature for runtime type information (RTTI); Default: `TRUE`
-- `BUILD_BENCHMARKS`: Enable this to build the benchmarks; Default: `TRUE`
-- `USE_PCH`: Use precompiled header files for compilation; Default: `TRUE`*
-- `CUSTOM_DOXYGEN_STYLE`: Enable this option to use a custom doxygen style for HTML documentation; Otherwise the default will be used; Default: `TRUE`
+- `RTTR_BUILD_STATIC`: Build RTTR as static library; Default: `OFF`
+- `RTTR_BUILD_WITH_STATIC_RUNTIME`: Link against the static runtime libraries; Default: `OFF`
+- `RTTR_BUILD_WITH_RTTI`: Enable the C++ language feature for runtime type information (RTTI); Default: `ON`
+- `RTTR_BUILD_BENCHMARKS`: Enable this to build the benchmarks; Default: `ON`
+- `RTTR_USE_PCH`: Use precompiled header files for compilation; Default: `ON`
+- `RTTR_BUILD_DOCS`: Enable documentation generation; Default: `ON`
 
 \*Precompiled headers are only supported with MSVC based build
 
